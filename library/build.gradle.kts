@@ -116,8 +116,7 @@ publishing {
 }
 
 mavenPublishing {
-    publishToMavenCentral()
-
+//    publishToMavenCentral()
 //    signAllPublications()
 
     coordinates(group.toString(), "stephans-kmp-components", version.toString())
@@ -146,6 +145,17 @@ mavenPublishing {
             connection = "scm:git@github.com:sknull/sknull/Stephans-KMP-Components.git"
             developerConnection = "scm:git@github.com:sknull/sknull/Stephans-KMP-Components.git"
             url = "https://github.com/sknull/Stephans-KMP-Components/"
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://github.com/sknull/Stephans-KMP-Components")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }

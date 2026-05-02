@@ -28,3 +28,9 @@ jobs:
 
       - name: Build Library
         run: ./gradlew :library:assemble
+
+      - name: Publish to GitHub Packages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: ./gradlew :library:publishAllPublicationsToGitHubPackagesRepository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
