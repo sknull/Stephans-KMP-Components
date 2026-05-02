@@ -1,0 +1,18 @@
+= Stephans KMP Components
+:doctype: book
+:description: Documentation for Stephans KMP Components
+:keywords: kotlin multiplatform, components
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 10
+
+== Status
+
+https://github.com/sknull/Stephans-KMP-Components/actions/workflows/gradle.yml[image:https://github.com/sknull/Stephans-KMP-Components/actions/workflows/gradle.yml/badge.svg[Stephans-KMP-Components]]
+
+== About
+
+Some components I created for my KMP projects.
+Also includes a fork of colorful sliders ported to kmp.
+Sorry there is no documentation at all yet.
