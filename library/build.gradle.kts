@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "de.visualdigits.kmp"
-version = "1.0.0"
+version = "0.9.0-SNAPSHOT"
 
 kotlin {
     androidTarget {
