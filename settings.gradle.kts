@@ -8,12 +8,22 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-//    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenLocal()
         mavenCentral()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/sknull/Stephans-KMP-Components")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+            content {
+                includeGroup("de.visualdigits.kmp")
+            }
+        }
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://maven.pkg.jetbrains.space")
         maven("https://central.sonatype.com/repository/maven-snapshots/")

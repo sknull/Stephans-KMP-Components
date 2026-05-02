@@ -3,6 +3,11 @@ name: Stephans-KMP-Components CI
 on:
   push:
     branches: [ "main" ]
+#    paths:
+#      - 'library/**'
+#      - 'gradle/**'
+#      - '*.kts'
+
   pull_request:
     branches: [ "main" ]
 
