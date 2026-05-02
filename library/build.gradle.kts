@@ -121,32 +121,32 @@ mavenPublishing {
 
     coordinates(group.toString(), "stephans-kmp-components", version.toString())
 
-    pom {
-        name = "Stephans KMP Components"
-        description = "Some KMP Components."
-        inceptionYear = "2026"
-        url = "https://github.com/sknull/Stephans-KMP-Components/"
-        licenses {
-            license {
-                name = "Apache License, Version 2.0"
-                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                distribution = "repo"
-                comments = "A business-friendly OSS license"
-            }
-        }
-        developers {
-            developer {
-                id = "sknull"
-                name = "Stephan Knull"
-                url = "https://github.com/sknull"
-            }
-        }
-        scm {
-            connection = "scm:git@github.com:sknull/sknull/Stephans-KMP-Components.git"
-            developerConnection = "scm:git@github.com:sknull/sknull/Stephans-KMP-Components.git"
-            url = "https://github.com/sknull/Stephans-KMP-Components/"
-        }
-    }
+//    pom {
+//        name = "Stephans KMP Components"
+//        description = "Some KMP Components."
+//        inceptionYear = "2026"
+//        url = "https://github.com/sknull/Stephans-KMP-Components/"
+//        licenses {
+//            license {
+//                name = "Apache License, Version 2.0"
+//                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+//                distribution = "repo"
+//                comments = "A business-friendly OSS license"
+//            }
+//        }
+//        developers {
+//            developer {
+//                id = "sknull"
+//                name = "Stephan Knull"
+//                url = "https://github.com/sknull"
+//            }
+//        }
+//        scm {
+//            connection = "scm:git@github.com:sknull/sknull/Stephans-KMP-Components.git"
+//            developerConnection = "scm:git@github.com:sknull/sknull/Stephans-KMP-Components.git"
+//            url = "https://github.com/sknull/Stephans-KMP-Components/"
+//        }
+//    }
 
     repositories {
         maven {
