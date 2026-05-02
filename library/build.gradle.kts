@@ -111,7 +111,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://github.com")
+            url = uri("https://github.com/sknull/Stephans-KMP-Components/")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
