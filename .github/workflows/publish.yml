@@ -38,6 +38,6 @@ jobs:
 
       - name: Publish to GitHub Packages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: ./gradlew clean :library:publish --no-configuration-cache
+        run: ./gradlew clean :library:publishAllPublicationsToGitHubPackagesRepository --no-configuration-cache
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
