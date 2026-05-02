@@ -8,5 +8,4 @@ plugins {
     alias(libs.plugins.gradle.pdf) apply false
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply  false
-    alias(libs.plugins.vanniktech.mavenPublish) apply false
 }
