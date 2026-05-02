@@ -103,6 +103,8 @@ android {
 }
 
 publishing {
+    coordinates(group.toString(), "stephans-kmp-components", version.toString())
+
     repositories {
         maven {
             name = "GitHubPackages"
