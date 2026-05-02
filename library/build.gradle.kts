@@ -134,4 +134,10 @@ mavenPublishing {
             url = "https://github.com/sknull/Stephans-KMP-Components/"
         }
     }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+        }
+    }
 }
