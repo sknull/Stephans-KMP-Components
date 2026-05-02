@@ -9,7 +9,7 @@
 
 == Status
 
-https://github.com/sknull/Stephans-KMP-Components/actions/workflows/gradle.yml[image:https://github.com/sknull/Stephans-KMP-Components/actions/workflows/gradle.yml/badge.svg[Stephans-KMP-Components]]
+image:https://github.com/sknull/Stephans-KMP-Components/actions/workflows/publish.yml/badge.svg[Stephans-KMP-Components CI,link=https://github.com/sknull/Stephans-KMP-Components/actions/workflows/publish.yml]
 
 == About
 
