@@ -71,11 +71,18 @@ kotlin {
             }
         }
 
-        jvmTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation(libs.junit.jupiter.api)
-            implementation(libs.junit.jupiter.engine)
-            implementation(libs.junit.platform.launcher)
+        val jvmTest by creating {
+            dependsOn(commonTest.get())
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.junit.jupiter.api)
+                implementation(libs.junit.jupiter.engine)
+                implementation(libs.junit.platform.launcher)
+            }
+        }
+
+        val desktopTest by getting {
+            dependsOn(jvmTest)
         }
     }
 }
@@ -92,6 +99,19 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://github.com/sknull/Stephans-KMP-Components")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 
