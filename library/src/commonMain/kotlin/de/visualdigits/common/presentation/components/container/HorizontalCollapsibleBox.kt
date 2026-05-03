@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.UiPlatform
 import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.platformFocus
+import de.visualdigits.common.presentation.components.util.conditional
 
 @Composable
 fun HorizontalCollapsibleBox(
@@ -51,6 +52,7 @@ fun HorizontalCollapsibleBox(
     height: Dp,
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     isExpanded: Boolean,
+    animateContent: Boolean = false,
     onStateChange: (Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -79,6 +81,7 @@ fun HorizontalCollapsibleBox(
             expandedWidth = expandedWidth,
             height = height,
             iconTint = iconTint,
+            animateContent = animateContent,
             onStateChange = onStateChange,
             isExpanded = isExpanded,
             content = content
@@ -101,6 +104,7 @@ fun HorizontalCollapsibleBoxFull(
     height: Dp,
     isExpanded: Boolean,
     iconTint: Color = Color.White,
+    animateContent: Boolean = false,
     onStateChange: (Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -110,12 +114,14 @@ fun HorizontalCollapsibleBoxFull(
         .clip(shape)
         .height(height)
         .background(backgroundColor, shape)
-        .animateContentSize(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessLow
+        .conditional(animateContent) {
+            animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
             )
-        )
+        }
     textfieldModifier = if (isExpanded) {
         textfieldModifier.width(expandedWidth)
     } else {

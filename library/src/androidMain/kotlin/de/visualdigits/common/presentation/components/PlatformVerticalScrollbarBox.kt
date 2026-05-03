@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.presentation.model.CommonAction
+import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -25,6 +26,7 @@ actual fun PlatformVerticalScrollbarBox(
     modifier: Modifier,
     backgroundColor: Color,
     scrollbarModifier: Modifier,
+    scrollbarStyle: PlatformScrollbarStyle,
     scrollbarId: String,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     onCommonAction: (CommonAction) -> Unit,

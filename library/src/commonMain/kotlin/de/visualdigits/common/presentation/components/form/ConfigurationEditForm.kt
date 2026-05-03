@@ -36,6 +36,8 @@ import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarBox
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.model.CommonAction
+import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +54,8 @@ fun ConfigurationEditForm(
     iconCancel: Painter,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     scrollbarId: String,
+    scrollbarModifier: Modifier,
+    scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     fieldHeight: Dp = Dp.Unspecified,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -72,12 +76,9 @@ fun ConfigurationEditForm(
         modifier = modifier
             .fillMaxWidth(),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        scrollbarModifier = Modifier
-            .clip(MaterialTheme.shapes.small)
-            .fillMaxHeight()
-            .width(10.dp)
-            .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f)),
-        scrollbarId,
+        scrollbarModifier = scrollbarModifier,
+        scrollbarStyle = scrollbarStyle,
+        scrollbarId = scrollbarId,
         scrollPosition = scrollPosition,
         onCommonAction = onCommonAction
     ) {

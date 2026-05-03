@@ -17,6 +17,8 @@ import de.visualdigits.common.domain.model.FileMode
 import de.visualdigits.common.domain.model.UiPlatform
 import de.visualdigits.common.domain.model.platform.ConnectivityMode
 import de.visualdigits.common.presentation.model.CommonAction
+import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -30,8 +32,9 @@ expect fun BindBackHandler(isEnabled: Boolean, onBack: () -> Unit)
 @Composable
 expect fun PlatformVerticalScrollbarBox(
     modifier: Modifier = Modifier,
-    backgroundColor: Color,
+    backgroundColor: Color = Color.Unspecified,
     scrollbarModifier: Modifier = Modifier,
+    scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     scrollbarId: String,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     onCommonAction: (CommonAction) -> Unit,
@@ -43,6 +46,7 @@ expect fun PlatformVerticalScrollbarBox(
 @Composable
 expect fun PlatformVerticalScrollbar(
     modifier: Modifier = Modifier,
+    style: PlatformScrollbarStyle = defaultScrollbarStyle(),
     scrollState: ScrollState,
     interactionSource: MutableInteractionSource
 )

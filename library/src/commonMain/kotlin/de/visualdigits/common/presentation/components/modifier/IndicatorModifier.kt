@@ -208,7 +208,7 @@ fun Modifier.indicator(
                 }
 
                 // indicator bevel
-                if (indicatorBevelOutline != null) {
+                if (!flatLook && indicatorBevelOutline != null) {
                     this@onDrawWithContent.draw(
                         offsetX = indicatorOffsetX,
                         offsetY = indicatorOffsetY,

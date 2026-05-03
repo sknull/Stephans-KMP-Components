@@ -5,9 +5,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,12 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.presentation.model.CommonAction
+import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 
 @Composable
 actual fun PlatformVerticalScrollbarBox(
     modifier: Modifier,
     backgroundColor: Color,
     scrollbarModifier: Modifier,
+    scrollbarStyle: PlatformScrollbarStyle,
     scrollbarId: String,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     onCommonAction: (CommonAction) -> Unit,
@@ -61,7 +65,10 @@ actual fun PlatformVerticalScrollbarBox(
         PlatformVerticalScrollbar(
             interactionSource = interactionSource,
             modifier = scrollbarModifier
+                .fillMaxHeight()
+                .width(10.dp)
                 .align(Alignment.CenterEnd),
+            style = scrollbarStyle,
             scrollState = scrollState
         )
     }

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.UiPlatform
 import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.platformFocus
+import de.visualdigits.common.presentation.components.util.conditional
 
 @Composable
 fun VerticalCollapsibleBox(
@@ -47,6 +48,7 @@ fun VerticalCollapsibleBox(
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     shape: Shape = MaterialTheme.shapes.extraSmall,
+    animateContent: Boolean = false,
     onStateChange: (Boolean) -> Unit,
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     isExpanded: Boolean,
@@ -77,6 +79,7 @@ fun VerticalCollapsibleBox(
             backgroundColor = backgroundColor,
             shape = shape,
             iconTint = iconTint,
+            animateContent = animateContent,
             onStateChange = onStateChange,
             isExpanded = isExpanded,
             trailingIcon = trailingIcon,
@@ -98,6 +101,7 @@ fun VerticalCollapsibleBoxFull(
     backgroundColor: Color,
     shape: Shape,
     iconTint: Color = Color.White,
+    animateContent: Boolean,
     onStateChange: (Boolean) -> Unit,
     isExpanded: Boolean,
     trailingIcon: (@Composable () -> Unit)? = null,
@@ -109,12 +113,14 @@ fun VerticalCollapsibleBoxFull(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor, shape)
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
-                    stiffness = Spring.StiffnessLow
+            .conditional(animateContent) {
+                animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
                 )
-            ),
+            },
         value = "",
         onValueChange = { },
         readOnly = true,
