@@ -31,11 +31,12 @@ actual fun PlatformFileChooser(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
+    homeDirectoryPath: String,
     onCancel: (() -> Unit)?,
     onOk: (String, InputStream) -> Unit
 ) {
     val mode = fileMode.jFileChooserMode
-    val startDirectory = Paths.get(System.getProperty("user.home"), ".newshomereader", "backup").toFile()
+    val startDirectory = Paths.get(homeDirectoryPath,  "backup").toFile()
     val chooser = JFileChooser().apply {
         if (fileMode == FileMode.FILES_ONLY && options.isNotEmpty()) {
             val filter =

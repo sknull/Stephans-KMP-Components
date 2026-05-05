@@ -32,6 +32,7 @@ actual fun PlatformFileChooser(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
+    homeDirectoryPath: String,
     onCancel: (() -> Unit)?,
     onOk: (String, InputStream) -> Unit
 ) {

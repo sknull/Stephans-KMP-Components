@@ -32,12 +32,13 @@ actual fun PlatformFileSaver(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
+    homeDirectoryPath: String,
     onCancel: (() -> Unit)?,
     onOk: (String, OutputStream) -> Unit
 ) {
     val log = Logger.withTag("PlatformFileSaver")
 
-    val saveDirectory = Paths.get(System.getProperty("user.home"), ".newshomereader", "backup").toFile()
+    val saveDirectory = Paths.get(homeDirectoryPath, "backup").toFile()
     if (!saveDirectory.exists()) {
         if (!saveDirectory.mkdirs()) {
             log.e("Failed to create directory ${saveDirectory.absolutePath}")

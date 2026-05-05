@@ -7,7 +7,7 @@ import co.touchlab.kermit.Severity
 import java.io.File
 import java.io.FileOutputStream
 
-actual fun getPlatformLogWriters(): List<LogWriter> {
+actual fun getPlatformLogWriters(homeDirectoryPath: String, logFileName: String): List<LogWriter> {
     val downloadFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val logFile = File(downloadFolder, "newshomereader_logs.txt")
 

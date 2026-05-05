@@ -7,14 +7,13 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-actual fun getPlatformLogWriters(): List<LogWriter> {
-    val userHome = System.getProperty("user.home")
-    val logDirectory = File(userHome, ".newshomereader")
+actual fun getPlatformLogWriters(homeDirectoryPath: String, logFileName: String): List<LogWriter> {
+    val logDirectory = File(homeDirectoryPath)
     if (!logDirectory.exists()) {
         logDirectory.mkdirs()
     }
 
-    return listOf(CustomJvmFileLogWriter(File(logDirectory, "NewsHomeReader.log")), platformLogWriter())
+    return listOf(CustomJvmFileLogWriter(File(logDirectory, logFileName)), platformLogWriter())
 }
 
 class CustomJvmFileLogWriter(private val logFile: File) : LogWriter() {

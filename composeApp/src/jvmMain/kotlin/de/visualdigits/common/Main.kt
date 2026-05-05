@@ -14,7 +14,7 @@ import kotlinx.coroutines.cancel
 
 fun main() {
 
-    val writers = getPlatformLogWriters()
+    val writers = getPlatformLogWriters(System.getProperty("user.home"), "DemoApp.log")
     Logger.setLogWriters(writers)
     Logger.setTag("StephansComponents")
 
