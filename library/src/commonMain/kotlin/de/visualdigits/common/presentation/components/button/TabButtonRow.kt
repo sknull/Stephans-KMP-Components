@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import de.visualdigits.common.domain.model.UiText
 import org.jetbrains.compose.resources.StringResource
 
 @Composable
@@ -11,9 +12,9 @@ fun TabButtonRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal,
     initializeViewModel: () -> Unit = {},
-    items: LinkedHashMap<StringResource, @Composable () -> Unit>,
+    items: LinkedHashMap<UiText, @Composable () -> Unit>,
     selectedTab: () -> Int,
-    button: @Composable (StringResource, Int) -> Unit
+    button: @Composable (UiText, Int) -> Unit
 ) {
     initializeViewModel()
 

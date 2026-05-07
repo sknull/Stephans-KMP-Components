@@ -15,8 +15,7 @@ import de.visualdigits.common.presentation.components.button.IndicatorButton
 fun ButtonDemo() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF000000)),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         IndicatorButton(

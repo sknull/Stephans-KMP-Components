@@ -44,6 +44,7 @@ import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 @Composable
 fun ConfigurationEditForm(
     modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLow,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
     iconFolder: Painter,
@@ -75,7 +76,7 @@ fun ConfigurationEditForm(
     PlatformVerticalScrollbarBox(
         modifier = modifier
             .fillMaxWidth(),
-        backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        backgroundColor = backgroundColor,
         scrollbarModifier = scrollbarModifier,
         scrollbarStyle = scrollbarStyle,
         scrollbarId = scrollbarId,

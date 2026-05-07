@@ -64,7 +64,11 @@ fun TextBox(
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = finalUnfocusedBorderColor,
                 focusedBorderColor = focusedBorderColor,
-                cursorColor = MaterialTheme.colorScheme.onSurface
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                cursorColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                focusedLabelColor = focusedBorderColor
             )
         )
     }

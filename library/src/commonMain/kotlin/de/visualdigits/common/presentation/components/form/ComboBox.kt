@@ -212,11 +212,13 @@ private fun InnerTextField(
                 }
             } else null,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = focusedBorderColor,
                 unfocusedBorderColor = unfocusedBorderColor,
-                disabledTextColor = MaterialTheme.colorScheme.surfaceDim,
-                disabledLabelColor = MaterialTheme.colorScheme.surfaceDim,
-                disabledBorderColor = MaterialTheme.colorScheme.surfaceDim
+                focusedBorderColor = focusedBorderColor,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                cursorColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                focusedLabelColor = focusedBorderColor
             )
         )
     }

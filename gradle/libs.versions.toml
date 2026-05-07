@@ -7,7 +7,7 @@ tvMaterial = "1.0.1"
 
 version-androidx-activityCompose = "1.13.0"
 version-androidx-lifecycle = "2.10.0"
-version-colorpicker = "1.1.3"
+version-colorpicker = "1.1.4"
 version-gradle-pdf = "4.0.5"
 version-jetbrains-kotlin = "1.10.3"
 version-junit = "6.0.3"

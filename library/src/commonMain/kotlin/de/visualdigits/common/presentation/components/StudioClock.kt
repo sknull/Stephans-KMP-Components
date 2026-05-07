@@ -12,14 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontFamily
@@ -178,14 +175,6 @@ fun StudioClock(
                                 x = offsetX - timeLayoutResult.size.width / 2.0f,
                                 y = offsetY - timeLayoutResult.size.height / 2.0f - (if(showDate) 3.0f else 0.0f)
                             ),
-//                            brush = Brush.linearGradient(
-//                                colorStops = arrayOf(
-//                                    0.5f to colors.colorTime,
-//                                    1.0f to colors.colorTime.copyFactor(valueFactor = 0.2f),
-//                                ),
-//                                start = Offset(0f, 0f),
-//                                end = Offset(0f, timeLayoutResult.size.height.toFloat())
-//                            )
                             color = colors.colorTime
                         )
 
@@ -196,14 +185,6 @@ fun StudioClock(
                                     x = offsetX - dateLayoutResult.size.width / 2.0f,
                                     y = offsetY - dateLayoutResult.size.height / 2.0f + timeLayoutResult.size.height * 0.75f
                                 ),
-//                                brush = Brush.linearGradient(
-//                                    colorStops = arrayOf(
-//                                        0.5f to colors.colorDate,
-//                                        1.0f to colors.colorDate.copyFactor(valueFactor = 0.2f),
-//                                    ),
-//                                    start = Offset(0f, 0f),
-//                                    end = Offset(0f, dateLayoutResult.size.height.toFloat())
-//                                )
                                 color = colors.colorDate
                             )
                         }
@@ -235,22 +216,27 @@ private fun ContentDrawScope.drawDots(
         val drawCenter = Offset(x = x, y = y)
         val baseColor = if (a < highlightOffset) colorHighlighted else colorDimmed
 
-//        clipPath(
-//            Path().apply {
-//                addOval(Rect(center = drawCenter, radius = size * 1.5f))
-//            }
-//        ) {
-//            drawCircle(
-//                color = Color.Red,
-//                radius = size * 1.5f,
-//                center = drawCenter + Offset(size, size),
-//            )
-//        }
+        // glow
+        drawCircle(
+            brush = Brush.radialGradient(
+                colorStops = arrayOf(
+                    0.5f to Color.Transparent,
+                    0.51f to baseColor.copy(alpha = 0.3f),
+                    1.0f to Color.Transparent,
+                ),
+                center = drawCenter,
+                radius = size * 1.5f
+            ),
+            radius = size * 1.5f,
+            center = drawCenter,
+            blendMode = BlendMode.Screen
+        )
+
         // base color
         drawCircle(
             brush = Brush.radialGradient(
                 colorStops = arrayOf(
-                    0.5f to baseColor,
+                    0.0f to baseColor,
                     1.0f to baseColor.copyFactor(valueFactor = 0.2f),
                 ),
                 center = drawCenter,
@@ -274,21 +260,6 @@ private fun ContentDrawScope.drawDots(
             center = drawCenter - Offset(size * 0.25f, size * 0.25f),
         )
 
-        // glow
-        drawCircle(
-            brush = Brush.radialGradient(
-                colorStops = arrayOf(
-                    0.5f to Color.Transparent,
-                    0.75f to baseColor.copy(alpha = 0.3f),
-                    1.0f to Color.Transparent,
-                ),
-                center = drawCenter,
-                radius = size * 1.5f
-            ),
-            radius = size * 1.5f,
-            center = drawCenter,
-            blendMode = BlendMode.Screen
-        )
         a += 360.0f / numberOfDots
     }
 }

@@ -3,6 +3,7 @@ package de.visualdigits.common.presentation.components.form
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -22,6 +23,7 @@ import de.visualdigits.common.domain.model.FileMode
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.button.IndicatorButton
+import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -59,6 +61,7 @@ fun FileChooserBox(
     onValueChange: (String) -> Unit,
     onOk: (File) -> Unit
 ) {
+    val halfHeight = minimizedLabelHalfHeight(textStyle)
     PlatformToolTip(
         text = toolTip,
         space = space,
@@ -69,7 +72,7 @@ fun FileChooserBox(
             modifier = modifier
                 .focusRequester(focusRequester)
                 .fillMaxWidth()
-                .height(fieldHeight),
+                .height(fieldHeight + halfHeight),
             textStyle = textStyle,
             enabled = enabled,
             value = value ?: "",
@@ -87,9 +90,12 @@ fun FileChooserBox(
 
                 if (enabled) {
                     IndicatorButton(
+                        modifier = Modifier
+                            .padding(start = 5.dp),
+                        width = 30.dp,
+                        height = 30.dp,
                         leadingIcon = iconFolder,
                         leadingIconTint = iconTint,
-                        modifier = Modifier.padding(start = 5.dp),
                         shape = buttonShape,
                         buttonColor = buttonColor,
                         onClick = {
@@ -114,7 +120,12 @@ fun FileChooserBox(
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = finalUnfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor
+                focusedBorderColor = focusedBorderColor,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                cursorColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                focusedLabelColor = focusedBorderColor
             )
         )
     }

@@ -47,6 +47,7 @@ import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbar
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.conditional
+import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
 fun EditableList(
@@ -85,198 +86,204 @@ fun EditableList(
     var editingIndex by remember { mutableStateOf<Int?>(null) }
     var currentText by remember { mutableStateOf<String?>(null) }
 
-    Box(
+    val halfHeight = minimizedLabelHalfHeight(textStyle)
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(space)
-            .border(1.dp, unfocusedBorderColor, buttonShape)
+            .padding(top = halfHeight - 2.dp) // why?
     ) {
-        val scrollState = rememberScrollState(0)
-
-        Column(
-            modifier = Modifier
+        Box(
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .conditional(scrollable) { verticalScroll(scrollState) },
-            verticalArrangement = Arrangement.spacedBy(space)
+                .border(1.dp, unfocusedBorderColor, buttonShape)
         ) {
-            Text(
-                modifier = Modifier,
-                text = field?.descriptor?.label?.let { r -> r.asString() } ?: "",
-                style = MaterialTheme.typography.bodySmall,
-            )
+            val scrollState = rememberScrollState(0)
 
-            items.forEachIndexed { index, item ->
-                val allowDelete = deleteAllowed(field?.descriptor, item)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .conditional(scrollable) { verticalScroll(scrollState) },
+                verticalArrangement = Arrangement.spacedBy(space)
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = field?.descriptor?.label?.let { r -> r.asString() } ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                )
 
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(fieldHeight * 0.75f),
-                    shape = buttonShape,
-                    color = Color.Transparent,
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = unfocusedBorderColor
-                    )
-                ) {
-                    Row(
+                items.forEachIndexed { index, item ->
+                    val allowDelete = deleteAllowed(field?.descriptor, item)
+
+                    Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.Transparent)
-                            .padding(start = space, end = 0.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(space)
-                    ) {
-                        Text(
-                            text = item,
-                            style = MaterialTheme.typography.bodySmall
+                            .height(fieldHeight * 0.75f),
+                        shape = buttonShape,
+                        color = Color.Transparent,
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = unfocusedBorderColor
                         )
-
-                        Spacer(Modifier.weight(1f))
-
-                        if (field?.enabled == true) {
-                            IndicatorButton(
-                                leadingIcon = resources.iconEdit,
-                                toolTip = resources.toolTipEdit.asString(),
-                                width = 30.dp,
-                                height = 30.dp,
-                                onClick = {
-                                    editingIndex = index
-                                    currentText = item
-                                    showDialog = true
-                                }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Transparent)
+                                .padding(start = space, end = 0.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(space)
+                        ) {
+                            Text(
+                                text = item,
+                                style = MaterialTheme.typography.bodySmall
                             )
 
-                            IndicatorButton(
-                                leadingIcon = resources.iconDelete,
-                                toolTip = resources.toolTipDelete.asString(),
-                                width = 30.dp,
-                                height = 30.dp,
-                                enabled = allowDelete,
-                                onClick = {
-                                    editingIndex = null
-                                    currentText = null
-                                    items.removeAt(index)
-                                    showDialog = false
-                                    onValueChange(KeyValue(field.descriptor, items.joinToString(",")))
-                                }
-                            )
+                            Spacer(Modifier.weight(1f))
+
+                            if (field?.enabled == true) {
+                                IndicatorButton(
+                                    leadingIcon = resources.iconEdit,
+                                    toolTip = resources.toolTipEdit.asString(),
+                                    width = 30.dp,
+                                    height = 30.dp,
+                                    onClick = {
+                                        editingIndex = index
+                                        currentText = item
+                                        showDialog = true
+                                    }
+                                )
+
+                                IndicatorButton(
+                                    leadingIcon = resources.iconDelete,
+                                    toolTip = resources.toolTipDelete.asString(),
+                                    width = 30.dp,
+                                    height = 30.dp,
+                                    enabled = allowDelete,
+                                    onClick = {
+                                        editingIndex = null
+                                        currentText = null
+                                        items.removeAt(index)
+                                        showDialog = false
+                                        onValueChange(KeyValue(field.descriptor, items.joinToString(",")))
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (field?.enabled == true) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        IndicatorButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd),
+                            text = resources.hintAdd.asString(),
+                            buttonColor = buttonColor,
+                            shape = buttonShape,
+                            leadingIcon = resources.iconAdd,
+                            leadingIconTint = iconTint
+                        ) {
+                            editingIndex = null
+                            currentText = ""
+                            showDialog = true
                         }
                     }
                 }
             }
 
-            if (field?.enabled == true) {
-                Box(
+            if (scrollable) {
+                PlatformVerticalScrollbar(
+                    interactionSource = interactionSource,
                     modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    IndicatorButton(
+                        .clip(containerShape)
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f))
+                        .width(space),
+                    scrollState = scrollState
+                )
+            }
+        }
+
+        if (showDialog) {
+            previousItems.update(items)
+
+            AlertDialog(
+                modifier = Modifier
+                    .border(1.dp, focusedBorderColor, containerShape),
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.6f),
+                shape = containerShape,
+                onDismissRequest = { showDialog = false },
+                title = { Text(if (editingIndex == null) resources.titleAdd.asString() else resources.titleEdit.asString()) },
+                text = {
+                    TypeAwareEditableField(
                         modifier = Modifier
-                            .align(Alignment.CenterEnd),
-                        text = resources.hintAdd.asString(),
+                            .fillMaxWidth(),
+                        titleChooseDirectory = titleChooseDirectory,
+                        titleChooseFile = titleChooseFile,
+                        iconFolder = iconFolder,
+                        configuration = configuration,
+                        fieldKey = fieldKey,
+                        currentValue = currentText,
+                        fieldHeight = fieldHeight,
+                        focusedBorderColor = focusedBorderColor,
+                        unfocusedBorderColor = unfocusedBorderColor,
+                        textStyle = textStyle,
+                        iconTint = iconTint,
+                        buttonShape = buttonShape,
+                        buttonColor = buttonColor,
+                        enabled = field?.enabled == true,
+                        onValueChange = { keyValue ->
+                            currentText = keyValue.value ?: ""
+                        },
+                        hasFocus = true
+                    )
+                },
+                confirmButton = {
+                    IndicatorButton(
+                        text = resources.labelOk.asString(),
                         buttonColor = buttonColor,
                         shape = buttonShape,
-                        leadingIcon = resources.iconAdd,
+                        leadingIcon = resources.iconSaveFile,
                         leadingIconTint = iconTint
                     ) {
-                        editingIndex = null
-                        currentText = ""
-                        showDialog = true
+                        val previousValue = editingIndex?.let { i -> items[i] }
+                        if (editingIndex != null) {
+                            currentText?.also { ct -> items[editingIndex!!] = ct }
+
+                        } else {
+                            currentText?.also { ct -> items.add(ct) }
+                        }
+                        onValueChange(
+                            KeyValue(
+                                descriptor = field?.descriptor?:error("No descriptor"),
+                                value = if (items.isNotEmpty()) items.joinToString(",") else null,
+                                previousValue = previousValue,
+                                newValue = currentText
+                            )
+                        )
+                        showDialog = false
+                    }
+                },
+                dismissButton = {
+                    IndicatorButton(
+                        text = resources.labelCancel.asString(),
+                        buttonColor = buttonColor,
+                        shape = buttonShape,
+                        leadingIcon = resources.iconCancel,
+                        leadingIconTint = iconTint
+                    ) {
+                        items.update(previousItems)
+                        onValueChange(KeyValue(field?.descriptor?:error("No descriptor"), items.joinToString(",")))
+                        showDialog = false
                     }
                 }
-            }
-        }
-
-        if (scrollable) {
-            PlatformVerticalScrollbar(
-                interactionSource = interactionSource,
-                modifier = Modifier
-                    .clip(containerShape)
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f))
-                    .width(space),
-                scrollState = scrollState
             )
         }
-    }
-
-    if (showDialog) {
-        previousItems.update(items)
-
-        AlertDialog(
-            modifier = Modifier
-                .border(1.dp, focusedBorderColor, containerShape),
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.6f),
-            shape = containerShape,
-            onDismissRequest = { showDialog = false },
-            title = { Text(if (editingIndex == null) resources.titleAdd.asString() else resources.titleEdit.asString()) },
-            text = {
-                TypeAwareEditableField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    titleChooseDirectory = titleChooseDirectory,
-                    titleChooseFile = titleChooseFile,
-                    iconFolder = iconFolder,
-                    configuration = configuration,
-                    fieldKey = fieldKey,
-                    currentValue = currentText,
-                    fieldHeight = fieldHeight,
-                    focusedBorderColor = focusedBorderColor,
-                    unfocusedBorderColor = unfocusedBorderColor,
-                    textStyle = textStyle,
-                    iconTint = iconTint,
-                    buttonShape = buttonShape,
-                    buttonColor = buttonColor,
-                    enabled = field?.enabled == true,
-                    onValueChange = { keyValue ->
-                        currentText = keyValue.value ?: ""
-                    },
-                    hasFocus = true
-                )
-            },
-            confirmButton = {
-                IndicatorButton(
-                    text = resources.labelOk.asString(),
-                    buttonColor = buttonColor,
-                    shape = buttonShape,
-                    leadingIcon = resources.iconSaveFile,
-                    leadingIconTint = iconTint
-                ) {
-                    val previousValue = editingIndex?.let { i -> items[i] }
-                    if (editingIndex != null) {
-                        currentText?.also { ct -> items[editingIndex!!] = ct }
-
-                    } else {
-                        currentText?.also { ct -> items.add(ct) }
-                    }
-                    onValueChange(
-                        KeyValue(
-                            descriptor = field?.descriptor?:error("No descriptor"),
-                            value = if (items.isNotEmpty()) items.joinToString(",") else null,
-                            previousValue = previousValue,
-                            newValue = currentText
-                        )
-                    )
-                    showDialog = false
-                }
-            },
-            dismissButton = {
-                IndicatorButton(
-                    text = resources.labelCancel.asString(),
-                    buttonColor = buttonColor,
-                    shape = buttonShape,
-                    leadingIcon = resources.iconCancel,
-                    leadingIconTint = iconTint
-                ) {
-                    items.update(previousItems)
-                    onValueChange(KeyValue(field?.descriptor?:error("No descriptor"), items.joinToString(",")))
-                    showDialog = false
-                }
-            }
-        )
     }
 }
 

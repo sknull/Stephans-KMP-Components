@@ -184,8 +184,3 @@ compose.desktop {
         }
     }
 }
-
-compose.resources {
-    publicResClass = true
-    packageOfResClass = "de.visualdigits.compose.resources"
-}

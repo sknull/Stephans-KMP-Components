@@ -13,21 +13,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.presentation.components.StudioClock
 import de.visualdigits.common.presentation.components.StudioClockColors
-import de.visualdigits.compose.resources.Res
-import de.visualdigits.compose.resources.digital_dream_skew_fat
 import org.jetbrains.compose.resources.Font
+import stephans_kmp_components.composeapp.generated.resources.Res
+import stephans_kmp_components.composeapp.generated.resources.digital_dream_skew_fat
 
 @Composable
 fun StudioClockDemo() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF000000)),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         StudioClock(
             modifier = Modifier
-                .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                 .padding(10.dp)
                 .fillMaxSize(),
             fontFamily = FontFamily(Font(Res.font.digital_dream_skew_fat)),

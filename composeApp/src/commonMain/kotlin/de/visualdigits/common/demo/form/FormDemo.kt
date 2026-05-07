@@ -1,0 +1,113 @@
+package de.visualdigits.common.demo.form
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Severity
+import de.visualdigits.common.demo.DemoState
+import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.presentation.components.form.ConfigurationEditForm
+import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import org.jetbrains.compose.resources.painterResource
+import stephans_kmp_components.composeapp.generated.resources.Res
+import stephans_kmp_components.composeapp.generated.resources.icon_add_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_cancel_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_check_small_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_delete_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_edit_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_file_save_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_folder_open_24px
+
+@Composable
+fun FormDemo(
+    state: DemoState,
+    setState: (DemoState) -> Unit
+) {
+
+    val scrollPosition= mutableMapOf<String, Pair<Int, Int?>>()
+
+    var configuration by remember { mutableStateOf(state.configuration) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        ConfigurationEditForm(
+            titleChooseDirectory = UiText.DynamicString("Choose Directory"),
+            titleChooseFile = UiText.DynamicString("Choose File"),
+            iconFolder = painterResource(Res.drawable.icon_folder_open_24px),
+            editableListResources = EditableListResources(
+                hintAdd = UiText.DynamicString("Add..."),
+                titleAdd = UiText.DynamicString("Add"),
+                iconAdd = painterResource(Res.drawable.icon_add_24px),
+                titleEdit = UiText.DynamicString("Edit"),
+                toolTipEdit = UiText.DynamicString("Edit"),
+                iconEdit = painterResource(Res.drawable.icon_edit_24px),
+                toolTipDelete = UiText.DynamicString("Delete"),
+                iconDelete = painterResource(Res.drawable.icon_delete_24px),
+                labelOk = UiText.DynamicString("Ok"),
+                labelCancel = UiText.DynamicString("Cancel"),
+                iconCancel = painterResource(Res.drawable.icon_cancel_24px),
+                iconSaveFile = painterResource(Res.drawable.icon_file_save_24px)
+            ),
+            tooltipOk = UiText.DynamicString(""),
+            iconOk = painterResource(Res.drawable.icon_check_small_24px),
+            tooltipCancel = UiText.DynamicString(""),
+            iconCancel = painterResource(Res.drawable.icon_cancel_24px),
+            scrollPosition = scrollPosition,
+            scrollbarId = "configuration_settings",
+            scrollbarModifier = Modifier
+                .clip(MaterialTheme.shapes.small)
+                .width(10.dp)
+                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)),
+            scrollbarStyle = PlatformScrollbarStyle(
+                minimalHeight = 16.dp,
+                thickness = 8.dp,
+                shape = RoundedCornerShape(4.dp),
+                hoverDurationMillis = 300,
+                unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                hoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            ),
+            fieldHeight = 50.dp,
+            onValueChange = { keyValue ->
+                configuration = configuration.copy(
+                    key = keyValue.descriptor.key as DC,
+                    value = keyValue.value
+                )
+            },
+            configuration = { configuration },
+            onCancelClick = {
+                setState(state.copy(
+                    uiMessage = UiText.DynamicString("Cancel clicked"),
+                    uiMessageSeverity = Severity.Info
+                ))
+            },
+            onOkClick = {
+                setState(state.copy(
+                    uiMessage = UiText.DynamicString("Ok clicked"),
+                    uiMessageSeverity = Severity.Info,
+                    configuration = configuration
+                ))
+            },
+            onCommonAction = { action ->
+
+            }
+        )
+    }
+}
