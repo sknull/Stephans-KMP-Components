@@ -104,8 +104,6 @@ android {
 
 publishing {
     publications {
-        // Kotlin Multiplatform registriert seine Veröffentlichungen automatisch.
-        // Wir müssen hier normalerweise nichts manuell hinzufügen.
     }
 
     repositories {
