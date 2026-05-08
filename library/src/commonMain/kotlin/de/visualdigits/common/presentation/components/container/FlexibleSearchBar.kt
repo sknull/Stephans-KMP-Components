@@ -40,6 +40,7 @@ fun FlexibleSearchBar(
     searchText: String,
     isLargeScreen: Boolean,
     onQueryChange: (String) -> Unit,
+    onExpandedChange: ((Boolean) -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -55,15 +56,19 @@ fun FlexibleSearchBar(
                     onQueryChange = { v -> onQueryChange(v) },
                     onSearch = { expanded = false },
                     expanded = expanded,
-                    onExpandedChange = { v -> expanded = v },
+                    onExpandedChange = { v ->
+                        expanded = v
+                        onExpandedChange?.let { oec -> oec(v) }
+                    },
                     enabled = true,
-                    placeholder = { "?" },
+                    placeholder = { Text(titleSearch.asString()) },
                     leadingIcon = {
                         Icon(
                             modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                                 .hoverable(interactionSource)
                                 .clickable {
                                     expanded = !expanded
+                                    onExpandedChange?.let { oec -> oec(expanded) }
                                 },
                             painter = iconSearch,
                             contentDescription = null,
@@ -89,7 +94,10 @@ fun FlexibleSearchBar(
                 )
             },
             expanded = expanded,
-            onExpandedChange = { v -> expanded = v },
+            onExpandedChange = { v ->
+                expanded = v
+                onExpandedChange?.let { oec -> oec(v) }
+            },
             shape = MaterialTheme.shapes.extraSmall,
             colors = SearchBarDefaults.colors(),
             tonalElevation = SearchBarDefaults.TonalElevation,
@@ -107,7 +115,10 @@ fun FlexibleSearchBar(
                     onQueryChange = { v -> onQueryChange(v) },
                     onSearch = { expanded = false },
                     expanded = expanded,
-                    onExpandedChange = { v -> expanded = v },
+                    onExpandedChange = { v ->
+                        expanded = v
+                        onExpandedChange?.let { oec -> oec(v) }
+                    },
                     enabled = true,
                     placeholder = { Text(titleSearch.asString()) },
                     leadingIcon = { Icon(
@@ -139,7 +150,10 @@ fun FlexibleSearchBar(
                 )
             },
             expanded = expanded,
-            onExpandedChange = { v -> expanded = v },
+            onExpandedChange = { v ->
+                expanded = v
+                onExpandedChange?.let { oec -> oec(v) }
+            },
             shape = MaterialTheme.shapes.extraSmall,
             colors = SearchBarDefaults.colors(),
             tonalElevation = SearchBarDefaults.TonalElevation,
