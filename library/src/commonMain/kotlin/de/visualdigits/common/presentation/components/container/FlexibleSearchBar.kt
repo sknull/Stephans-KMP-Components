@@ -15,6 +15,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,19 +33,23 @@ import de.visualdigits.common.domain.model.UiText
 @Composable
 fun FlexibleSearchBar(
     modifier: Modifier = Modifier,
-    titleSearch: UiText ,
+    titleSearch: UiText,
     iconClose: Painter,
     iconDelete: Painter,
     iconSearch: Painter,
     space: Dp = 8.dp,
     searchText: String,
     isLargeScreen: Boolean,
+    isExpanded: Boolean = false,
     onQueryChange: (String) -> Unit,
     onExpandedChange: ((Boolean) -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
+    var expanded by rememberSaveable { mutableStateOf(isExpanded) }
+    LaunchedEffect(isExpanded) {
+        expanded = isExpanded
+    }
 
     if (isLargeScreen) {
         DockedSearchBar(
