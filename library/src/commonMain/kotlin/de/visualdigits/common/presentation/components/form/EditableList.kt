@@ -71,7 +71,7 @@ fun EditableList(
     onValueChange: (KeyValue) -> Unit,
     deleteAllowed: (AbstractFieldDescriptor<*,*,*>?, String) -> Boolean = { _, _ -> true }
 ) {
-    val field = configuration.fields[fieldKey]
+    val field = configuration.lookupMap[fieldKey]
     val interactionSource = remember { MutableInteractionSource() }
     val values = (field?.value as? List<String>)?:listOf()
     val previousItems = remember { values.toMutableStateList() }
@@ -108,7 +108,7 @@ fun EditableList(
             ) {
                 Text(
                     modifier = Modifier,
-                    text = field?.descriptor?.label?.let { r -> r.asString() } ?: "",
+                    text = field?.descriptor?.label?.asString() ?: "",
                     style = MaterialTheme.typography.bodySmall,
                 )
 
@@ -239,8 +239,7 @@ fun EditableList(
                         enabled = field?.enabled == true,
                         onValueChange = { keyValue ->
                             currentText = keyValue.value ?: ""
-                        },
-                        hasFocus = true
+                        }
                     )
                 },
                 confirmButton = {

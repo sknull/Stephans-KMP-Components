@@ -38,6 +38,7 @@ import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.modifier.indicator
 import de.visualdigits.common.presentation.components.modifier.ledRing
 import de.visualdigits.common.presentation.components.platformFocus
+import de.visualdigits.common.presentation.components.util.conditional
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -70,7 +71,7 @@ fun IndicatorButton(
     trailingIconTint: Color = MaterialTheme.colorScheme.onSurface,
     trailingIconTintDisabled: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
     enabled: Boolean = true,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -84,12 +85,14 @@ fun IndicatorButton(
             .hoverable(interactionSource = interactionSource)
             .pointerHoverIcon(PointerIcon.Hand)
             .platformFocus(onClick)
-            .clickable(
-                enabled = true,
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick
-            )
+            .conditional(onClick != null) {
+                clickable(
+                    enabled = true,
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = onClick!!
+                )
+            }
     }
 
     if (indicatorPosition == Alignment.Center) {

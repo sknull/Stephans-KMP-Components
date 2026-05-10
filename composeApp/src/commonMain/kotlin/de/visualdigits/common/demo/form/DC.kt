@@ -8,5 +8,6 @@ enum class DC : FieldKey<DC> {
     language,
     switch,
     list,
-    file
+    file,
+    color
 }

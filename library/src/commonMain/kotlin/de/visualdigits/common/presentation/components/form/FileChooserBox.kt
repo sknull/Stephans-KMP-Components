@@ -3,12 +3,13 @@ package de.visualdigits.common.presentation.components.form
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -24,9 +25,7 @@ import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import java.io.File
@@ -39,7 +38,6 @@ fun FileChooserBox(
     toolTipBackgroundColor: Color,
     toolTipShape: Shape,
     toolTip: String?,
-    focusRequester: FocusRequester,
     fieldHeight: Dp,
     textStyle: TextStyle,
     enabled: Boolean,
@@ -50,7 +48,6 @@ fun FileChooserBox(
     iconTint: Color,
     buttonShape: Shape,
     buttonColor: Color,
-    scope: CoroutineScope,
     fileMode: FileMode,
     titleDirectories: String,
     titleFiles: String,
@@ -61,6 +58,8 @@ fun FileChooserBox(
     onValueChange: (String) -> Unit,
     onOk: (File) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+
     val halfHeight = minimizedLabelHalfHeight(textStyle)
     PlatformToolTip(
         text = toolTip,
@@ -70,7 +69,6 @@ fun FileChooserBox(
     ) {
         OutlinedTextField(
             modifier = modifier
-                .focusRequester(focusRequester)
                 .fillMaxWidth()
                 .height(fieldHeight + halfHeight),
             textStyle = textStyle,

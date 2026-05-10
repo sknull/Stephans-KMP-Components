@@ -1,6 +1,7 @@
 package de.visualdigits.common.presentation.components.modifier
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
@@ -14,21 +15,26 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.ColorPickerController
+import de.visualdigits.common.domain.util.copyFactor
+import de.visualdigits.common.domain.util.toHsvColor
 
 @Composable
 fun Modifier.colorSwatch(
     size: Dp,
     selectedColor: Color = Color.Transparent,
     controller: ColorPickerController? = null,
+    flatLook: Boolean = false,
     hoverColor: Color = Color.White.copy(alpha = 0.2f),
     borderSize: Dp = 1.dp,
     borderAlpha: Float = 0.4f,
     shape: Shape,
     isHovered: Boolean = false
 ): Modifier {
+    val color = controller?.selectedColor?.value ?: selectedColor
+
     return drawWithCache {
-        val color = controller?.selectedColor?.value ?: selectedColor
         val sizePx = size.toPx()
+
         val outerBevelOutline = shape.createOutline(
             size = Size(
                 width = sizePx - 2.0f,
@@ -55,25 +61,45 @@ fun Modifier.colorSwatch(
 
         onDrawWithContent {
             clipPath(outerClipPath) {
-
                 // background
-                drawRect(color = color)
+                if (!flatLook) {
+                    val hsvColor = color.toHsvColor()
+                    val valueFactor = if (hsvColor.value < 0.5f) 1.5f else 0.5f
+                    drawRect(
+                        brush = Brush.verticalGradient(
+                            colorStops = arrayOf(
+                                0.0f to color,
+                                1.0f to color.copyFactor(valueFactor = valueFactor),
+                            )
+                        )
+                    )
+                } else {
+                    drawRect(
+                        color = color
+                    )
+                }
+
+                this@onDrawWithContent.drawContent()
 
                 // gloss
-                clipPath(outerClipPath) {
-                    withTransform({
-                        scale(scaleX = 15.0f, scaleY = 1.0f)
-                        rotate(-10.0f)
-                        translate(top = sizePx / -2.0f)
-                    }) {
-                        drawCircle(
-                            brush = glossBrush
-                        )
+                if (!flatLook) {
+                    clipPath(outerClipPath) {
+                        withTransform({
+                            scale(scaleX = 15.0f, scaleY = 1.0f)
+                            rotate(-10.0f)
+                            translate(top = sizePx / -2.0f)
+                        }) {
+                            drawCircle(
+                                brush = glossBrush
+                            )
+                        }
                     }
                 }
 
                 // outer bevel
-                this@onDrawWithContent.draw(offsetX = 1.0f, outline = outerBevelOutline, brush = outerBevelBrush, width = borderSize.toPx())
+                if (!flatLook) {
+                    this@onDrawWithContent.draw(offsetX = 1.0f, outline = outerBevelOutline, brush = outerBevelBrush, width = borderSize.toPx())
+                }
 
                 if (isHovered) {
                     drawRect(

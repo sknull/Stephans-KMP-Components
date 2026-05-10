@@ -4,17 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,24 +19,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.Field
-import de.visualdigits.common.domain.model.configuration.FieldKey
-import de.visualdigits.common.presentation.components.PlatformToolTip
-import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -52,7 +45,7 @@ fun ComboBox(
     toolTipShape: Shape,
     textStyle: TextStyle,
     configuration: AbstractConfiguration<*,*>,
-    fieldKey: FieldKey<*>,
+    field: Field<*,*,*>,
     fieldHeight: Dp = Dp.Unspecified,
     enabled: Boolean = true,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
@@ -61,14 +54,13 @@ fun ComboBox(
     options: List<Triple<String, StringResource?, DrawableResource?>>? = null,
     onValueChange: (KeyValue) -> Unit,
 ) {
-    val field = configuration.fields[fieldKey]?:error("No field with key '$fieldKey'")
     var expanded by remember { mutableStateOf(false) }
-    val asString = field.currentOption(configuration)?.second?.asString()?:field.currentOption(configuration)?.first?:""
-    val textFieldState = rememberTextFieldState(asString)
-    LaunchedEffect(asString) {
+    val currentOption = field.currentOption(configuration)?.second?.asString()?:field.currentOption(configuration)?.first?:""
+    val textFieldState = rememberTextFieldState(currentOption)
+    LaunchedEffect(currentOption) {
         textFieldState.edit {
             // Ersetzt den aktuellen Text durch den neuen Wert aus dem Model
-            replace(0, length, asString)
+            replace(0, length, currentOption)
         }
     }
     if (enabled) {
@@ -155,71 +147,6 @@ fun ComboBox(
             expanded = expanded,
             focusedBorderColor = focusedBorderColor,
             unfocusedBorderColor = unfocusedBorderColor
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun InnerTextField(
-    modifier: Modifier,
-    space: Dp,
-    toolTipBackgroundColor: Color,
-    toolTipShape: Shape,
-    fieldHeight: Dp,
-    textStyle: TextStyle,
-    field: Field<*,*,*>,
-    enabled: Boolean = true,
-    buttonShape: Shape,
-    textFieldState: TextFieldState,
-    expanded: Boolean,
-    focusedBorderColor: Color,
-    unfocusedBorderColor: Color
-) {
-    val halfHeight = minimizedLabelHalfHeight(textStyle)
-
-    val toolTip = field.descriptor.toolTip?.let { t -> t.asString() }
-    PlatformToolTip(
-        text = toolTip,
-        space = space,
-        backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape
-    ) {
-        OutlinedTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(fieldHeight + halfHeight),
-            textStyle = textStyle.copy(fontSize = textStyle.fontSize * 0.8f),
-            label = {
-                Text(
-                    text = field.descriptor.label.asString(),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            enabled = enabled,
-            shape = buttonShape,
-            readOnly = true,
-            state = textFieldState,
-            trailingIcon = if (enabled) {
-                {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expanded,
-                        modifier = Modifier
-                            .pointerHoverIcon(PointerIcon.Hand)
-                    )
-                }
-            } else null,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = unfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor
-            )
         )
     }
 }

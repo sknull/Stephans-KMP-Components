@@ -1,6 +1,5 @@
 package de.visualdigits.common.demo.form
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.demo.DemoState
@@ -49,6 +47,10 @@ fun FormDemo(
         contentAlignment = Alignment.Center
     ) {
         ConfigurationEditForm(
+            scrollbarModifier = Modifier
+                .clip(MaterialTheme.shapes.small)
+                .width(10.dp)
+                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)),
             titleChooseDirectory = UiText.DynamicString("Choose Directory"),
             titleChooseFile = UiText.DynamicString("Choose File"),
             iconFolder = painterResource(Res.drawable.icon_folder_open_24px),
@@ -72,10 +74,6 @@ fun FormDemo(
             iconCancel = painterResource(Res.drawable.icon_cancel_24px),
             scrollPosition = scrollPosition,
             scrollbarId = "configuration_settings",
-            scrollbarModifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .width(10.dp)
-                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)),
             scrollbarStyle = PlatformScrollbarStyle(
                 minimalHeight = 16.dp,
                 thickness = 8.dp,

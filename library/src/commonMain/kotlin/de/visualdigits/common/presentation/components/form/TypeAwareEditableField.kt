@@ -2,12 +2,7 @@ package de.visualdigits.common.presentation.components.form
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -20,6 +15,7 @@ import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.color
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
+import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
@@ -38,7 +34,7 @@ fun TypeAwareEditableField(
     toolTipShape: Shape = MaterialTheme.shapes.extraSmall,
     configuration: AbstractConfiguration<*,*>,
     fieldKey: FieldKey<*>,
-    currentValue: String? = null,
+    currentValue: Any? = null,
     fieldHeight: Dp = Dp.Unspecified,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -48,14 +44,11 @@ fun TypeAwareEditableField(
     buttonColor: Color = MaterialTheme.colorScheme.surface,
     enabled: Boolean = true,
     onValueChange: (KeyValue) -> Unit,
-    hasFocus: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val field = configuration.fields[fieldKey]?:error("No field with key '$fieldKey'")
-    val value = currentValue?:field.stringValue()
-    val scope = rememberCoroutineScope()
-    val focusRequester = remember { FocusRequester() }
+    val field = configuration.lookupMap[fieldKey]?:error("No field with key '$fieldKey'")
+    val value = currentValue?:configuration.getUnsafe(fieldKey)
     val valid = field.valid(field.value)
     val finalUnfocusedBorderColor = if (!valid) {
         Severity.Error.color()
@@ -83,14 +76,12 @@ fun TypeAwareEditableField(
                 }
             } else {
                 ComboBox(
-                    modifier = modifier
-                        .focusRequester(focusRequester),
                     space = space,
                     toolTipBackgroundColor = toolTipBackgroundColor,
                     toolTipShape = toolTipShape,
                     textStyle = textStyle,
                     configuration = configuration,
-                    fieldKey = fieldKey,
+                    field = field,
                     fieldHeight = fieldHeight,
                     enabled = enabled,
                     focusedBorderColor = focusedBorderColor,
@@ -109,18 +100,16 @@ fun TypeAwareEditableField(
                 toolTipBackgroundColor = toolTipBackgroundColor,
                 toolTipShape = toolTipShape,
                 toolTip = field.descriptor.toolTip?.let { t -> t.asString() },
-                focusRequester = focusRequester,
                 fieldHeight = fieldHeight,
                 textStyle = textStyle,
                 enabled = enabled,
-                value = value,
+                value = value.toString(),
                 label = field.descriptor.label.asString(),
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
                 iconTint = iconTint,
                 buttonShape = buttonShape,
                 buttonColor = buttonColor,
-                scope = scope,
                 fileMode = field.descriptor.fileMode,
                 titleDirectories = titleChooseDirectory.asString(),
                 titleFiles = titleChooseFile.asString(),
@@ -141,31 +130,41 @@ fun TypeAwareEditableField(
             }
         }
 
+        field.descriptor is ColorPickerFieldDescriptor -> {
+            ColorPickerBox(
+                modifier = modifier,
+                space = space,
+                label = field.descriptor.label.asString(),
+                currentValue = value as? Color,
+                enabled = enabled,
+                fieldHeight = fieldHeight,
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor,
+                buttonShape = buttonShape,
+                textStyle = textStyle,
+                field = field,
+                onValueChange = onValueChange,
+            )
+        }
+
         else -> {
             TextBox(
                 modifier = modifier,
                 space = space,
                 toolTipBackgroundColor = toolTipBackgroundColor,
                 toolTipShape = toolTipShape,
-                toolTip = field.descriptor.toolTip?.let { t -> t.asString() },
-                focusRequester = focusRequester,
+                toolTip = field.descriptor.toolTip?.asString(),
                 fieldHeight = fieldHeight,
                 textStyle = textStyle,
                 enabled = enabled,
                 label = field.descriptor.label.asString(),
-                value = value,
+                value = value.toString(),
                 buttonShape = buttonShape,
                 finalUnfocusedBorderColor = finalUnfocusedBorderColor,
                 focusedBorderColor = focusedBorderColor
             ) { value: String ->
                 onValueChange(KeyValue(field.descriptor, value))
             }
-        }
-    }
-
-    if (hasFocus) {
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
         }
     }
 }
