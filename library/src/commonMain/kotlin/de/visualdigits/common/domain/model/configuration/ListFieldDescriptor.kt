@@ -20,17 +20,22 @@ open class ListFieldDescriptor<F : Any, K : FieldKey<K>>(
     visible: Boolean = true,
     readOnly: Boolean = false,
 
-    options: (AbstractConfiguration<*, *>) -> List<Triple<String, UiText?, DrawableResource?>> = { listOf() },
+    default: F? = null,
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    options: (AbstractConfiguration<*, K>) -> List<Triple<F, UiText?, DrawableResource?>> = { listOf() },
 
     keyFactory: KeyFactory<MutableList<F>>
-): AbstractFieldDescriptor<MutableList<F>, F, K>(
+): AbstractFieldDescriptor<MutableList<F>, F, K, F>(
     fieldClass = MutableList::class as KClass<MutableList<F>>,
     itemClass = fieldClass,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
+    default = default,
     readOnly = readOnly,
+    valid = valid,
     options = options,
     keyFactory = keyFactory
 )

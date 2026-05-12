@@ -14,76 +14,71 @@ import de.visualdigits.common.domain.model.Enumerable
 import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.color
-import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ReferenceListFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import java.io.File
 
 @Composable
-fun TypeAwareEditableField(
+fun <K : FieldKey<K>> TypeAwareEditableField(
     modifier: Modifier = Modifier,
+    fieldState: FieldState<K>,
+    currentValue: Any? = null,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
     iconFolder: Painter,
     space: Dp = 8.dp,
     toolTipBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
     toolTipShape: Shape = MaterialTheme.shapes.extraSmall,
-    configuration: AbstractConfiguration<*,*>,
-    fieldKey: FieldKey<*>,
-    currentValue: Any? = null,
     fieldHeight: Dp = Dp.Unspecified,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     textStyle: TextStyle,
+    visibilityIcon: Painter? = null,
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     buttonColor: Color = MaterialTheme.colorScheme.surface,
-    enabled: Boolean = true,
     onValueChange: (KeyValue) -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val field = configuration.lookupMap[fieldKey]?:error("No field with key '$fieldKey'")
-    val value = currentValue?:configuration.getUnsafe(fieldKey)
-    val valid = field.valid(field.value)
-    val finalUnfocusedBorderColor = if (!valid) {
+    val finalUnfocusedBorderColor = if (!fieldState.valid) {
         Severity.Error.color()
-    } else if (value == null) {
+    } else if (fieldState.currentValue == null) {
         Severity.Warn.color()
     } else {
         unfocusedBorderColor
     }
 
     when {
-        field.descriptor is EnumFieldDescriptor
-                || field.descriptor is ReferenceListFieldDescriptor
-                || field.descriptor.itemClass?.java?.let { fc -> Enumerable::class.java.isAssignableFrom(fc) } == true -> {
-            if (field.descriptor.fieldClass == BooleanEnum::class) {
+        fieldState.fieldDescriptor is EnumFieldDescriptor
+                || fieldState.fieldDescriptor is ReferenceListFieldDescriptor
+                || fieldState.fieldDescriptor.itemClass?.java?.let { fc -> Enumerable::class.java.isAssignableFrom(fc) } == true -> {
+            if (fieldState.fieldDescriptor.fieldClass == BooleanEnum::class) {
                 SwitchBox(
-                    label = field.descriptor.label.asString(),
-                    value = field.value,
+                    fieldState = fieldState,
+                    label = fieldState.fieldDescriptor.label.asString(),
                     fieldHeight = fieldHeight,
                     focusedBorderColor = focusedBorderColor,
                     unfocusedBorderColor = finalUnfocusedBorderColor,
                     buttonShape = buttonShape,
                     textStyle = textStyle
                 ) { v ->
-                    onValueChange(KeyValue(field.descriptor, v.toString()))
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, v))
                 }
             } else {
                 ComboBox(
+                    fieldState = fieldState,
                     space = space,
                     toolTipBackgroundColor = toolTipBackgroundColor,
                     toolTipShape = toolTipShape,
                     textStyle = textStyle,
-                    configuration = configuration,
-                    field = field,
                     fieldHeight = fieldHeight,
-                    enabled = enabled,
                     focusedBorderColor = focusedBorderColor,
                     unfocusedBorderColor = finalUnfocusedBorderColor,
                     buttonShape = buttonShape,
@@ -92,78 +87,88 @@ fun TypeAwareEditableField(
             }
         }
 
-        field.descriptor is FileFieldDescriptor -> {
+        fieldState.fieldDescriptor is FileFieldDescriptor -> {
             FileChooserBox(
                 modifier = modifier,
+                fieldState = fieldState,
                 iconFolder = iconFolder,
                 space = space,
                 toolTipBackgroundColor = toolTipBackgroundColor,
                 toolTipShape = toolTipShape,
-                toolTip = field.descriptor.toolTip?.let { t -> t.asString() },
                 fieldHeight = fieldHeight,
                 textStyle = textStyle,
-                enabled = enabled,
-                value = value.toString(),
-                label = field.descriptor.label.asString(),
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
                 iconTint = iconTint,
                 buttonShape = buttonShape,
                 buttonColor = buttonColor,
-                fileMode = field.descriptor.fileMode,
                 titleDirectories = titleChooseDirectory.asString(),
                 titleFiles = titleChooseFile.asString(),
-                options = field.descriptor.options(configuration),
-                startDirectory = (field.value as? File) ?: field.descriptor.startDirectory(configuration),
+                startDirectory = (fieldState.currentValue as? File) ?: fieldState.fieldDescriptor.startDirectory(),
                 finalUnfocusedBorderColor = finalUnfocusedBorderColor,
                 focusedBorderColor = focusedBorderColor,
                 onValueChange = { value: String ->
-                    onValueChange(KeyValue(field.descriptor, value))
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 }
             ) { file: File ->
                 onValueChange(
                     KeyValue(
-                        field.descriptor,
-                        file.canonicalPath
+                        fieldState.fieldDescriptor,
+                        file
                     )
                 )
             }
         }
 
-        field.descriptor is ColorPickerFieldDescriptor -> {
+        fieldState.fieldDescriptor is ColorPickerFieldDescriptor -> {
             ColorPickerBox(
                 modifier = modifier,
+                fieldState = fieldState,
                 space = space,
-                label = field.descriptor.label.asString(),
-                currentValue = value as? Color,
-                enabled = enabled,
+                label = fieldState.fieldDescriptor.label.asString(),
                 fieldHeight = fieldHeight,
                 focusedBorderColor = focusedBorderColor,
                 unfocusedBorderColor = unfocusedBorderColor,
                 buttonShape = buttonShape,
                 textStyle = textStyle,
-                field = field,
                 onValueChange = onValueChange,
             )
+        }
+
+        fieldState.fieldDescriptor is PasswordFieldDescriptor -> {
+            PasswordBox(
+                modifier = modifier,
+                fieldState = fieldState,
+                currentValue = currentValue,
+                space = space,
+                toolTipBackgroundColor = toolTipBackgroundColor,
+                toolTipShape = toolTipShape,
+                fieldHeight = fieldHeight,
+                textStyle = textStyle,
+                visibilityIcon = visibilityIcon,
+                buttonShape = buttonShape,
+                finalUnfocusedBorderColor = finalUnfocusedBorderColor,
+                focusedBorderColor = focusedBorderColor,
+            ) { value ->
+                onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+            }
         }
 
         else -> {
             TextBox(
                 modifier = modifier,
+                fieldState = fieldState,
+                currentValue = currentValue,
                 space = space,
                 toolTipBackgroundColor = toolTipBackgroundColor,
                 toolTipShape = toolTipShape,
-                toolTip = field.descriptor.toolTip?.asString(),
                 fieldHeight = fieldHeight,
                 textStyle = textStyle,
-                enabled = enabled,
-                label = field.descriptor.label.asString(),
-                value = value.toString(),
                 buttonShape = buttonShape,
                 finalUnfocusedBorderColor = finalUnfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor
-            ) { value: String ->
-                onValueChange(KeyValue(field.descriptor, value))
+                focusedBorderColor = focusedBorderColor,
+            ) { value ->
+                onValueChange(KeyValue(fieldState.fieldDescriptor, value))
             }
         }
     }

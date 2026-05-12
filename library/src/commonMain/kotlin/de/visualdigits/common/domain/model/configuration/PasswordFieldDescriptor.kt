@@ -1,13 +1,13 @@
 package de.visualdigits.common.domain.model.configuration
 
 import de.visualdigits.common.domain.model.UiText
-import de.visualdigits.common.domain.model.configuration.keyfactory.IntKeyFactory
+import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFactory
 import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Represents a field which is rendered as a text field in the UI.
  */
-class IntFieldDescriptor<K : FieldKey<K>>(
+class PasswordFieldDescriptor<K : FieldKey<K>>(
     key: K,
 
     label: UiText,
@@ -16,17 +16,17 @@ class IntFieldDescriptor<K : FieldKey<K>>(
     visible: Boolean = true,
     readOnly: Boolean = false,
 
-    default: Int? = null,
+    default: String? = null,
 
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
-): AbstractFieldDescriptor<Int, Int, K, Int>(
-    fieldClass = Int::class,
+): AbstractFieldDescriptor<String, String, K, String>(
+    fieldClass = String::class,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
-    default = default,
     readOnly = readOnly,
+    default = default,
     valid = valid,
-    keyFactory = IntKeyFactory,
+    keyFactory = StringKeyFactory
 )

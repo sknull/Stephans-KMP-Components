@@ -1,9 +1,7 @@
 package de.visualdigits.common.presentation.components.form
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -20,42 +18,39 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.KeyValue
-import de.visualdigits.common.domain.model.configuration.Field
+import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.util.toHsvColor
-import de.visualdigits.common.domain.util.toWebColor
 import de.visualdigits.common.presentation.components.ColorPicker
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun ColorPickerBox(
+fun <K : FieldKey<K>> ColorPickerBox(
     modifier: Modifier = Modifier,
+    fieldState: FieldState<K>,
     space: Dp = 8.dp,
     label: String,
-    currentValue: Color?,
-    enabled: Boolean = true,
     fieldHeight: Dp,
     focusedBorderColor: Color,
     unfocusedBorderColor: Color,
     buttonShape: Shape,
     textStyle: TextStyle,
-    field: Field<*,*,*>,
     alignForForm: Boolean = true,
     onValueChange: (KeyValue) -> Unit,
 ) {
     val textFieldState = rememberTextFieldState(" ")
     val halfHeight = minimizedLabelHalfHeight(textStyle)
 
-    var currentColor by remember { mutableStateOf(currentValue) }
-    LaunchedEffect(currentValue) {
-        currentColor = currentValue
+    var currentColor by remember { mutableStateOf(fieldState.currentValue as Color) }
+    LaunchedEffect(fieldState.currentValue) {
+        currentColor = fieldState.currentValue as Color
     }
 
     Column(
@@ -75,7 +70,7 @@ fun ColorPickerBox(
                     overflow = TextOverflow.Ellipsis
                 )
             },
-            enabled = enabled,
+            enabled = fieldState.fieldDescriptor.enabled,
             shape = buttonShape,
             readOnly = true,
             state = textFieldState,
@@ -91,7 +86,7 @@ fun ColorPickerBox(
                 ) { colorEnvelope ->
                     if (colorEnvelope.fromUser) {
                         currentColor = colorEnvelope.color
-                        onValueChange(KeyValue(field.descriptor, colorEnvelope.color.toWebColor()))
+                        onValueChange(KeyValue(fieldState.fieldDescriptor, colorEnvelope.color))
                     }
                 }
             },

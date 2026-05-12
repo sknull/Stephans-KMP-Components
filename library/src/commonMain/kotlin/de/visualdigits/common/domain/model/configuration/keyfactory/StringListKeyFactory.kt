@@ -1,8 +1,14 @@
 package de.visualdigits.common.domain.model.configuration.keyfactory
 
+import de.visualdigits.common.domain.model.UiText
+import org.jetbrains.compose.resources.DrawableResource
+import java.io.File
+
 class StringListKeyFactory {
 
     companion object : KeyFactory<MutableList<String>> {
+
+        override val options: List<Triple<MutableList<String>, UiText?, DrawableResource?>> = listOf()
 
         override fun fromString(value: String?): MutableList<String> {
             return if (value?.isNotEmpty() == true) {
@@ -24,8 +30,11 @@ class StringListKeyFactory {
         }
 
         override fun stringValue(value: Any?): String? {
-            val s = (value as? List<String>)?.joinToString(",")
-            return s
+            return when (value) {
+                is String -> value
+                is List<*> -> value.joinToString(",") { v -> v.toString() }
+                else -> null
+            }
         }
     }
 }

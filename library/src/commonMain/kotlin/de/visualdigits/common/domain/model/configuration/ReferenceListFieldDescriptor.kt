@@ -21,16 +21,21 @@ class ReferenceListFieldDescriptor<V : Any, K : FieldKey<K>>(
     visible: Boolean = true,
     readOnly: Boolean = false,
 
-    options: (AbstractConfiguration<*, *>) -> List<Triple<String, UiText?, DrawableResource?>> = { listOf() },
+    default: V? = null,
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    options: (AbstractConfiguration<*, K>) -> List<Triple<V, UiText?, DrawableResource?>> = { listOf() },
 
     keyFactory: KeyFactory<V>
-): AbstractFieldDescriptor<V, V, K>(
+): AbstractFieldDescriptor<V, V, K, V>(
     fieldClass = fieldClass,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
     readOnly = readOnly,
-    options = options as (AbstractConfiguration<*, *>) -> List<Triple<String, UiText?, DrawableResource?>>,
-    keyFactory = keyFactory
+    default = default,
+    valid = valid,
+    options = options,
+    keyFactory = keyFactory,
 )

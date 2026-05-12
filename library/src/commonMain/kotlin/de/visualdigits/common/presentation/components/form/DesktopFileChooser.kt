@@ -2,17 +2,19 @@ package de.visualdigits.common.presentation.components.form
 
 import de.visualdigits.common.domain.model.FileMode
 import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import org.jetbrains.compose.resources.DrawableResource
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
 
-fun desktopFileChooser(
+fun <K : FieldKey<K>> desktopFileChooser(
+    fieldState: FieldState<K>,
     title: String,
     fileMode: FileMode,
     startDirectory: File,
-    options: List<Triple<String, UiText?, DrawableResource?>>,
     onOk: (File) -> Unit
 ) {
     val mode = fileMode.jFileChooserMode
@@ -20,9 +22,9 @@ fun desktopFileChooser(
         if (fileMode == FileMode.FILES_ONLY) {
             val filter =
                 FileNameExtensionFilter(
-                    options.map { o -> o.first }
+                    fieldState.options.map { o -> o.first }
                         .joinToString(", ") { o -> "*.$o" },
-                    *options.map { o -> o.first }.toTypedArray()
+                    *fieldState.options.map { o -> o.first.toString() }.toTypedArray()
                 )
             this.fileFilter = filter
             this.isAcceptAllFileFilterUsed = false

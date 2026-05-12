@@ -8,11 +8,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -21,37 +18,33 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.FileMode
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
+import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
 import java.io.File
 
 @Composable
-fun FileChooserBox(
+fun <K : FieldKey<K>> FileChooserBox(
     modifier: Modifier,
+    fieldState: FieldState<K>,
     iconFolder: Painter,
     space: Dp,
     toolTipBackgroundColor: Color,
     toolTipShape: Shape,
-    toolTip: String?,
     fieldHeight: Dp,
     textStyle: TextStyle,
-    enabled: Boolean,
-    value: String?,
-    label: String,
     leadingIcon: @Composable (() -> Unit)?,
     trailingIcon: @Composable (() -> Unit)?,
     iconTint: Color,
     buttonShape: Shape,
     buttonColor: Color,
-    fileMode: FileMode,
     titleDirectories: String,
     titleFiles: String,
-    options: List<Triple<String, UiText?, DrawableResource?>>,
     startDirectory: File,
     finalUnfocusedBorderColor: Color,
     focusedBorderColor: Color,
@@ -62,7 +55,7 @@ fun FileChooserBox(
 
     val halfHeight = minimizedLabelHalfHeight(textStyle)
     PlatformToolTip(
-        text = toolTip,
+        text = fieldState.fieldDescriptor.toolTip?.asString(),
         space = space,
         backgroundColor = toolTipBackgroundColor,
         shape = toolTipShape
@@ -72,11 +65,11 @@ fun FileChooserBox(
                 .fillMaxWidth()
                 .height(fieldHeight + halfHeight),
             textStyle = textStyle,
-            enabled = enabled,
-            value = value ?: "",
+            enabled = fieldState.fieldDescriptor.enabled,
+            value = fieldState.currentValue?.toString() ?: "",
             label = {
                 Text(
-                    text = label,
+                    text = fieldState.fieldDescriptor.label.asString(),
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -86,7 +79,7 @@ fun FileChooserBox(
             trailingIcon = {
                 trailingIcon?.let { ti -> ti() }
 
-                if (enabled) {
+                if (fieldState.fieldDescriptor.enabled) {
                     IndicatorButton(
                         modifier = Modifier
                             .padding(start = 5.dp),
@@ -99,12 +92,12 @@ fun FileChooserBox(
                         onClick = {
                             scope.launch(Dispatchers.IO) {
                                 desktopFileChooser(
-                                    title = when (fileMode) {
+                                    fieldState = fieldState,
+                                    title = when ((fieldState.fieldDescriptor as FileFieldDescriptor).fileMode) {
                                         FileMode.DIRECTORIES_ONLY -> titleDirectories
                                         FileMode.FILES_ONLY -> titleFiles
                                     },
-                                    fileMode = fileMode,
-                                    options = options,
+                                    fileMode = fieldState.fieldDescriptor.fileMode,
                                     startDirectory = startDirectory,
                                     onOk = onOk
                                 )

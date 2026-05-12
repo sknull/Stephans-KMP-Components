@@ -28,13 +28,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun SwitchBox(
+fun <K : FieldKey<K>> SwitchBox(
     modifier: Modifier = Modifier,
+    fieldState: FieldState<K>,
     switchColors: SwitchColors = SwitchDefaults.colors().copy(
         checkedTrackColor = MaterialTheme.colorScheme.onSurface,
         checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -45,18 +48,16 @@ fun SwitchBox(
     ),
     space: Dp = 8.dp,
     label: String,
-    value: Any?,
-    enabled: Boolean = true,
     fieldHeight: Dp,
     focusedBorderColor: Color,
     unfocusedBorderColor: Color,
     buttonShape: Shape,
     textStyle: TextStyle,
     alignForForm: Boolean = true,
-    onValueChange: (Boolean) -> Unit
+    onValueChange: (BooleanEnum) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val booleanValue = when (val v = value) {
+    val booleanValue = when (val v = fieldState.currentValue) {
         is BooleanEnum -> v.booleanValue
         is Boolean -> v
         is String -> v.toBoolean()
@@ -83,7 +84,7 @@ fun SwitchBox(
                     overflow = TextOverflow.Ellipsis
                 )
             },
-            enabled = enabled,
+            enabled = fieldState.fieldDescriptor.enabled,
             shape = buttonShape,
             readOnly = true,
             state = textFieldState,
@@ -94,7 +95,7 @@ fun SwitchBox(
                         checked = checked,
                         onCheckedChange = { v ->
                             checked = v
-                            onValueChange(v)
+                            onValueChange(BooleanEnum.fromValue(v)!!)
                         },
                         interactionSource = interactionSource,
                         colors = switchColors

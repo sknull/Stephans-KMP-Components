@@ -14,12 +14,14 @@ enum class BooleanEnum(
     FALSE(UiText.DynamicString("false"),  null, false),
     ;
 
-    override fun toString(): String = name.lowercase()
+    override fun toString(): String = name
 
     companion object : KeyFactory<BooleanEnum> {
 
+        override val options: List<Triple<BooleanEnum, UiText?, DrawableResource?>> = entries.map { e -> Triple(e, e.uiText, e.drawableResourceId) }
+
         override fun fromString(value: String?): BooleanEnum? {
-            return entries.find { e -> e.name == value?.uppercase() }
+            return entries.find { e -> e.name == value }
         }
 
         override fun fromValue(value: Any?): BooleanEnum? {
@@ -32,6 +34,14 @@ enum class BooleanEnum(
             return v
         }
 
-        override fun stringValue(value: Any?): String? = (value as? BooleanEnum)?.name?:value?.toString()?.lowercase()
+        override fun stringValue(value: Any?): String? {
+            val v = when (value) {
+                is String -> value
+                is Boolean -> entries.find { e -> e.booleanValue == value }?.name
+                is BooleanEnum -> value.name
+                else -> null
+            }
+            return v
+        }
     }
 }

@@ -13,47 +13,43 @@ import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.color
-import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.ListFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.SpacerFieldDescriptor
 import de.visualdigits.common.domain.model.form.EditableListResources
-import kotlin.collections.get
 
 @Composable
-fun EditableField(
-    configuration: AbstractConfiguration<*,*>,
+fun <K : FieldKey<K>>  EditableField(
+    fieldState: FieldState<K>,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
     iconFolder: Painter,
     editableListResources: EditableListResources,
-    fieldKey: FieldKey<*>,
     fieldHeight: Dp,
     space: Dp,
     unfocusedBorderColor: Color,
     focusedBorderColor: Color,
+    visibilityIcon: Painter? = null,
     iconTint: Color,
     buttonColor: Color,
     buttonShape: Shape,
     containerShape: Shape,
     textStyle: TextStyle,
     onValueChange: (KeyValue) -> Unit,
-    deleteAllowed: (AbstractFieldDescriptor<*,*,*>?, String) -> Boolean
+    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*>?, String) -> Boolean
 ) {
-    val field = configuration.lookupMap[fieldKey]
-    val isEditable = !(field?.descriptor?.readOnly?:false)
-    if (field?.valid(field.value) == true) Color.Unspecified else Severity.Error.color()
+    if (fieldState.valid) Color.Unspecified else Severity.Error.color()
 
-    when(field?.descriptor) {
+    when(fieldState.fieldDescriptor) {
         is ListFieldDescriptor -> {
             EditableList(
+                fieldState = fieldState,
                 titleChooseDirectory = titleChooseDirectory,
                 titleChooseFile = titleChooseFile,
                 iconFolder = iconFolder,
                 resources = editableListResources,
-                configuration = configuration,
-                fieldKey = fieldKey,
                 fieldHeight = fieldHeight,
                 space = space,
                 focusedBorderColor = focusedBorderColor,
@@ -62,6 +58,7 @@ fun EditableField(
                 buttonShape = buttonShape,
                 containerShape = containerShape,
                 buttonColor = buttonColor,
+                visibilityIcon = visibilityIcon,
                 textStyle = textStyle,
                 onValueChange = onValueChange,
                 deleteAllowed = deleteAllowed
@@ -78,19 +75,18 @@ fun EditableField(
             TypeAwareEditableField(
                 modifier = Modifier
                     .fillMaxWidth(),
+                fieldState = fieldState,
                 titleChooseDirectory = titleChooseDirectory,
                 titleChooseFile = titleChooseFile,
                 iconFolder = iconFolder,
-                configuration = configuration,
-                fieldKey = fieldKey,
                 fieldHeight = fieldHeight,
                 focusedBorderColor = focusedBorderColor,
                 unfocusedBorderColor = unfocusedBorderColor,
                 textStyle = textStyle,
+                visibilityIcon = visibilityIcon,
                 iconTint = iconTint,
                 buttonShape = buttonShape,
                 buttonColor = buttonColor,
-                enabled = isEditable,
                 onValueChange = onValueChange
             )
         }

@@ -21,6 +21,8 @@ enum class Language(
 
     companion object : KeyFactory<Language> {
 
+        override val options: List<Triple<Language, UiText?, DrawableResource?>> = entries.map { e -> Triple(e, e.uiText, e.drawableResourceId) }
+
         override fun fromString(value: String?): Language? {
             return entries.find { e -> e.name == value }
         }
@@ -35,7 +37,12 @@ enum class Language(
         }
 
         override fun stringValue(value: Any?): String? {
-            return (value as? Language)?.name?:value?.toString()
+            return when (value) {
+                is String -> value
+                is Language -> value.name
+                is Locale -> entries.find { e -> e.locale == value }?.name
+                else -> null
+            }
         }
     }
 }

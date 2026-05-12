@@ -124,6 +124,7 @@ fun MainPage() {
                 ) {
                     selectedTabIndex = index
                     state = state.copy(
+                        editedConfiguration = if(index == 2) state.configuration else null,
                         uiMessage = null,
                         uiMessageSeverity = null
                     )

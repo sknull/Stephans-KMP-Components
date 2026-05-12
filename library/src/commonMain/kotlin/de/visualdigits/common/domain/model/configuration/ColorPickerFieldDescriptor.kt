@@ -15,13 +15,19 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>>(
 
     visible: Boolean = true,
     readOnly: Boolean = false,
-): AbstractFieldDescriptor<Color, Color, K>(
+
+    default: Color? = null,
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
+): AbstractFieldDescriptor<Color, Color, K, String>(
     fieldClass = Color::class,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
+    default = default,
     readOnly = readOnly,
-    options = { listOf() },
+    valid = valid,
     keyFactory = ColorKeyFactory
 )

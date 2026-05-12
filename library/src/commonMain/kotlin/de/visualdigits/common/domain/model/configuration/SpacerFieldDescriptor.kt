@@ -11,13 +11,12 @@ class SpacerFieldDescriptor<K : FieldKey<K>>(
     key: K,
     label: UiText,
     toolTip: UiText? = null,
-): AbstractFieldDescriptor<String, String, K>(
+): AbstractFieldDescriptor<String, String, K, String>(
     fieldClass = String::class,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = true,
     readOnly = true,
-    options = { listOf() },
     keyFactory = StringKeyFactory
 )

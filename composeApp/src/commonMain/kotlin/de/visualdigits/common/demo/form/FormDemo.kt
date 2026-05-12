@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,10 +32,7 @@ fun FormDemo(
     state: DemoState,
     setState: (DemoState) -> Unit
 ) {
-
     val scrollPosition= mutableMapOf<String, Pair<Int, Int?>>()
-
-    var configuration by remember { mutableStateOf(state.configuration) }
 
     Box(
         modifier = Modifier
@@ -47,6 +40,7 @@ fun FormDemo(
         contentAlignment = Alignment.Center
     ) {
         ConfigurationEditForm(
+            configuration = state.editedConfiguration!!,
             scrollbarModifier = Modifier
                 .clip(MaterialTheme.shapes.small)
                 .width(10.dp)
@@ -84,12 +78,13 @@ fun FormDemo(
             ),
             fieldHeight = 50.dp,
             onValueChange = { keyValue ->
-                configuration = configuration.copy(
-                    key = keyValue.descriptor.key as DC,
-                    value = keyValue.value
-                )
+                setState(state.copy(
+                    editedConfiguration = state.editedConfiguration.copy(
+                        key = keyValue.descriptor.key as DC,
+                        value = keyValue.value
+                    )
+                ))
             },
-            configuration = { configuration },
             onCancelClick = {
                 setState(state.copy(
                     uiMessage = UiText.DynamicString("Cancel clicked"),
@@ -100,7 +95,7 @@ fun FormDemo(
                 setState(state.copy(
                     uiMessage = UiText.DynamicString("Ok clicked"),
                     uiMessageSeverity = Severity.Info,
-                    configuration = configuration
+                    configuration = state.editedConfiguration
                 ))
             },
             onCommonAction = { action ->

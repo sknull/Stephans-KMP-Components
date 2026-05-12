@@ -18,19 +18,24 @@ class FileFieldDescriptor<K : FieldKey<K>>(
     visible: Boolean = true,
     readOnly: Boolean = false,
 
+    default: File? = null,
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    options: (AbstractConfiguration<*, K>) -> List<Triple<String, UiText?, DrawableResource?>> = { listOf() },
+
     val fileMode: FileMode,
-    var startDirectory: (AbstractConfiguration<*,*>?) -> File = {
+    var startDirectory: () -> File = {
         File(System.getProperty("user.home"))
     },
-
-    options: (AbstractConfiguration<*, *>) -> List<Triple<String, UiText?, DrawableResource?>> = { listOf() },
-): AbstractFieldDescriptor<File, File, K>(
+): AbstractFieldDescriptor<File, File, K, String>(
     fieldClass = File::class,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
     readOnly = readOnly,
+    default = default,
+    valid = valid,
     options = options,
     keyFactory = FileKeyFactory
 )

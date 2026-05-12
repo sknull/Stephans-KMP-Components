@@ -2,6 +2,7 @@ package de.visualdigits.common.domain.model.configuration
 
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFactory
+import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Represents a field which is rendered as a text field in the UI.
@@ -14,13 +15,18 @@ class StringFieldDescriptor<K : FieldKey<K>>(
 
     visible: Boolean = true,
     readOnly: Boolean = false,
-): AbstractFieldDescriptor<String, String, K>(
+
+    default: String? = null,
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+): AbstractFieldDescriptor<String, String, K, String>(
     fieldClass = String::class,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
     readOnly = readOnly,
-    options = { listOf() },
+    default = default,
+    valid = valid,
     keyFactory = StringKeyFactory
 )

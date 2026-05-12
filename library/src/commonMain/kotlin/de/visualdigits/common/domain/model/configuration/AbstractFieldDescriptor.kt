@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 /**
  * Describes all aspects to render a configuration field.
  */
-abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>>(
+abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>, O : Any>(
 
     /** The class of this field (can also be calloction class). */
     val fieldClass: KClass<V>,
@@ -34,12 +34,27 @@ abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>>(
     /** Determines whether this field can be edited or not. */
     val readOnly: Boolean = false,
 
+    var enabled: Boolean = true,
+
+    val default: S? = null,
+
+    val valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
     /**
      *  For fields which are represented by a combobox or editable list this should generate the
      *  available values rendered in the UI.
      */
-    var options: (AbstractConfiguration<*, *>) -> List<Triple<String, UiText?, DrawableResource?>> = { listOf() },
+    var options: (AbstractConfiguration<*, K>) -> List<Triple<O, UiText?, DrawableResource?>> = { listOf() },
 
     /** A factory class which handles conversion to and from string values. */
     val keyFactory: KeyFactory<V>
-)
+) {
+
+    override fun toString(): String = "$key: $options"
+
+    fun currentOption(configuration: AbstractConfiguration<*, K>): Triple<O, UiText?, DrawableResource?>? {
+        val currentValue = configuration.values[key]
+
+        return this.options(configuration).find { o -> o.first == currentValue }
+    }
+}

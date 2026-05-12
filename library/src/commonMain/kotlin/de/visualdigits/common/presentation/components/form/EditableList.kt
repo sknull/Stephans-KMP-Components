@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.UiText
-import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbar
 import de.visualdigits.common.presentation.components.button.IndicatorButton
@@ -50,14 +50,13 @@ import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun EditableList(
+fun <K : FieldKey<K>> EditableList(
     modifier: Modifier = Modifier,
+    fieldState: FieldState<K>,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
     iconFolder: Painter,
     resources: EditableListResources,
-    configuration: AbstractConfiguration<*,*>,
-    fieldKey: FieldKey<*>,
     fieldHeight: Dp = Dp.Unspecified,
     space: Dp,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
@@ -66,14 +65,14 @@ fun EditableList(
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     containerShape: Shape = MaterialTheme.shapes.small,
     buttonColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
+    visibilityIcon: Painter? = null,
     textStyle: TextStyle,
     scrollable: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
-    deleteAllowed: (AbstractFieldDescriptor<*,*,*>?, String) -> Boolean = { _, _ -> true }
+    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*>?, String) -> Boolean = { _, _ -> true }
 ) {
-    val field = configuration.lookupMap[fieldKey]
     val interactionSource = remember { MutableInteractionSource() }
-    val values = (field?.value as? List<String>)?:listOf()
+    val values = (fieldState.currentValue as? List<String>)?:listOf()
     val previousItems = remember { values.toMutableStateList() }
     val items = remember { mutableStateListOf<String>() }
     LaunchedEffect(values) {
@@ -108,12 +107,12 @@ fun EditableList(
             ) {
                 Text(
                     modifier = Modifier,
-                    text = field?.descriptor?.label?.asString() ?: "",
+                    text = fieldState.fieldDescriptor.label.asString(),
                     style = MaterialTheme.typography.bodySmall,
                 )
 
                 items.forEachIndexed { index, item ->
-                    val allowDelete = deleteAllowed(field?.descriptor, item)
+                    val allowDelete = deleteAllowed(fieldState.fieldDescriptor, item)
 
                     Surface(
                         modifier = Modifier
@@ -141,7 +140,7 @@ fun EditableList(
 
                             Spacer(Modifier.weight(1f))
 
-                            if (field?.enabled == true) {
+                            if (fieldState.fieldDescriptor.enabled) {
                                 IndicatorButton(
                                     leadingIcon = resources.iconEdit,
                                     toolTip = resources.toolTipEdit.asString(),
@@ -165,7 +164,7 @@ fun EditableList(
                                         currentText = null
                                         items.removeAt(index)
                                         showDialog = false
-                                        onValueChange(KeyValue(field.descriptor, items.joinToString(",")))
+                                        onValueChange(KeyValue(fieldState.fieldDescriptor, items.joinToString(",")))
                                     }
                                 )
                             }
@@ -173,7 +172,7 @@ fun EditableList(
                     }
                 }
 
-                if (field?.enabled == true) {
+                if (fieldState.fieldDescriptor.enabled) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -211,7 +210,7 @@ fun EditableList(
 
         if (showDialog) {
             previousItems.update(items)
-
+            fieldState.fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, Any>
             AlertDialog(
                 modifier = Modifier
                     .border(1.dp, focusedBorderColor, containerShape),
@@ -223,22 +222,21 @@ fun EditableList(
                     TypeAwareEditableField(
                         modifier = Modifier
                             .fillMaxWidth(),
+                        fieldState = fieldState,
+                        currentValue = currentText,
                         titleChooseDirectory = titleChooseDirectory,
                         titleChooseFile = titleChooseFile,
                         iconFolder = iconFolder,
-                        configuration = configuration,
-                        fieldKey = fieldKey,
-                        currentValue = currentText,
                         fieldHeight = fieldHeight,
                         focusedBorderColor = focusedBorderColor,
                         unfocusedBorderColor = unfocusedBorderColor,
                         textStyle = textStyle,
+                        visibilityIcon = visibilityIcon,
                         iconTint = iconTint,
                         buttonShape = buttonShape,
                         buttonColor = buttonColor,
-                        enabled = field?.enabled == true,
                         onValueChange = { keyValue ->
-                            currentText = keyValue.value ?: ""
+                            currentText = keyValue.value?.toString() ?: ""
                         }
                     )
                 },
@@ -250,19 +248,15 @@ fun EditableList(
                         leadingIcon = resources.iconSaveFile,
                         leadingIconTint = iconTint
                     ) {
-                        val previousValue = editingIndex?.let { i -> items[i] }
                         if (editingIndex != null) {
                             currentText?.also { ct -> items[editingIndex!!] = ct }
-
                         } else {
                             currentText?.also { ct -> items.add(ct) }
                         }
                         onValueChange(
                             KeyValue(
-                                descriptor = field?.descriptor?:error("No descriptor"),
-                                value = if (items.isNotEmpty()) items.joinToString(",") else null,
-                                previousValue = previousValue,
-                                newValue = currentText
+                                descriptor =fieldState. fieldDescriptor,
+                                value = items
                             )
                         )
                         showDialog = false
@@ -277,7 +271,7 @@ fun EditableList(
                         leadingIconTint = iconTint
                     ) {
                         items.update(previousItems)
-                        onValueChange(KeyValue(field?.descriptor?:error("No descriptor"), items.joinToString(",")))
+                        onValueChange(KeyValue(fieldState.fieldDescriptor, items.joinToString(",")))
                         showDialog = false
                     }
                 }

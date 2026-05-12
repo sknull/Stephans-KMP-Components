@@ -1,7 +1,12 @@
 package de.visualdigits.common.presentation.components.form
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -15,8 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
@@ -25,7 +36,7 @@ import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun <K : FieldKey<K>> TextBox(
+fun <K : FieldKey<K>> PasswordBox(
     modifier: Modifier,
     fieldState: FieldState<K>,
     currentValue: Any?,
@@ -35,12 +46,15 @@ fun <K : FieldKey<K>> TextBox(
     fieldHeight: Dp,
     textStyle: TextStyle,
     buttonShape: Shape,
+    visibilityIcon: Painter?,
     finalUnfocusedBorderColor: Color,
     focusedBorderColor: Color,
     onValueChange: (String) -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     val text = currentValue?.toString() ?: fieldState.currentValue?.toString() ?: ""
     var textFieldValue by remember { mutableStateOf(TextFieldValue(text = text)) }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(text) {
         if (text != textFieldValue.text) {
@@ -57,6 +71,10 @@ fun <K : FieldKey<K>> TextBox(
             modifier = modifier
                 .fillMaxWidth()
                 .height(fieldHeight + minimizedLabelHalfHeight(textStyle)),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
             textStyle = textStyle,
             enabled = fieldState.fieldDescriptor.enabled,
             label = {
@@ -82,7 +100,21 @@ fun <K : FieldKey<K>> TextBox(
                 cursorColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
                 focusedLabelColor = focusedBorderColor
-            )
+            ),
+            trailingIcon = {
+                visibilityIcon?.let { vi ->
+                    Icon(
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+                            .hoverable(interactionSource)
+                            .clickable {
+                                passwordVisible = !passwordVisible
+                            },
+                        painter = vi,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         )
     }
 }

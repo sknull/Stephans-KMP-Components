@@ -19,8 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -29,41 +27,35 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.KeyValue
-import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
-import de.visualdigits.common.domain.model.configuration.Field
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
+import de.visualdigits.common.domain.model.configuration.FieldKey
+import de.visualdigits.common.domain.model.configuration.FieldState
 import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ComboBox(
+fun <K : FieldKey<K>> ComboBox(
     modifier: Modifier = Modifier,
+    fieldState: FieldState<K>,
     space: Dp,
     toolTipBackgroundColor: Color,
     toolTipShape: Shape,
     textStyle: TextStyle,
-    configuration: AbstractConfiguration<*,*>,
-    field: Field<*,*,*>,
     fieldHeight: Dp = Dp.Unspecified,
-    enabled: Boolean = true,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape,
-    options: List<Triple<String, StringResource?, DrawableResource?>>? = null,
     onValueChange: (KeyValue) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val currentOption = field.currentOption(configuration)?.second?.asString()?:field.currentOption(configuration)?.first?:""
-    val textFieldState = rememberTextFieldState(currentOption)
-    LaunchedEffect(currentOption) {
+    val textFieldState = rememberTextFieldState(fieldState.currentOptionUIText.asString())
+    val text = fieldState.currentOptionUIText.asString()
+    LaunchedEffect(text) {
         textFieldState.edit {
-            // Ersetzt den aktuellen Text durch den neuen Wert aus dem Model
-            replace(0, length, currentOption)
+            replace(0, length, text)
         }
     }
-    if (enabled) {
+    if (fieldState.fieldDescriptor.enabled) {
         ExposedDropdownMenuBox(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -74,12 +66,12 @@ fun ComboBox(
                 modifier = modifier
                     .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     .exposedDropdownSize(),
+                fieldState = fieldState,
                 space = space,
                 toolTipBackgroundColor = toolTipBackgroundColor,
                 toolTipShape = toolTipShape,
                 textStyle = textStyle,
                 fieldHeight = fieldHeight,
-                field = field,
                 buttonShape = buttonShape,
                 textFieldState = textFieldState,
                 expanded = expanded,
@@ -92,14 +84,15 @@ fun ComboBox(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                options?: field.descriptor.options(configuration).forEach { option ->
+                fieldState.options.forEach { option ->
+                    // todo this is probably incorrect due to changes in field descriptor
                     val text = option.second?.asString() ?:""
                     DropdownMenuItem(
                         modifier = Modifier
                             .height(30.dp)
                             .pointerHoverIcon(PointerIcon.Hand),
                         onClick = {
-                            onValueChange(KeyValue(field.descriptor, option.first))
+                            onValueChange(KeyValue(fieldState.fieldDescriptor, option.first))
                             textFieldState.setTextAndPlaceCursorAtEnd(text)
                             expanded = false
                         },
@@ -107,13 +100,14 @@ fun ComboBox(
                             option.third?.let { icon ->
                                 Image(
                                     painter = painterResource(icon),
-                                    contentDescription = option.first,
+                                    contentDescription = option.second?.asString()?:option.first?.toString(),
                                     modifier = Modifier
                                         .height(30.dp)
                                 )
                             }
                         },
                         text = {
+                            val text1 = option.second?.asString() ?: option.first.toString()
                             option.second?.let { t ->
                                 Text(
                                     modifier = Modifier
@@ -124,7 +118,7 @@ fun ComboBox(
                             } ?: Text(
                                 modifier = Modifier
                                     .height(30.dp),
-                                text = option.first,
+                                text = text1,
                                 style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSecondary)
                             )
                         }
@@ -135,13 +129,13 @@ fun ComboBox(
     } else {
         InnerTextField(
             modifier = modifier,
+            fieldState = fieldState,
+            enabled = false,
             space = space,
             toolTipBackgroundColor = toolTipBackgroundColor,
             toolTipShape = toolTipShape,
             textStyle = textStyle,
             fieldHeight = fieldHeight,
-            field = field,
-            enabled = false,
             buttonShape = buttonShape,
             textFieldState = textFieldState,
             expanded = expanded,
