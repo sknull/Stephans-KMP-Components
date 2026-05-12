@@ -20,6 +20,7 @@ data class EditableListResources(
     val toolTipEdit: UiText,
 
     val labelOk: UiText,
+    val iconOk: Painter,
 
     val labelCancel: UiText,
     val iconCancel: Painter,

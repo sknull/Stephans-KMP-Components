@@ -58,6 +58,7 @@ fun FormDemo(
                 toolTipDelete = UiText.DynamicString("Delete"),
                 iconDelete = painterResource(Res.drawable.icon_delete_24px),
                 labelOk = UiText.DynamicString("Ok"),
+                iconOk = painterResource(Res.drawable.icon_check_small_24px),
                 labelCancel = UiText.DynamicString("Cancel"),
                 iconCancel = painterResource(Res.drawable.icon_cancel_24px),
                 iconSaveFile = painterResource(Res.drawable.icon_file_save_24px)

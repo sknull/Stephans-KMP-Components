@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -32,8 +33,11 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -64,7 +68,7 @@ fun <K : FieldKey<K>> EditableList(
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     containerShape: Shape = MaterialTheme.shapes.small,
-    buttonColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
+    buttonColor: Color =MaterialTheme.colorScheme.onTertiary,
     visibilityIcon: Painter? = null,
     textStyle: TextStyle,
     scrollable: Boolean = false,
@@ -89,14 +93,32 @@ fun <K : FieldKey<K>> EditableList(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = halfHeight - 2.dp) // why?
+            .padding(top = halfHeight + 1.dp) // why?
     ) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .border(1.dp, unfocusedBorderColor, buttonShape)
+                .drawBehind {
+                    drawRoundRect(
+                        color = unfocusedBorderColor,
+                        style = Stroke(
+                            width = 1.5.dp.toPx(),
+                        ),
+                       cornerRadius = CornerRadius(4.dp.toPx())
+                    )
+                }
+//                .border(1.dp, unfocusedBorderColor, buttonShape)
         ) {
             val scrollState = rememberScrollState(0)
+
+            Text(
+                modifier = Modifier
+                    .offset(x = 16.dp, y = halfHeight * -1)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 4.dp),
+                text = fieldState.fieldDescriptor.label.asString(),
+                style = MaterialTheme.typography.bodySmall,
+            )
 
             Column(
                 modifier = Modifier
@@ -105,11 +127,6 @@ fun <K : FieldKey<K>> EditableList(
                     .conditional(scrollable) { verticalScroll(scrollState) },
                 verticalArrangement = Arrangement.spacedBy(space)
             ) {
-                Text(
-                    modifier = Modifier,
-                    text = fieldState.fieldDescriptor.label.asString(),
-                    style = MaterialTheme.typography.bodySmall,
-                )
 
                 items.forEachIndexed { index, item ->
                     val allowDelete = deleteAllowed(fieldState.fieldDescriptor, item)
@@ -180,7 +197,9 @@ fun <K : FieldKey<K>> EditableList(
                         IndicatorButton(
                             modifier = Modifier
                                 .align(Alignment.CenterEnd),
-                            text = resources.hintAdd.asString(),
+                            width = 50.dp,
+                            height = 50.dp,
+                            toolTip = resources.hintAdd.asString(),
                             buttonColor = buttonColor,
                             shape = buttonShape,
                             leadingIcon = resources.iconAdd,
@@ -214,7 +233,7 @@ fun <K : FieldKey<K>> EditableList(
             AlertDialog(
                 modifier = Modifier
                     .border(1.dp, focusedBorderColor, containerShape),
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.6f),
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
                 shape = containerShape,
                 onDismissRequest = { showDialog = false },
                 title = { Text(if (editingIndex == null) resources.titleAdd.asString() else resources.titleEdit.asString()) },
@@ -242,10 +261,12 @@ fun <K : FieldKey<K>> EditableList(
                 },
                 confirmButton = {
                     IndicatorButton(
-                        text = resources.labelOk.asString(),
+                        toolTip = resources.labelOk.asString(),
+                        width = 50.dp,
+                        height = 50.dp,
                         buttonColor = buttonColor,
                         shape = buttonShape,
-                        leadingIcon = resources.iconSaveFile,
+                        leadingIcon = resources.iconOk,
                         leadingIconTint = iconTint
                     ) {
                         if (editingIndex != null) {
@@ -255,7 +276,7 @@ fun <K : FieldKey<K>> EditableList(
                         }
                         onValueChange(
                             KeyValue(
-                                descriptor =fieldState. fieldDescriptor,
+                                descriptor =fieldState.fieldDescriptor,
                                 value = items
                             )
                         )
@@ -264,7 +285,9 @@ fun <K : FieldKey<K>> EditableList(
                 },
                 dismissButton = {
                     IndicatorButton(
-                        text = resources.labelCancel.asString(),
+                        toolTip = resources.labelCancel.asString(),
+                        width = 50.dp,
+                        height = 50.dp,
                         buttonColor = buttonColor,
                         shape = buttonShape,
                         leadingIcon = resources.iconCancel,
