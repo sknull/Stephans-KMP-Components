@@ -111,15 +111,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
         ) {
             val scrollState = rememberScrollState(0)
 
-            Text(
-                modifier = Modifier
-                    .offset(x = 16.dp, y = halfHeight * -1)
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(horizontal = 4.dp),
-                text = fieldState.fieldDescriptor.label.asString(),
-                style = MaterialTheme.typography.bodySmall,
-            )
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,6 +118,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                     .conditional(scrollable) { verticalScroll(scrollState) },
                 verticalArrangement = Arrangement.spacedBy(space)
             ) {
+                Text(
+                    modifier = Modifier
+                        .offset(y = halfHeight * -1),
+                    text = fieldState.fieldDescriptor.label.asString(),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
 
                 items.forEachIndexed { index, item ->
                     val allowDelete = deleteAllowed(fieldState.fieldDescriptor, item)
