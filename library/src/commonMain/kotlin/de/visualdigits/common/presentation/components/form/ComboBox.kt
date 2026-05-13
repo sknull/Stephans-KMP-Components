@@ -34,9 +34,9 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun <K : FieldKey<K>> ComboBox(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
     modifier: Modifier = Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     space: Dp,
     toolTipBackgroundColor: Color,
     toolTipShape: Shape,
@@ -45,7 +45,7 @@ fun <K : FieldKey<K>> ComboBox(
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape,
-    onValueChange: (KeyValue) -> Unit,
+    onValueChange: (Any?) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val textFieldState = rememberTextFieldState(fieldState.currentOptionUIText.asString())
@@ -92,7 +92,7 @@ fun <K : FieldKey<K>> ComboBox(
                             .height(30.dp)
                             .pointerHoverIcon(PointerIcon.Hand),
                         onClick = {
-                            onValueChange(KeyValue(fieldState.fieldDescriptor, option.first))
+                            onValueChange(option.first)
                             textFieldState.setTextAndPlaceCursorAtEnd(text)
                             expanded = false
                         },

@@ -29,9 +29,9 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-fun <K : FieldKey<K>> FileChooserBox(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
     modifier: Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     iconFolder: Painter,
     space: Dp,
     toolTipBackgroundColor: Color,
@@ -93,7 +93,7 @@ fun <K : FieldKey<K>> FileChooserBox(
                             scope.launch(Dispatchers.IO) {
                                 desktopFileChooser(
                                     fieldState = fieldState,
-                                    title = when ((fieldState.fieldDescriptor as FileFieldDescriptor).fileMode) {
+                                    title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
                                         FileMode.DIRECTORIES_ONLY -> titleDirectories
                                         FileMode.FILES_ONLY -> titleFiles
                                     },

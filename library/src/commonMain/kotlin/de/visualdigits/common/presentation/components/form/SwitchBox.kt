@@ -35,9 +35,9 @@ import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun <K : FieldKey<K>> SwitchBox(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> SwitchBox(
     modifier: Modifier = Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     switchColors: SwitchColors = SwitchDefaults.colors().copy(
         checkedTrackColor = MaterialTheme.colorScheme.onSurface,
         checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,

@@ -7,16 +7,16 @@ import kotlin.collections.component2
  * Base class for all configuration classes.
  */
 abstract class AbstractConfiguration<T : AbstractConfiguration<T, K>, K : FieldKey<K>>(
-    val values: Map<K, Any?>,
-    val fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *>> = listOf(),
+    val values: Map<K, Any?> = mapOf(),
+    val fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>> = listOf(),
 ) {
 
-    val lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *>> = fieldDescriptors.associateBy { descriptor -> descriptor.key }
+    val lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *, *>> = fieldDescriptors.associateBy { descriptor -> descriptor.key }
 
     companion object {
 
-        fun <K : FieldKey<K>> valueMap(fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *>>, values: Map<K, Any?>): Map<K, Any?> {
-            val lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *>> = fieldDescriptors.associateBy { descriptor -> descriptor.key }
+        fun <K : FieldKey<K>, FK : FieldKey<FK>> valueMap(fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>>, values: Map<K, Any?>): Map<K, Any?> {
+            val lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *, *>> = fieldDescriptors.associateBy { descriptor -> descriptor.key }
             return lookupFieldDescriptors.map { (key, descriptor) ->
                 Pair(key, values[key]?.let { value -> descriptor.keyFactory.fromValue(value) }?:descriptor.default)
             }.toMap()

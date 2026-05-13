@@ -21,8 +21,8 @@ import de.visualdigits.common.domain.model.configuration.SpacerFieldDescriptor
 import de.visualdigits.common.domain.model.form.EditableListResources
 
 @Composable
-fun <K : FieldKey<K>>  EditableField(
-    fieldState: FieldState<K>,
+fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
+    fieldState: FieldState<K, FK>,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
     iconFolder: Painter,
@@ -38,12 +38,12 @@ fun <K : FieldKey<K>>  EditableField(
     containerShape: Shape,
     textStyle: TextStyle,
     onValueChange: (KeyValue) -> Unit,
-    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*>?, String) -> Boolean
+    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean
 ) {
     if (fieldState.valid) Color.Unspecified else Severity.Error.color()
 
     when(fieldState.fieldDescriptor) {
-        is ListFieldDescriptor -> {
+        is ListFieldDescriptor<*,*> -> {
             EditableList(
                 fieldState = fieldState,
                 titleChooseDirectory = titleChooseDirectory,
@@ -65,7 +65,7 @@ fun <K : FieldKey<K>>  EditableField(
             )
         }
 
-        is SpacerFieldDescriptor ->
+        is SpacerFieldDescriptor<*,*> ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

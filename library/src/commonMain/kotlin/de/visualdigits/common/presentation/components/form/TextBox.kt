@@ -25,9 +25,9 @@ import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun <K : FieldKey<K>> TextBox(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
     modifier: Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     currentValue: Any?,
     space: Dp,
     toolTipBackgroundColor: Color,

@@ -9,7 +9,7 @@ import java.io.File
 /**
  * Represents a field which should provide a file or directory picker.
  */
-class FileFieldDescriptor<K : FieldKey<K>>(
+class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     key: K,
 
     label: UiText,
@@ -21,13 +21,13 @@ class FileFieldDescriptor<K : FieldKey<K>>(
     default: File? = null,
 
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
-    options: (AbstractConfiguration<*, K>) -> List<Triple<String, UiText?, DrawableResource?>> = { listOf() },
+    options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, K>?) -> List<Triple<String, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
     val fileMode: FileMode,
-    var startDirectory: () -> File = {
+    var startDirectory: (AbstractConfiguration<*, *>) -> File = {
         File(System.getProperty("user.home"))
     },
-): AbstractFieldDescriptor<File, File, K, String>(
+): AbstractFieldDescriptor<File, File, K, K, String>(
     fieldClass = File::class,
     key = key,
     label = label,

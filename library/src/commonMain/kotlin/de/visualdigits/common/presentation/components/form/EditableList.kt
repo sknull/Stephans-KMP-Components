@@ -54,9 +54,9 @@ import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun <K : FieldKey<K>> EditableList(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     modifier: Modifier = Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
     iconFolder: Painter,
@@ -73,10 +73,10 @@ fun <K : FieldKey<K>> EditableList(
     textStyle: TextStyle,
     scrollable: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
-    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*>?, String) -> Boolean = { _, _ -> true }
+    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _, _ -> true }
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val values = (fieldState.currentValue as? List<String>)?:listOf()
+    val values = (fieldState.currentValue as? List<Any>)?.map { v -> v.toString() }?:listOf()
     val previousItems = remember { values.toMutableStateList() }
     val items = remember { mutableStateListOf<String>() }
     LaunchedEffect(values) {
@@ -229,7 +229,7 @@ fun <K : FieldKey<K>> EditableList(
 
         if (showDialog) {
             previousItems.update(items)
-            fieldState.fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, Any>
+            fieldState.fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, Any, Any>
             AlertDialog(
                 modifier = Modifier
                     .border(1.dp, focusedBorderColor, containerShape),

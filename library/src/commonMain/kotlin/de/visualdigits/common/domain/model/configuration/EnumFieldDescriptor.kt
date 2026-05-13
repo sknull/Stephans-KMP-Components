@@ -22,10 +22,10 @@ class EnumFieldDescriptor<V : Any, K : FieldKey<K>>(
     default: V? = null,
 
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
-    options: (AbstractConfiguration<*, K>) -> List<Triple<V, UiText?, DrawableResource?>> = { listOf() },
+    options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, K>?) -> List<Triple<V, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
     keyFactory: KeyFactory<V>
-): AbstractFieldDescriptor<V, V, K, V>(
+): AbstractFieldDescriptor<V, V, K, K, V>(
     fieldClass = fieldClass,
     key = key,
     label = label,

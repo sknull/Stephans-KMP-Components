@@ -25,9 +25,9 @@ import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import java.io.File
 
 @Composable
-fun <K : FieldKey<K>> TypeAwareEditableField(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
     modifier: Modifier = Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     currentValue: Any? = null,
     titleChooseDirectory: UiText,
     titleChooseFile: UiText,
@@ -56,7 +56,7 @@ fun <K : FieldKey<K>> TypeAwareEditableField(
     }
 
     when {
-        fieldState.fieldDescriptor is EnumFieldDescriptor
+        fieldState.fieldDescriptor is EnumFieldDescriptor<*,*>
                 || fieldState.fieldDescriptor is ReferenceListFieldDescriptor
                 || fieldState.fieldDescriptor.itemClass?.java?.let { fc -> Enumerable::class.java.isAssignableFrom(fc) } == true -> {
             if (fieldState.fieldDescriptor.fieldClass == BooleanEnum::class) {
@@ -68,8 +68,8 @@ fun <K : FieldKey<K>> TypeAwareEditableField(
                     unfocusedBorderColor = finalUnfocusedBorderColor,
                     buttonShape = buttonShape,
                     textStyle = textStyle
-                ) { v ->
-                    onValueChange(KeyValue(fieldState.fieldDescriptor, v))
+                ) { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 }
             } else {
                 ComboBox(
@@ -82,12 +82,14 @@ fun <K : FieldKey<K>> TypeAwareEditableField(
                     focusedBorderColor = focusedBorderColor,
                     unfocusedBorderColor = finalUnfocusedBorderColor,
                     buttonShape = buttonShape,
-                    onValueChange = onValueChange,
+                    onValueChange = { value ->
+                        onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                    },
                 )
             }
         }
 
-        fieldState.fieldDescriptor is FileFieldDescriptor -> {
+        fieldState.fieldDescriptor is FileFieldDescriptor<*,*> -> {
             FileChooserBox(
                 modifier = modifier,
                 fieldState = fieldState,
@@ -104,23 +106,21 @@ fun <K : FieldKey<K>> TypeAwareEditableField(
                 buttonColor = buttonColor,
                 titleDirectories = titleChooseDirectory.asString(),
                 titleFiles = titleChooseFile.asString(),
-                startDirectory = (fieldState.currentValue as? File) ?: fieldState.fieldDescriptor.startDirectory(),
+                startDirectory = (fieldState.currentValue as? File) ?: fieldState.fieldDescriptor.startDirectory(
+                    fieldState.configuration
+                ),
                 finalUnfocusedBorderColor = finalUnfocusedBorderColor,
                 focusedBorderColor = focusedBorderColor,
                 onValueChange = { value: String ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                },
+                onOk = { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 }
-            ) { file: File ->
-                onValueChange(
-                    KeyValue(
-                        fieldState.fieldDescriptor,
-                        file
-                    )
-                )
-            }
+            )
         }
 
-        fieldState.fieldDescriptor is ColorPickerFieldDescriptor -> {
+        fieldState.fieldDescriptor is ColorPickerFieldDescriptor<*,*> -> {
             ColorPickerBox(
                 modifier = modifier,
                 fieldState = fieldState,
@@ -131,11 +131,13 @@ fun <K : FieldKey<K>> TypeAwareEditableField(
                 unfocusedBorderColor = unfocusedBorderColor,
                 buttonShape = buttonShape,
                 textStyle = textStyle,
-                onValueChange = onValueChange,
+                onValueChange = { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                },
             )
         }
 
-        fieldState.fieldDescriptor is PasswordFieldDescriptor -> {
+        fieldState.fieldDescriptor is PasswordFieldDescriptor<*,*> -> {
             PasswordBox(
                 modifier = modifier,
                 fieldState = fieldState,

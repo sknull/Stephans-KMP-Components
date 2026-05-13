@@ -10,11 +10,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -23,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.KeyValue
-import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.util.toHsvColor
@@ -32,9 +26,9 @@ import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun <K : FieldKey<K>> ColorPickerBox(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
     modifier: Modifier = Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     space: Dp = 8.dp,
     label: String,
     fieldHeight: Dp,
@@ -43,15 +37,10 @@ fun <K : FieldKey<K>> ColorPickerBox(
     buttonShape: Shape,
     textStyle: TextStyle,
     alignForForm: Boolean = true,
-    onValueChange: (KeyValue) -> Unit,
+    onValueChange: (Color) -> Unit,
 ) {
     val textFieldState = rememberTextFieldState(" ")
     val halfHeight = minimizedLabelHalfHeight(textStyle)
-
-    var currentColor by remember { mutableStateOf(fieldState.currentValue as Color) }
-    LaunchedEffect(fieldState.currentValue) {
-        currentColor = fieldState.currentValue as Color
-    }
 
     Column(
         modifier = modifier
@@ -79,14 +68,13 @@ fun <K : FieldKey<K>> ColorPickerBox(
                     modifier = Modifier
                         .padding(start = space * 3, top = space, end = space, bottom = space),
                     label = label,
-                    initialColor = currentColor?.toHsvColor(),
+                    initialColor = (fieldState.currentValue as? Color)?.toHsvColor(),
                     size = fieldHeight * 3,
                     space = space,
                     hasSwatch = true
                 ) { colorEnvelope ->
                     if (colorEnvelope.fromUser) {
-                        currentColor = colorEnvelope.color
-                        onValueChange(KeyValue(fieldState.fieldDescriptor, colorEnvelope.color))
+                        onValueChange(colorEnvelope.color)
                     }
                 }
             },

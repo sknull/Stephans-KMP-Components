@@ -7,7 +7,7 @@ import org.jetbrains.compose.resources.DrawableResource
 /**
  * Represents a field which is rendered as a text field in the UI.
  */
-class IntFieldDescriptor<K : FieldKey<K>>(
+class IntFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     key: K,
 
     label: UiText,
@@ -19,7 +19,7 @@ class IntFieldDescriptor<K : FieldKey<K>>(
     default: Int? = null,
 
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
-): AbstractFieldDescriptor<Int, Int, K, Int>(
+): AbstractFieldDescriptor<Int, Int, K, K, Int>(
     fieldClass = Int::class,
     key = key,
     label = label,

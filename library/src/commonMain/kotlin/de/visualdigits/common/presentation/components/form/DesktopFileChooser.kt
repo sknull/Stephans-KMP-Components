@@ -10,8 +10,8 @@ import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
 
-fun <K : FieldKey<K>> desktopFileChooser(
-    fieldState: FieldState<K>,
+fun <K : FieldKey<K>, FK : FieldKey<FK>> desktopFileChooser(
+    fieldState: FieldState<K, FK>,
     title: String,
     fileMode: FileMode,
     startDirectory: File,

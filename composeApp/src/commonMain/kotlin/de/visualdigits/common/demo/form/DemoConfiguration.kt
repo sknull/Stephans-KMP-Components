@@ -31,7 +31,7 @@ class DemoConfiguration(
                 key = DC.language,
                 label = UiText.DynamicString("Language"),
                 toolTip =  UiText.DynamicString("Language"),
-                options = { _ -> Language.options },
+                options = { _, _ -> Language.options },
                 keyFactory = Language
             ),
 
@@ -40,7 +40,7 @@ class DemoConfiguration(
                 key = DC.switch,
                 label =  UiText.DynamicString("Switch"),
                 toolTip =  UiText.DynamicString("Switch"),
-                options = { _ -> BooleanEnum.options },
+                options = { _, _ -> BooleanEnum.options },
                 keyFactory = BooleanEnum
             ),
 
@@ -56,7 +56,7 @@ class DemoConfiguration(
                 key = DC.file,
                 label = UiText.DynamicString("File"),
                 fileMode = FileMode.FILES_ONLY,
-                options = { _ -> listOf(Triple("txt", null, null)) }
+                options = { _, _ -> listOf(Triple("txt", null, null)) }
             ),
 
             ColorPickerFieldDescriptor(

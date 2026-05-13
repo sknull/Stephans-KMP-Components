@@ -25,9 +25,9 @@ import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHei
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun <K : FieldKey<K>> InnerTextField(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
     modifier: Modifier,
-    fieldState: FieldState<K>,
+    fieldState: FieldState<K, FK>,
     enabled: Boolean = fieldState.fieldDescriptor.enabled,
     space: Dp,
     toolTipBackgroundColor: Color,

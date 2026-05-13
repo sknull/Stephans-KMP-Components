@@ -38,9 +38,10 @@ import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <K : FieldKey<K>> ConfigurationEditForm(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     modifier: Modifier = Modifier,
     configuration: AbstractConfiguration<*, K>,
+    configurationRef: AbstractConfiguration<*, FK>? = null,
     scrollbarModifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLow,
     titleChooseDirectory: UiText,
@@ -68,7 +69,7 @@ fun <K : FieldKey<K>> ConfigurationEditForm(
     onCancelClick: () -> Unit,
     onOkClick: () -> Unit,
     onCommonAction: (CommonAction) -> Unit,
-    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*>?, String) -> Boolean = { _,_ -> true }
+    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _,_ -> true }
 ) {
     PlatformVerticalScrollbarBox(
         modifier = modifier
@@ -92,14 +93,15 @@ fun <K : FieldKey<K>> ConfigurationEditForm(
                         .filter { fieldDescriptor -> fieldDescriptor.visible }
                         .forEach { fieldDescriptor ->
                             @Suppress("UNCHECKED_CAST")
-                            fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, Any>
+                            fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, FK, Any>
                             val currentValue = configuration.getUnsafe(fieldDescriptor.key)
                             key(fieldDescriptor.key) {
                                 val fieldState = remember(currentValue, fieldDescriptor) {
                                     val currentOption = fieldDescriptor.currentOption(configuration)
                                     FieldState(
+                                        configuration = configuration,
                                         fieldDescriptor = fieldDescriptor,
-                                        options = fieldDescriptor.options(configuration),
+                                        options = fieldDescriptor.options(configuration, configurationRef),
                                         currentValue = currentValue,
                                         currentOption = currentOption,
                                         currentOptionUIText = currentOption?.second ?: UiText.DynamicString(

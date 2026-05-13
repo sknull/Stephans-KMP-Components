@@ -7,15 +7,13 @@ import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFac
 /**
  * Represents a field which should provide a file or directory picker.
  */
-class SpacerFieldDescriptor<K : FieldKey<K>>(
+class SpacerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     key: K,
-    label: UiText,
-    toolTip: UiText? = null,
-): AbstractFieldDescriptor<String, String, K, String>(
+): AbstractFieldDescriptor<String, String, K, K, String>(
     fieldClass = String::class,
     key = key,
-    label = label,
-    toolTip = toolTip,
+    label = UiText.DynamicString(""),
+    toolTip = UiText.DynamicString(""),
     visible = true,
     readOnly = true,
     keyFactory = StringKeyFactory
