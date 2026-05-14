@@ -52,15 +52,16 @@ import de.visualdigits.common.presentation.components.PlatformVerticalScrollbar
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     modifier: Modifier = Modifier,
     fieldState: FieldState<K, FK>,
-    titleChooseDirectory: UiText,
-    titleChooseFile: UiText,
+    titleChooseDirectory: UiText = UiText.DynamicString(""),
+    titleChooseFile: UiText = UiText.DynamicString(""),
     iconFolder: Painter,
-    resources: EditableListResources,
+    resources: EditableListResources = EditableListResources.DEFAULT_RESOURCES,
     fieldHeight: Dp = Dp.Unspecified,
     space: Dp,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
@@ -68,7 +69,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     containerShape: Shape = MaterialTheme.shapes.small,
-    buttonColor: Color =MaterialTheme.colorScheme.onTertiary,
+    buttonColor: Color = MaterialTheme.colorScheme.onTertiary,
     visibilityIcon: Painter? = null,
     textStyle: TextStyle,
     scrollable: Boolean = false,
@@ -157,7 +158,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
 
                             if (fieldState.fieldDescriptor.enabled) {
                                 IndicatorButton(
-                                    leadingIcon = resources.iconEdit,
+                                    leadingIcon = resources.iconEdit?.let { r -> painterResource(r) },
                                     toolTip = resources.toolTipEdit.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
@@ -169,7 +170,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                                 )
 
                                 IndicatorButton(
-                                    leadingIcon = resources.iconDelete,
+                                    leadingIcon = resources.iconDelete?.let { r -> painterResource(r) },
                                     toolTip = resources.toolTipDelete.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
@@ -197,10 +198,10 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                                 .align(Alignment.CenterEnd),
                             width = 50.dp,
                             height = 50.dp,
-                            toolTip = resources.hintAdd.asString(),
+                            toolTip = resources.tooltipAdd.asString(),
                             buttonColor = buttonColor,
                             shape = buttonShape,
-                            leadingIcon = resources.iconAdd,
+                            leadingIcon = resources.iconAdd?.let { r -> painterResource(r) },
                             leadingIconTint = iconTint
                         ) {
                             editingIndex = null
@@ -264,7 +265,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         height = 50.dp,
                         buttonColor = buttonColor,
                         shape = buttonShape,
-                        leadingIcon = resources.iconOk,
+                        leadingIcon = resources.iconOk?.let { r -> painterResource(r) },
                         leadingIconTint = iconTint
                     ) {
                         if (editingIndex != null) {
@@ -288,7 +289,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         height = 50.dp,
                         buttonColor = buttonColor,
                         shape = buttonShape,
-                        leadingIcon = resources.iconCancel,
+                        leadingIcon = resources.iconCancel?.let { r -> painterResource(r) },
                         leadingIconTint = iconTint
                     ) {
                         items.update(previousItems)

@@ -24,7 +24,6 @@ import stephans_kmp_components.composeapp.generated.resources.icon_cancel_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_check_small_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_delete_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_edit_24px
-import stephans_kmp_components.composeapp.generated.resources.icon_file_save_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_folder_open_24px
 
 @Composable
@@ -49,19 +48,18 @@ fun FormDemo(
             titleChooseFile = UiText.DynamicString("Choose File"),
             iconFolder = painterResource(Res.drawable.icon_folder_open_24px),
             editableListResources = EditableListResources(
-                hintAdd = UiText.DynamicString("Add..."),
+                tooltipAdd = UiText.DynamicString("Add..."),
                 titleAdd = UiText.DynamicString("Add"),
-                iconAdd = painterResource(Res.drawable.icon_add_24px),
+                iconAdd = Res.drawable.icon_add_24px,
                 titleEdit = UiText.DynamicString("Edit"),
-                toolTipEdit = UiText.DynamicString("Edit"),
-                iconEdit = painterResource(Res.drawable.icon_edit_24px),
+                iconEdit = Res.drawable.icon_edit_24px,
                 toolTipDelete = UiText.DynamicString("Delete"),
-                iconDelete = painterResource(Res.drawable.icon_delete_24px),
+                iconDelete = Res.drawable.icon_delete_24px,
+                toolTipEdit = UiText.DynamicString("Edit"),
                 labelOk = UiText.DynamicString("Ok"),
-                iconOk = painterResource(Res.drawable.icon_check_small_24px),
+                iconOk = Res.drawable.icon_check_small_24px,
                 labelCancel = UiText.DynamicString("Cancel"),
-                iconCancel = painterResource(Res.drawable.icon_cancel_24px),
-                iconSaveFile = painterResource(Res.drawable.icon_file_save_24px)
+                iconCancel = Res.drawable.icon_cancel_24px
             ),
             tooltipOk = UiText.DynamicString(""),
             iconOk = painterResource(Res.drawable.icon_check_small_24px),

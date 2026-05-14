@@ -1,29 +1,39 @@
 package de.visualdigits.common.domain.model.form
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.painter.Painter
 import de.visualdigits.common.domain.model.UiText
+import org.jetbrains.compose.resources.DrawableResource
 
 @Immutable
 data class EditableListResources(
-    val hintAdd: UiText,
-
     val titleAdd: UiText,
-    val iconAdd: Painter,
-
     val titleEdit: UiText,
-    val iconEdit: Painter,
 
-    val toolTipDelete: UiText,
-    val iconDelete: Painter,
+    val tooltipAdd: UiText,
+    val iconAdd: DrawableResource? = null,
 
     val toolTipEdit: UiText,
+    val iconEdit: DrawableResource? = null,
+
+    val toolTipDelete: UiText,
+    val iconDelete: DrawableResource? = null,
 
     val labelOk: UiText,
-    val iconOk: Painter,
+    val iconOk: DrawableResource? = null,
 
     val labelCancel: UiText,
-    val iconCancel: Painter,
+    val iconCancel: DrawableResource? = null,
+) {
+    companion object {
+        val DEFAULT_RESOURCES = EditableListResources(
+            tooltipAdd = UiText.DynamicString("Add..."),
+            titleAdd = UiText.DynamicString("Add"),
+            titleEdit = UiText.DynamicString("Edit"),
+            toolTipDelete = UiText.DynamicString("Delete"),
+            toolTipEdit = UiText.DynamicString("Edit"),
+            labelOk = UiText.DynamicString("Ok"),
+            labelCancel = UiText.DynamicString("Cancel")
+        )
+    }
 
-    val iconSaveFile: Painter
-)
+}
