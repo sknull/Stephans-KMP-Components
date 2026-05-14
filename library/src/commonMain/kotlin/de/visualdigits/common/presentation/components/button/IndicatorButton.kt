@@ -66,10 +66,10 @@ fun IndicatorButton(
     leadingImage: (@Composable () -> Unit)? = null,
     leadingIcon: Painter? = null,
     leadingIconTint: Color = MaterialTheme.colorScheme.onSurface,
-    leadingIconTintDisabled: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+    leadingIconTintDisabled: Color = leadingIconTint.copy(alpha = 0.5f),
     trailingIcon: Painter? = null,
     trailingIconTint: Color = MaterialTheme.colorScheme.onSurface,
-    trailingIconTintDisabled: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+    trailingIconTintDisabled: Color = trailingIconTint.copy(alpha = 0.5f),
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {

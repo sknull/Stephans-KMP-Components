@@ -115,15 +115,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .conditional(scrollable) { verticalScroll(scrollState) },
                 verticalArrangement = Arrangement.spacedBy(space)
             ) {
                 Text(
-                    modifier = Modifier
-                        .offset(y = halfHeight * -1),
                     text = fieldState.fieldDescriptor.label.asString(),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelSmall,
                 )
 
 
@@ -159,6 +157,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                             if (fieldState.fieldDescriptor.enabled) {
                                 IndicatorButton(
                                     leadingIcon = resources.iconEdit?.let { r -> painterResource(r) },
+                                    leadingIconTint = iconTint,
                                     toolTip = resources.toolTipEdit.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
@@ -171,6 +170,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
 
                                 IndicatorButton(
                                     leadingIcon = resources.iconDelete?.let { r -> painterResource(r) },
+                                    leadingIconTint = iconTint,
                                     toolTip = resources.toolTipDelete.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
