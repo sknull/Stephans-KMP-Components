@@ -1,10 +1,8 @@
 package de.visualdigits.common.presentation.components.form
 
 import de.visualdigits.common.domain.model.FileMode
-import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
-import org.jetbrains.compose.resources.DrawableResource
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter

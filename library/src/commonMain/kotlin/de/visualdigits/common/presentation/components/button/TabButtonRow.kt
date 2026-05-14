@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import de.visualdigits.common.domain.model.UiText
-import org.jetbrains.compose.resources.StringResource
 
 @Composable
 fun TabButtonRow(

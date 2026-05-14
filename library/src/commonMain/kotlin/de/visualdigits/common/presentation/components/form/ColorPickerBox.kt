@@ -17,7 +17,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.util.toHsvColor

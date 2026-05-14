@@ -1,8 +1,5 @@
 package de.visualdigits.common.domain.model.configuration
 
-import kotlin.collections.component1
-import kotlin.collections.component2
-
 /**
  * Base class for all configuration classes.
  */

@@ -43,7 +43,8 @@ fun VerticalCollapsibleBox(
     iconArrowDown: Painter,
     space: Dp = 8.dp,
     paddingContainer: PaddingValues = PaddingValues(bottom = 8.dp),
-    title: String?,
+    title: String? = null,
+    titleContent: (@Composable () -> Unit)? = null,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
@@ -61,6 +62,7 @@ fun VerticalCollapsibleBox(
             paddingContainer = paddingContainer,
             space = space,
             title = title,
+            titleContent = titleContent,
             backgroundColor = backgroundColor,
             shape = shape,
             trailingIcon = trailingIcon,
@@ -74,6 +76,7 @@ fun VerticalCollapsibleBox(
             iconArrowDown = iconArrowDown,
             space = space,
             title = title,
+            titleContent = titleContent,
             unfocusedBorderColor = unfocusedBorderColor,
             focusedBorderColor = focusedBorderColor,
             backgroundColor = backgroundColor,
@@ -95,7 +98,8 @@ fun VerticalCollapsibleBoxFull(
     iconArrowRight: Painter,
     iconArrowDown: Painter,
     space: Dp = 9.dp,
-    title: String?,
+    title: String? = null,
+    titleContent: (@Composable () -> Unit)? = null,
     unfocusedBorderColor: Color,
     focusedBorderColor: Color,
     backgroundColor: Color,
@@ -145,14 +149,17 @@ fun VerticalCollapsibleBoxFull(
                             horizontalArrangement = Arrangement.spacedBy(space),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            title?.let { t ->
+                            if (title != null) {
                                 Text(
                                     modifier = Modifier
                                         .padding(space),
-                                    text = t,
+                                    text = title,
                                     style = MaterialTheme.typography.titleSmall
                                 )
+                            } else if (titleContent != null) {
+                                titleContent()
                             }
+
 
                             Spacer(modifier = Modifier.weight(1f))
 
@@ -219,7 +226,8 @@ fun VerticalCollapsibleBoxTv(
     modifier: Modifier = Modifier,
     paddingContainer: PaddingValues,
     space: Dp = 8.dp,
-    title: String?,
+    title: String? = null,
+    titleContent: (@Composable () -> Unit)? = null,
     backgroundColor: Color,
     shape: Shape,
     trailingIcon: (@Composable () -> Unit)? = null,

@@ -5,7 +5,6 @@ import de.visualdigits.common.domain.model.Table
 import de.visualdigits.common.domain.model.errorhandling.LogMessage
 import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException

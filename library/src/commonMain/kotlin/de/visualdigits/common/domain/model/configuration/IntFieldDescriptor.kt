@@ -2,7 +2,6 @@ package de.visualdigits.common.domain.model.configuration
 
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.IntKeyFactory
-import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Represents a field which is rendered as a text field in the UI.

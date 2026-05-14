@@ -2,7 +2,6 @@ package de.visualdigits.common.domain.model.configuration.keyfactory
 
 import de.visualdigits.common.domain.model.UiText
 import org.jetbrains.compose.resources.DrawableResource
-import java.io.File
 
 class StringListKeyFactory {
 

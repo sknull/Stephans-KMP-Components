@@ -53,8 +53,7 @@ actual fun PlatformVerticalScrollbarBox(
                 .fillMaxSize()
                 .background(backgroundColor)
                 .padding(space)
-                .verticalScroll(scrollState)
-                .padding(end = 10.dp),
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(space)
         ) {
             rows().forEach { row ->

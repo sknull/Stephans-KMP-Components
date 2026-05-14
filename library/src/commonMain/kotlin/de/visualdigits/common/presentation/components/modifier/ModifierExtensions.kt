@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import kotlin.math.PI
 import kotlin.math.atan
 import kotlin.math.cos
-import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
