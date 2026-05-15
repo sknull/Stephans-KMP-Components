@@ -1,6 +1,5 @@
 package de.visualdigits.common.presentation.components.modifier
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -17,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.util.copyFactor
 import de.visualdigits.common.domain.util.toHsvColor
 
-@Composable
 fun Modifier.indicator(
     width: Dp,
     height: Dp,

@@ -33,12 +33,14 @@ expect fun BindBackHandler(isEnabled: Boolean, onBack: () -> Unit)
 expect fun PlatformVerticalScrollbarBox(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.Unspecified,
+    backgroundImage: (@Composable () -> Unit)? = null,
     scrollbarModifier: Modifier = Modifier,
     scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     scrollbarId: String,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     onCommonAction: (CommonAction) -> Unit,
-    space: Dp = 8.dp,
+    padding: Dp = 8.dp,
+    verticalArrangementGap: Dp = 8.dp,
     scrollToTop: (@Composable (LazyListState) -> Unit)? = null,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 )

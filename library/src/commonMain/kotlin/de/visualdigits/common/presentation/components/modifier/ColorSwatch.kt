@@ -1,6 +1,5 @@
 package de.visualdigits.common.presentation.components.modifier
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
@@ -17,7 +16,6 @@ import com.github.skydoves.colorpicker.compose.ColorPickerController
 import de.visualdigits.common.domain.util.copyFactor
 import de.visualdigits.common.domain.util.toHsvColor
 
-@Composable
 fun Modifier.colorSwatch(
     size: Dp,
     selectedColor: Color = Color.Transparent,

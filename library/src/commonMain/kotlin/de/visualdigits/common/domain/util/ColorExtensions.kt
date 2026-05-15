@@ -13,13 +13,18 @@ import de.visualdigits.common.domain.model.HsvColor
  */
 fun Color.copy(hue: Int? = null, saturation: Float? = null, value: Float? = null, alpha: Float = 1.0f): Color {
     val hsvColor = toHsvColor()
-    return hsvColor.toColor(hue = hue, saturation = saturation, value = value, alpha = alpha)
+    return hsvColor.toColor(hue = hue, saturation = saturation?.coerceIn(0f, 1f), value = value?.coerceIn(0f, 1f), alpha = alpha.coerceIn(0f, 1f))
 }
 
 fun Color.copyFactor(hueShift: Int = 0, saturationFactor: Float = 1.0f, valueFactor: Float = 1.0f, alphaFactor: Float = 1.0f): Color {
     val hsvColor = toHsvColor()
 
-    return hsvColor.toColor(hue = (hsvColor.hue + hueShift) % 360, saturation = hsvColor.saturation * saturationFactor, value = hsvColor.value * valueFactor, alpha = alpha * alphaFactor)
+    return hsvColor.toColor(
+        hue = (((hsvColor.hue + hueShift) % 360) + 360) % 360,
+        saturation = (hsvColor.saturation * saturationFactor).coerceIn(0f, 1f),
+        value = (hsvColor.value * valueFactor).coerceIn(0f, 1f),
+        alpha = (alpha * alphaFactor).coerceIn(0f, 1f)
+    )
 }
 
 /**

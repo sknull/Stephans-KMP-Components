@@ -25,12 +25,14 @@ import kotlinx.coroutines.flow.collectLatest
 actual fun PlatformVerticalScrollbarBox(
     modifier: Modifier,
     backgroundColor: Color,
+    backgroundImage: (@Composable () -> Unit)?,
     scrollbarModifier: Modifier,
     scrollbarStyle: PlatformScrollbarStyle,
     scrollbarId: String,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     onCommonAction: (CommonAction) -> Unit,
-    space: Dp,
+    padding: Dp,
+    verticalArrangementGap: Dp,
     scrollToTop: (@Composable (LazyListState) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
@@ -56,8 +58,8 @@ actual fun PlatformVerticalScrollbarBox(
             modifier = modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                .padding(space),
-            verticalArrangement = Arrangement.spacedBy(space),
+                .padding(padding),
+            verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
             state = lazyListState
         ) {
             items(

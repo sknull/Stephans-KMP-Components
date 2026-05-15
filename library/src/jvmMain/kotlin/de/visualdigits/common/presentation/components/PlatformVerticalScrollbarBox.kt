@@ -28,12 +28,14 @@ import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 actual fun PlatformVerticalScrollbarBox(
     modifier: Modifier,
     backgroundColor: Color,
+    backgroundImage: (@Composable () -> Unit)?,
     scrollbarModifier: Modifier,
     scrollbarStyle: PlatformScrollbarStyle,
     scrollbarId: String,
     scrollPosition: MutableMap<String, Pair<Int, Int?>>,
     onCommonAction: (CommonAction) -> Unit,
-    space: Dp,
+    padding: Dp,
+    verticalArrangementGap: Dp,
     scrollToTop: (@Composable (LazyListState) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
@@ -48,13 +50,16 @@ actual fun PlatformVerticalScrollbarBox(
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        if (backgroundImage != null) {
+            backgroundImage()
+        }
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .background(backgroundColor)
-                .padding(space)
+                .padding(end = 10.dp)
                 .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(space)
+            verticalArrangement = Arrangement.spacedBy(verticalArrangementGap)
         ) {
             rows().forEach { row ->
                 row.second()
