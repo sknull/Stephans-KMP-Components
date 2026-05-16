@@ -2,6 +2,7 @@ package de.visualdigits.common.presentation.components.form
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -81,7 +82,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
                 focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                 cursorColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor
+                focusedLabelColor = focusedBorderColor,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onSurface,
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                ),
+
             )
         )
     }
