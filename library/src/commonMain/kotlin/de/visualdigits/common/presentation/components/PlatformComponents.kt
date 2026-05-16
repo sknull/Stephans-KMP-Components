@@ -18,6 +18,7 @@ import de.visualdigits.common.domain.model.UiPlatform
 import de.visualdigits.common.domain.model.platform.ConnectivityMode
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.ScrollIntent
 import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 import java.io.InputStream
 import java.io.OutputStream
@@ -37,11 +38,12 @@ expect fun PlatformVerticalScrollbarBox(
     scrollbarModifier: Modifier = Modifier,
     scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     scrollbarId: String,
-    scrollPosition: MutableMap<String, Pair<Int, Int?>>,
+    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: (CommonAction) -> Unit,
     padding: Dp = 8.dp,
     verticalArrangementGap: Dp = 8.dp,
-    scrollToTop: (@Composable (LazyListState) -> Unit)? = null,
+    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)? = null,
+    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)? = null,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 )
 

@@ -8,6 +8,7 @@ sealed interface CommonAction {
     data class OnScrollPositionChange(
         val id: String,
         val position: Int,
-        val offset: Int? = null
+        val offset: Int? = null,
+        val scrollIntent: ScrollIntent = ScrollIntent.standard
     ): CommonAction
 }

@@ -1,5 +1,6 @@
 package de.visualdigits.common.presentation.components
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.ScrollIntent
 
 @Composable
 actual fun PlatformVerticalScrollbarBox(
@@ -32,11 +34,12 @@ actual fun PlatformVerticalScrollbarBox(
     scrollbarModifier: Modifier,
     scrollbarStyle: PlatformScrollbarStyle,
     scrollbarId: String,
-    scrollPosition: MutableMap<String, Pair<Int, Int?>>,
+    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: (CommonAction) -> Unit,
     padding: Dp,
     verticalArrangementGap: Dp,
-    scrollToTop: (@Composable (LazyListState) -> Unit)?,
+    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
+    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -45,6 +48,7 @@ actual fun PlatformVerticalScrollbarBox(
     LaunchedEffect(scrollState.value) {
         onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, scrollState.value))
     }
+    scrollToTop?.let { st -> st(scrollState, scrollPosition[scrollbarId]?.third) }
 
     Box(
         modifier = Modifier

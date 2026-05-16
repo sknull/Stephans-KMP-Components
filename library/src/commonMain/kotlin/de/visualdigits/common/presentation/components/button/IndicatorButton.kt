@@ -7,8 +7,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.modifier.indicator
@@ -55,6 +59,7 @@ fun IndicatorButton(
     width: Dp = 160.dp,
     height: Dp = 50.dp,
     padding: Dp = 5.dp,
+    paddingValues: PaddingValues = PaddingValues(0.dp),
     buttonColor: Color? = MaterialTheme.colorScheme.surface,
     indicatorPosition: Alignment? = null,
     indicatorColor: Color? = null,
@@ -131,12 +136,42 @@ fun IndicatorButton(
         contentAlignment = Alignment.Center
     ) {
         val paddings = when (indicatorPosition) {
-            Alignment.TopCenter -> listOf(padding * 3, padding, padding, padding)
-            Alignment.BottomCenter -> listOf(padding, padding, padding * 3, padding)
-            Alignment.CenterStart -> listOf(padding, padding, padding, padding * 3)
-            Alignment.CenterEnd -> listOf(padding, padding * 3, padding, padding)
-            Alignment.Center -> listOf(padding * 3, padding * 3, padding * 3, padding * 3)
-            else -> listOf(padding, padding, padding, padding)
+            Alignment.TopCenter -> listOf(
+                padding * 3 + paddingValues.calculateTopPadding(),
+                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                padding + paddingValues.calculateBottomPadding(),
+                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+            )
+            Alignment.BottomCenter -> listOf(
+                padding + paddingValues.calculateTopPadding(),
+                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                padding * 3 + paddingValues.calculateBottomPadding(),
+                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+            )
+            Alignment.CenterStart -> listOf(
+                padding + paddingValues.calculateTopPadding(),
+                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                padding + paddingValues.calculateBottomPadding(),
+                padding * 3 + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+            )
+            Alignment.CenterEnd -> listOf(
+                padding + paddingValues.calculateTopPadding(),
+                padding * 3 + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                padding + paddingValues.calculateBottomPadding(),
+                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+            )
+            Alignment.Center -> listOf(
+                padding * 3 + paddingValues.calculateTopPadding(),
+                padding * 3 + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                padding * 3 + paddingValues.calculateBottomPadding(),
+                padding * 3 + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+            )
+            else -> listOf(
+                padding + paddingValues.calculateTopPadding(),
+                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                padding + paddingValues.calculateBottomPadding(),
+                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+            )
         }
         PlatformToolTip(
             text = toolTip,
@@ -144,53 +179,48 @@ fun IndicatorButton(
             shape = MaterialTheme.shapes.small,
             backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest
         ) {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = paddings[0], end = paddings[1], bottom = paddings[2], start = paddings[3]),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = paddings[0], end = paddings[1], bottom = paddings[2], start = paddings[3]),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (leadingIcon != null) {
-                        Icon(
-                            modifier = Modifier,
-                            painter = leadingIcon,
-                            contentDescription = null,
-                            tint = if (enabled) leadingIconTint else leadingIconTintDisabled
-                        )
-                        if (text != null) Spacer(Modifier.width(space))
-                    } else if (leadingImage != null) {
-                        leadingImage()
-                        if (text != null) Spacer(Modifier.width(space))
-                    }
+                if (leadingIcon != null) {
+                    Icon(
+                        modifier = Modifier,
+                        painter = leadingIcon,
+                        contentDescription = null,
+                        tint = if (enabled) leadingIconTint else leadingIconTintDisabled
+                    )
+                    if (text != null) Spacer(Modifier.width(space))
+                } else if (leadingImage != null) {
+                    leadingImage()
+                    if (text != null) Spacer(Modifier.width(space))
+                }
 
-                    if (text?.isNotEmpty() == true) {
-                        Text(
-                            modifier = Modifier
-                                .weight(1f),
-                            text = text,
-                            textAlign = textAlign,
-                            maxLines = maxLines,
-                            overflow = if (maxLines == 1) TextOverflow.Ellipsis else TextOverflow.Clip,
-                            softWrap = maxLines > 1,
-                            style = textStyle,
-                            color = if (enabled) textColor else textColorDisabled,
-                        )
-                    }
+                if (text?.isNotEmpty() == true) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = text,
+                        textAlign = textAlign,
+                        maxLines = maxLines,
+                        overflow = if (maxLines == 1) TextOverflow.Ellipsis else TextOverflow.Clip,
+                        softWrap = maxLines > 1,
+                        style = textStyle,
+                        color = if (enabled) textColor else textColorDisabled,
+                    )
+                }
 
-                    if (trailingIcon != null) {
-                        if (text != null || leadingIcon != null) Spacer(Modifier.width(space))
-                        Icon(
-                            modifier = Modifier,
-                            painter = trailingIcon,
-                            contentDescription = null,
-                            tint = if (enabled) trailingIconTint else trailingIconTintDisabled
-                        )
-                    }
+                if (trailingIcon != null) {
+                    if (text != null || leadingIcon != null) Spacer(Modifier.width(space))
+                    Icon(
+                        modifier = Modifier,
+                        painter = trailingIcon,
+                        contentDescription = null,
+                        tint = if (enabled) trailingIconTint else trailingIconTintDisabled
+                    )
                 }
             }
         }

@@ -17,6 +17,7 @@ import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.presentation.components.form.ConfigurationEditForm
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.ScrollIntent
 import org.jetbrains.compose.resources.painterResource
 import stephans_kmp_components.composeapp.generated.resources.Res
 import stephans_kmp_components.composeapp.generated.resources.icon_add_24px
@@ -31,7 +32,7 @@ fun FormDemo(
     state: DemoState,
     setState: (DemoState) -> Unit
 ) {
-    val scrollPosition= mutableMapOf<String, Pair<Int, Int?>>()
+    val scrollPosition= mutableMapOf<String, Triple<Int, Int?, ScrollIntent>>()
 
     Box(
         modifier = Modifier

@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
+import kotlin.math.roundToLong
 import kotlin.math.sin
 
 private val formatterWithSeconds = DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -48,11 +49,17 @@ fun StudioClock(
     colors: StudioClockColors = defaultStudioClockColors,
     showSeconds: Boolean = true,
     showDate: Boolean = true,
-    showYear: Boolean = false
+    showYear: Boolean = false,
+    showFrames: Boolean = false,
+    framesPerSecond: Int = 24
 ) {
 
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+    var currentFrame by remember { mutableStateOf(0) }
     val textMeasurer = rememberTextMeasurer()
+
+    val millisPerFrame = (1000.0f / framesPerSecond).roundToLong()
+    val frameDigits = framesPerSecond.toString().length
 
     Box(
         modifier = modifier
@@ -62,7 +69,13 @@ fun StudioClock(
                 currentTime = System.currentTimeMillis()
 
                 val millisUntilNextChange = if (showSeconds) {
-                    1000L - (System.currentTimeMillis() % 1000L)
+                    val progress = System.currentTimeMillis() % 1000L
+                    if (showFrames) {
+                        currentFrame = (progress / millisPerFrame).toInt()
+                        millisPerFrame - System.currentTimeMillis() % millisPerFrame
+                    } else {
+                        1000L - progress
+                    }
                 } else {
                     60000L - (System.currentTimeMillis() % 60000L)
                 }
@@ -75,6 +88,7 @@ fun StudioClock(
         )
         val currentTimeString = if (showSeconds) formatterWithSeconds.format(currentDateTime) else formatterWithoutSeconds.format(currentDateTime)
         val currentDateString = if (showYear) formatterDateWithYear.format(currentDateTime) else formatterDate.format(currentDateTime)
+        val currentFrameString = (currentFrame + 1).toString().padStart(frameDigits, '0')
 
         // probe dpi
         val testFontSize = 100f
@@ -127,6 +141,20 @@ fun StudioClock(
                         )
                     )
 
+                    val frameLayoutResult = textMeasurer.measure(
+                        text = currentFrameString,
+                        maxLines = 1,
+                        style = TextStyle(
+                            fontFamily = fontFamily,
+                            fontSize = finalFontSize,
+                            shadow = Shadow(
+                                color = colors.colorTime.copy(alpha = 0.7f),
+                                offset = Offset(0f, 0f),
+                                blurRadius = unit.toFloat()
+                            )
+                        )
+                    )
+
                     onDrawWithContent {
                         drawCircle(
                             color = colors.colorBackground
@@ -135,24 +163,24 @@ fun StudioClock(
                         drawDots(
                             offsetX = offsetX,
                             offsetY = offsetY,
-                            angle = (radius - 18 * unit).toFloat(),
+                            angle = (radius - (if (showSeconds) 18 else 12) * unit).toFloat(),
                             size = (3.0 * unit).toFloat(),
                             numberOfDots = 12,
                             highlightedDots = currentDateTime.hour % 12,
                             colorHighlighted = colors.colorHours,
-                            colorDimmed = colors.colorHours.copy(value = 0.3f)
+                            colorDimmed = colors.colorHours.copy(value = 0.2f)
                         )
 
                         // minutes
                         drawDots(
                             offsetX = offsetX,
                             offsetY = offsetY,
-                            angle = (radius - 10 * unit).toFloat(),
+                            angle = (radius - (if (showSeconds) 10 else 4) * unit).toFloat(),
                             size = (2.0 * unit).toFloat(),
                             numberOfDots = 60,
                             highlightedDots = currentDateTime.minute,
                             colorHighlighted = colors.colorMinutes,
-                            colorDimmed = colors.colorMinutes.copy(value = 0.3f)
+                            colorDimmed = colors.colorMinutes.copy(value = 0.2f)
                         )
 
                         // seconds
@@ -165,7 +193,7 @@ fun StudioClock(
                                 numberOfDots = 60,
                                 highlightedDots = currentDateTime.second,
                                 colorHighlighted = colors.colorSeconds,
-                                colorDimmed = colors.colorSeconds.copy(value = 0.3f)
+                                colorDimmed = colors.colorSeconds.copy(value = 0.2f)
                             )
                         }
 
@@ -186,6 +214,17 @@ fun StudioClock(
                                     y = offsetY - dateLayoutResult.size.height / 2.0f + timeLayoutResult.size.height * 0.75f
                                 ),
                                 color = colors.colorDate
+                            )
+                        }
+
+                        if (showFrames) {
+                            drawText(
+                                textLayoutResult = frameLayoutResult,
+                                topLeft = Offset(
+                                    x = offsetX - frameLayoutResult.size.width / 2.0f,
+                                    y = offsetY - dateLayoutResult.size.height / 2.0f + timeLayoutResult.size.height * 0.75f + frameLayoutResult.size.height * 0.6f
+                                ),
+                                color = colors.colorTime
                             )
                         }
 
@@ -214,7 +253,8 @@ private fun ContentDrawScope.drawDots(
         val x = offsetX + angle * cos(ar)
         val y = offsetY + angle * sin(ar)
         val drawCenter = Offset(x = x, y = y)
-        val baseColor = if (a < highlightOffset) colorHighlighted else colorDimmed
+        val isOn = a < highlightOffset
+        val baseColor = if (isOn) colorHighlighted else colorDimmed
 
         // glow
         drawCircle(
@@ -250,7 +290,7 @@ private fun ContentDrawScope.drawDots(
         drawCircle(
             brush = Brush.radialGradient(
                 colorStops = arrayOf(
-                    0.0f to Color.White.copy(alpha = 0.5f),
+                    0.0f to Color.White.copy(alpha = if (isOn) 0.8f else 0.4f),
                     1.0f to Color.Transparent,
                 ),
                 center = drawCenter - Offset(size * 0.25f, size * 0.25f),

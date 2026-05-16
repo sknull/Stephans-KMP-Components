@@ -33,6 +33,7 @@ import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarB
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.ScrollIntent
 import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 
 
@@ -53,7 +54,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     iconOk: Painter,
     tooltipCancel: UiText,
     iconCancel: Painter,
-    scrollPosition: MutableMap<String, Pair<Int, Int?>>,
+    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     scrollbarId: String,
     scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     fieldHeight: Dp = Dp.Unspecified,
