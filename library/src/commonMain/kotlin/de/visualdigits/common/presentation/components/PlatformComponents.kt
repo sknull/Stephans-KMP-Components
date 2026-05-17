@@ -40,7 +40,6 @@ expect fun PlatformVerticalScrollbarBox(
     scrollbarId: String,
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: (CommonAction) -> Unit,
-    padding: Dp = 8.dp,
     verticalArrangementGap: Dp = 8.dp,
     scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)? = null,
     scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)? = null,

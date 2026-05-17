@@ -137,7 +137,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                     )
                                 }
                             }
-                       }
+                        }
                 }
             }),
             Pair("spacer", @Composable {

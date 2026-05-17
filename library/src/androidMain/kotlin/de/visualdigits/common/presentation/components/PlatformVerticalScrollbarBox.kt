@@ -33,7 +33,6 @@ actual fun PlatformVerticalScrollbarBox(
     scrollbarId: String,
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: (CommonAction) -> Unit,
-    padding: Dp,
     verticalArrangementGap: Dp,
     scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
     scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
@@ -60,8 +59,7 @@ actual fun PlatformVerticalScrollbarBox(
         LazyColumn(
             modifier = modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                .padding(padding),
+                .background(MaterialTheme.colorScheme.surfaceContainerLow),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
             state = lazyListState
         ) {
