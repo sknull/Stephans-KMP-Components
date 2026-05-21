@@ -34,8 +34,6 @@ actual fun PlatformVerticalScrollbarBox(
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: (CommonAction) -> Unit,
     verticalArrangementGap: Dp,
-    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
-    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val items = rows()
@@ -46,13 +44,16 @@ actual fun PlatformVerticalScrollbarBox(
             initialFirstVisibleItemScrollOffset = scrollPosition[scrollbarId]?.second?:0
         )
 
-        scrollToTopLazy?.let { st -> st(lazyListState, scrollPosition[scrollbarId]?.third) }
-
         LaunchedEffect(lazyListState) {
             snapshotFlow {
                 lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
             }.collectLatest { (index, offset) ->
                 onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset))
+            }
+        }
+        LaunchedEffect(scrollPosition[scrollbarId]) {
+            if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
+                lazyListState.scrollToItem(0, 0)
             }
         }
 

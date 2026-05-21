@@ -37,8 +37,6 @@ actual fun PlatformVerticalScrollbarBox(
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: (CommonAction) -> Unit,
     verticalArrangementGap: Dp,
-    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
-    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -47,7 +45,12 @@ actual fun PlatformVerticalScrollbarBox(
     LaunchedEffect(scrollState.value) {
         onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, scrollState.value))
     }
-    scrollToTop?.let { st -> st(scrollState, scrollPosition[scrollbarId]?.third) }
+    LaunchedEffect(scrollPosition[scrollbarId]) {
+        if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
+println("JVM Scrolltotop")
+            scrollState.animateScrollTo(0)
+        }
+    }
 
     Box(
         modifier = Modifier
