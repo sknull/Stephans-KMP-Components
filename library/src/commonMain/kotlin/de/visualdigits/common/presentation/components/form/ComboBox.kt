@@ -77,6 +77,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                 unfocusedBorderColor = unfocusedBorderColor,
                 focusedBorderColor = focusedBorderColor
             )
+
             ExposedDropdownMenu(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.secondary),

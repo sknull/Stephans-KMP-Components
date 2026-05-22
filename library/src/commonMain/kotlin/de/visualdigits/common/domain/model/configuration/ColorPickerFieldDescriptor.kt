@@ -8,6 +8,8 @@ import de.visualdigits.common.domain.model.configuration.keyfactory.ColorKeyFact
  * Represents a field which is rendered as a text field in the UI.
  */
 class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
+    group: UiText? = null,
+
     key: K,
 
     label: UiText,
@@ -22,12 +24,13 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
 
 ): AbstractFieldDescriptor<Color, Color, K, K, String>(
     fieldClass = Color::class,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
-    default = default,
     readOnly = readOnly,
+    default = default,
     valid = valid,
     keyFactory = ColorKeyFactory
 )

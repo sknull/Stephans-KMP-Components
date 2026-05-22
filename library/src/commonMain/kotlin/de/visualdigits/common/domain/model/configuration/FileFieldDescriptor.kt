@@ -10,6 +10,8 @@ import java.io.File
  * Represents a field which should provide a file or directory picker.
  */
 class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
+    group: UiText? = null,
+
     key: K,
 
     label: UiText,
@@ -29,6 +31,7 @@ class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     },
 ): AbstractFieldDescriptor<File, File, K, K, String>(
     fieldClass = File::class,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,

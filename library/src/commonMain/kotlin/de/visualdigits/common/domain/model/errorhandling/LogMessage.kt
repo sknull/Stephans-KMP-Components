@@ -7,6 +7,7 @@ import java.time.OffsetDateTime
 
 @Immutable
 data class LogMessage(
+    val tag: String,
     val timestamp: OffsetDateTime,
     val severity: Severity,
     val message: String,
@@ -23,28 +24,39 @@ data class LogMessage(
         return "${severity}: ${message}$stackTrace"
     }
 
+    inline fun log(withTag: String = "") {
+        val logger = Logger.withTag(withTag)
+        when (severity) {
+            Severity.Info -> logger.i(message, throwable)
+            Severity.Warn -> logger.w(message, throwable)
+            Severity.Error -> logger.e(message, throwable)
+            Severity.Verbose -> logger.v(message, throwable)
+            Severity.Debug -> logger.d(message, throwable)
+            Severity.Assert -> logger.a(message, throwable)
+        }
+    }
+
     @Suppress("NOTHING_TO_INLINE")
     companion object {
 
-        val log = Logger.withTag("this")
+        val logs: MutableList<LogMessage> = mutableListOf()
 
         inline fun log(
             severity: Severity,
             message: String,
-            throwable: Throwable? = null
-        ): LogMessage = LogMessage(OffsetDateTime.now(), severity, message, throwable)
-
-        inline fun log(
-            logMessage: LogMessage
-        ) {
-            when (logMessage.severity) {
-                Severity.Info -> log.i(logMessage.message, logMessage.throwable)
-                Severity.Warn -> log.w(logMessage.message, logMessage.throwable)
-                Severity.Error -> log.e(logMessage.message, logMessage.throwable)
-                Severity.Verbose -> log.v(logMessage.message, logMessage.throwable)
-                Severity.Debug -> log.d(logMessage.message, logMessage.throwable)
-                Severity.Assert -> log.a(logMessage.message, logMessage.throwable)
-            }
+            throwable: Throwable? = null,
+            withTag: String = ""
+        ): LogMessage {
+            val logMessage = LogMessage(
+                tag = withTag,
+                timestamp = OffsetDateTime.now(),
+                severity = severity,
+                message = message,
+                throwable = throwable
+            )
+            logMessage.log(withTag)
+            logs.add(logMessage)
+            return logMessage
         }
     }
 }

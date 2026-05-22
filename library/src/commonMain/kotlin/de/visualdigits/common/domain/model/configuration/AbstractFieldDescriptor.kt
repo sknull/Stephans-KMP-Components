@@ -10,11 +10,14 @@ import kotlin.reflect.KClass
  */
 abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>, FK : FieldKey<FK>, O : Any>(
 
-    /** The class of this field (can also be calloction class). */
+    /** The class of this field (can also be collection class). */
     val fieldClass: KClass<V>,
 
     /** Sometimes we need to know the item class of a collection as this is erased on runtime from the fieldclass. */
     val itemClass: KClass<S>? = null,
+
+    /** An optional group for fields */
+    val group: UiText? = null,
 
     /** The primary key of this field. */
     val key: K,

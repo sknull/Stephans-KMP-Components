@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -31,6 +33,7 @@ import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarBox
 import de.visualdigits.common.presentation.components.button.IndicatorButton
+import de.visualdigits.common.presentation.components.container.OutlinedGroupBox
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
@@ -74,7 +77,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
 ) {
     PlatformVerticalScrollbarBox(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(end = 10.dp + space),
         backgroundColor = backgroundColor,
         scrollbarModifier = scrollbarModifier,
         scrollbarStyle = scrollbarStyle,
@@ -92,50 +96,63 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                     configuration
                         .fieldDescriptors
                         .filter { fieldDescriptor -> fieldDescriptor.visible }
-                        .forEach { fieldDescriptor ->
-                            @Suppress("UNCHECKED_CAST")
-                            fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, FK, Any>
-                            val currentValue = configuration.getUnsafe(fieldDescriptor.key)
-                            key(fieldDescriptor.key) {
-                                val fieldState = remember(currentValue, fieldDescriptor) {
-                                    val currentOption = fieldDescriptor.currentOption(configuration)
-                                    FieldState(
-                                        configuration = configuration,
-                                        fieldDescriptor = fieldDescriptor,
-                                        options = fieldDescriptor.options(configuration, configurationRef),
-                                        currentValue = currentValue,
-                                        currentOption = currentOption,
-                                        currentOptionUIText = currentOption?.second ?: UiText.DynamicString(
-                                            currentOption?.first?.toString() ?: ""
-                                        ),
-                                        valid = fieldDescriptor.valid(configuration, currentValue)
-                                    )
-                                }
-
-                                Box(
-                                    modifier = Modifier
-                                        .width(300.dp)
+                        .groupBy { fieldDescriptor -> fieldDescriptor.group }
+                        .forEach { (group, fieldDescriptors) ->
+                            if (group != null) {
+                                OutlinedGroupBox(
+                                    label = { Text(group.asString()) },
+                                    space = space
                                 ) {
-                                    EditableField(
-                                        fieldState = fieldState,
-                                        titleChooseDirectory = titleChooseDirectory,
-                                        titleChooseFile = titleChooseFile,
-                                        iconFolder = iconFolder,
-                                        editableListResources = editableListResources,
-                                        fieldHeight = fieldHeight,
-                                        space = space,
-                                        unfocusedBorderColor = unfocusedBorderColor,
-                                        focusedBorderColor = focusedBorderColor,
-                                        visibilityIcon = visibilityIcon,
-                                        iconTint = iconTint,
-                                        buttonColor = buttonColor,
-                                        buttonShape = buttonShape,
-                                        containerShape = containerShape,
-                                        textStyle = textStyle,
-                                        onValueChange = onValueChange,
-                                        deleteAllowed = deleteAllowed
-                                    )
+                                    FlowRow(
+                                        modifier = Modifier.fillMaxSize(),
+                                        horizontalArrangement = Arrangement.spacedBy(space),
+                                        verticalArrangement = Arrangement.spacedBy(space)
+                                    ) {
+                                        renderFields(
+                                            fieldDescriptors = fieldDescriptors,
+                                            configuration = configuration,
+                                            configurationRef = configurationRef,
+                                            titleChooseDirectory = titleChooseDirectory,
+                                            titleChooseFile = titleChooseFile,
+                                            iconFolder = iconFolder,
+                                            editableListResources = editableListResources,
+                                            fieldHeight = fieldHeight,
+                                            space = space,
+                                            unfocusedBorderColor = unfocusedBorderColor,
+                                            focusedBorderColor = focusedBorderColor,
+                                            visibilityIcon = visibilityIcon,
+                                            iconTint = iconTint,
+                                            buttonColor = buttonColor,
+                                            buttonShape = buttonShape,
+                                            containerShape = containerShape,
+                                            textStyle = textStyle,
+                                            onValueChange = onValueChange,
+                                            deleteAllowed = deleteAllowed
+                                        )
+                                    }
                                 }
+                            } else {
+                                renderFields(
+                                    fieldDescriptors = fieldDescriptors,
+                                    configuration = configuration,
+                                    configurationRef = configurationRef,
+                                    titleChooseDirectory = titleChooseDirectory,
+                                    titleChooseFile = titleChooseFile,
+                                    iconFolder = iconFolder,
+                                    editableListResources = editableListResources,
+                                    fieldHeight = fieldHeight,
+                                    space = space,
+                                    unfocusedBorderColor = unfocusedBorderColor,
+                                    focusedBorderColor = focusedBorderColor,
+                                    visibilityIcon = visibilityIcon,
+                                    iconTint = iconTint,
+                                    buttonColor = buttonColor,
+                                    buttonShape = buttonShape,
+                                    containerShape = containerShape,
+                                    textStyle = textStyle,
+                                    onValueChange = onValueChange,
+                                    deleteAllowed = deleteAllowed
+                                )
                             }
                         }
                 }
@@ -175,6 +192,76 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                 }
             })
         )
+    }
+}
+
+@Composable
+private fun <FK : FieldKey<FK>, K : FieldKey<K>> renderFields(
+    fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>>,
+    configuration: AbstractConfiguration<*, K>,
+    configurationRef: AbstractConfiguration<*, FK>?,
+    titleChooseDirectory: UiText,
+    titleChooseFile: UiText,
+    iconFolder: Painter,
+    editableListResources: EditableListResources,
+    fieldHeight: Dp,
+    space: Dp,
+    unfocusedBorderColor: Color,
+    focusedBorderColor: Color,
+    visibilityIcon: Painter?,
+    iconTint: Color,
+    buttonColor: Color,
+    buttonShape: Shape,
+    containerShape: Shape,
+    textStyle: TextStyle,
+    onValueChange: (KeyValue) -> Unit,
+    deleteAllowed: (AbstractFieldDescriptor<*, *, *, *, *>?, String) -> Boolean
+) {
+    fieldDescriptors.forEach { fieldDescriptor ->
+        @Suppress("UNCHECKED_CAST")
+        fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, FK, Any>
+        val currentValue = configuration.getUnsafe(fieldDescriptor.key)
+        key(fieldDescriptor.key) {
+            val fieldState = remember(currentValue, fieldDescriptor) {
+                val currentOption = fieldDescriptor.currentOption(configuration, configurationRef)
+                FieldState(
+                    configuration = configuration,
+                    fieldDescriptor = fieldDescriptor,
+                    options = fieldDescriptor.options(configuration, configurationRef),
+                    currentValue = currentValue,
+                    currentOption = currentOption,
+                    currentOptionUIText = currentOption?.second ?: UiText.DynamicString(
+                        currentOption?.first?.toString() ?: ""
+                    ),
+                    valid = fieldDescriptor.valid(configuration, currentValue)
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .width(300.dp)
+            ) {
+                EditableField(
+                    fieldState = fieldState,
+                    titleChooseDirectory = titleChooseDirectory,
+                    titleChooseFile = titleChooseFile,
+                    iconFolder = iconFolder,
+                    editableListResources = editableListResources,
+                    fieldHeight = fieldHeight,
+                    space = space,
+                    unfocusedBorderColor = unfocusedBorderColor,
+                    focusedBorderColor = focusedBorderColor,
+                    visibilityIcon = visibilityIcon,
+                    iconTint = iconTint,
+                    buttonColor = buttonColor,
+                    buttonShape = buttonShape,
+                    containerShape = containerShape,
+                    textStyle = textStyle,
+                    onValueChange = onValueChange,
+                    deleteAllowed = deleteAllowed
+                )
+            }
+        }
     }
 }
 

@@ -7,6 +7,8 @@ import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFac
  * Represents a field which is rendered as a text field in the UI.
  */
 class StringFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
+    group: UiText? = null,
+
     key: K,
 
     label: UiText,
@@ -20,6 +22,7 @@ class StringFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
 ): AbstractFieldDescriptor<String, String, K, K, String>(
     fieldClass = String::class,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,

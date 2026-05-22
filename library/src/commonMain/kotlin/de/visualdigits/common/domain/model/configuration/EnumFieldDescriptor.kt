@@ -11,6 +11,8 @@ import kotlin.reflect.KClass
 class EnumFieldDescriptor<V : Any, K : FieldKey<K>>(
     fieldClass: KClass<V>,
 
+    group: UiText? = null,
+
     key: K,
 
     label: UiText,
@@ -27,6 +29,7 @@ class EnumFieldDescriptor<V : Any, K : FieldKey<K>>(
     keyFactory: KeyFactory<V>
 ): AbstractFieldDescriptor<V, V, K, K, V>(
     fieldClass = fieldClass,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,

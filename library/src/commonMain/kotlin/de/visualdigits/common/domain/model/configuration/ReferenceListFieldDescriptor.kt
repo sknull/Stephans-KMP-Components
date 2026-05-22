@@ -11,6 +11,8 @@ import kotlin.reflect.KClass
  * Instead it can provide options from elsewhere.
  */
 class ReferenceListFieldDescriptor<V : Any, K : FieldKey<K>, FK : FieldKey<FK>>(
+    group: UiText? = null,
+
     fieldClass: KClass<V>,
 
     key: K,
@@ -29,6 +31,7 @@ class ReferenceListFieldDescriptor<V : Any, K : FieldKey<K>, FK : FieldKey<FK>>(
     keyFactory: KeyFactory<V>
 ): AbstractFieldDescriptor<V, V, K, FK, V>(
     fieldClass = fieldClass,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,

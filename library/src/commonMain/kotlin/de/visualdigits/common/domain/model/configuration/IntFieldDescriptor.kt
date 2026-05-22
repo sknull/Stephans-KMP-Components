@@ -7,6 +7,8 @@ import de.visualdigits.common.domain.model.configuration.keyfactory.IntKeyFactor
  * Represents a field which is rendered as a text field in the UI.
  */
 class IntFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
+    group: UiText? = null,
+
     key: K,
 
     label: UiText,
@@ -20,12 +22,13 @@ class IntFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
 ): AbstractFieldDescriptor<Int, Int, K, K, Int>(
     fieldClass = Int::class,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
-    default = default,
     readOnly = readOnly,
+    default = default,
     valid = valid,
     keyFactory = IntKeyFactory,
 )

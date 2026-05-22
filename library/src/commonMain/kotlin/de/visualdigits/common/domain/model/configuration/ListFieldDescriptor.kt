@@ -12,6 +12,8 @@ import kotlin.reflect.KClass
 open class ListFieldDescriptor<F : Any, K : FieldKey<K>>(
     fieldClass: KClass<F>,
 
+    group: UiText? = null,
+
     key: K,
 
     label: UiText,
@@ -29,12 +31,13 @@ open class ListFieldDescriptor<F : Any, K : FieldKey<K>>(
 ): AbstractFieldDescriptor<MutableList<F>, F, K, K, F>(
     fieldClass = MutableList::class as KClass<MutableList<F>>,
     itemClass = fieldClass,
+    group = group,
     key = key,
     label = label,
     toolTip = toolTip,
     visible = visible,
-    default = default,
     readOnly = readOnly,
+    default = default,
     valid = valid,
     options = options,
     keyFactory = keyFactory

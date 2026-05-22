@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,14 +22,14 @@ import de.visualdigits.common.presentation.components.PlatformToolTip
 @Composable
 fun OutlinedGroupBox(
     modifier: Modifier = Modifier,
-    label: String,
+    label: (@Composable () -> Unit)? = null,
     toolTip: String? = null,
     space: Dp,
-    toolTipBackgroundColor: Color,
-    toolTipShape: Shape,
-    unfocusedBorderColor: Color,
-    focusedBorderColor: Color,
-    buttonShape: Shape,
+    toolTipBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
+    toolTipShape: Shape = MaterialTheme.shapes.extraSmall,
+    focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
+    unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
+    buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     valid: () -> Boolean? = { true },
     content: @Composable () -> Unit
 ) {
@@ -45,14 +45,14 @@ fun OutlinedGroupBox(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = space),
-            value = "",
+            value = " ",
             onValueChange = { },
             readOnly = true,
             singleLine = false,
             interactionSource = interactionSource,
             decorationBox = { _ ->
                 OutlinedTextFieldDefaults.DecorationBox(
-                    value = "",
+                    value = " ",
                     innerTextField = {
                         Box(
                             modifier = Modifier
@@ -62,7 +62,7 @@ fun OutlinedGroupBox(
                         }
                     },
                     visualTransformation = VisualTransformation.None,
-                    label = { Text(label) },
+                    label = label,
                     singleLine = false,
                     enabled = true,
                     isError = false,

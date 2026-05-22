@@ -37,10 +37,12 @@ expect fun PlatformVerticalScrollbarBox(
     backgroundImage: (@Composable () -> Unit)? = null,
     scrollbarModifier: Modifier = Modifier,
     scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
-    scrollbarId: String,
-    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
-    onCommonAction: (CommonAction) -> Unit,
+    scrollbarId: String? = null,
+    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
+    onCommonAction: ((CommonAction) -> Unit)? = null,
     verticalArrangementGap: Dp = 8.dp,
+    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)? = null,
+    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)? = null,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 )
 

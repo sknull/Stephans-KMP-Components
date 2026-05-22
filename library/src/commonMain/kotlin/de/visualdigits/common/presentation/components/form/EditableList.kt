@@ -179,7 +179,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                                         currentText = null
                                         items.removeAt(index)
                                         showDialog = false
-                                        onValueChange(KeyValue(fieldState.fieldDescriptor, items.joinToString(",")))
+                                        onValueChange(KeyValue(fieldState.fieldDescriptor, items))
                                     }
                                 )
                             }

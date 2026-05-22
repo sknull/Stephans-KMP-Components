@@ -8,6 +8,7 @@ import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescrip
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ListFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.StringFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import de.visualdigits.common.domain.model.configuration.keyfactory.StringListKeyFactory
@@ -19,6 +20,22 @@ class DemoConfiguration(
 
     companion object {
         val DESCRIPTORS = listOf(
+            StringFieldDescriptor(
+                group = UiText.DynamicString("credentials"),
+                key = DC.username,
+                label = UiText.DynamicString("Username"),
+                toolTip = UiText.DynamicString("Username"),
+                valid = { _, value -> value != null },
+            ),
+
+            PasswordFieldDescriptor(
+                group = UiText.DynamicString("credentials"),
+                key = DC.password,
+                label = UiText.DynamicString("Password"),
+                toolTip = UiText.DynamicString("Password"),
+                valid = { _, value -> value != null },
+            ),
+
             StringFieldDescriptor(
                 key = DC.text,
                 label = UiText.DynamicString("Text"),

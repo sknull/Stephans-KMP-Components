@@ -15,7 +15,7 @@ fun String.expandVariables(values: Map<String, String?>): String {
 }
 
 fun String.toComposeColor(): Color {
-    val hex = this.removePrefix("#")
+    val hex = this.removePrefix("#").removePrefix("0x")
 
     return when (hex.length) {
         6 -> {

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -30,10 +29,12 @@ actual fun PlatformVerticalScrollbarBox(
     backgroundImage: (@Composable () -> Unit)?,
     scrollbarModifier: Modifier,
     scrollbarStyle: PlatformScrollbarStyle,
-    scrollbarId: String,
+    scrollbarId: String?,
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
-    onCommonAction: (CommonAction) -> Unit,
+    onCommonAction: ((CommonAction) -> Unit)?,
     verticalArrangementGap: Dp,
+    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
+    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val items = rows()
@@ -48,7 +49,9 @@ actual fun PlatformVerticalScrollbarBox(
             snapshotFlow {
                 lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
             }.collectLatest { (index, offset) ->
-                onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset))
+                if (scrollbarId != null && onCommonAction != null) {
+                    onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset))
+                }
             }
         }
         LaunchedEffect(scrollPosition[scrollbarId]) {
@@ -56,6 +59,7 @@ actual fun PlatformVerticalScrollbarBox(
                 lazyListState.scrollToItem(0, 0)
             }
         }
+        scrollToTopLazy?.let { st -> st(lazyListState, scrollPosition[scrollbarId]?.third) }
 
         LazyColumn(
             modifier = modifier
