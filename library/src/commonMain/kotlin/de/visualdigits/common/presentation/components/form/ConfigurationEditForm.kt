@@ -96,11 +96,11 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                     configuration
                         .fieldDescriptors
                         .filter { fieldDescriptor -> fieldDescriptor.visible }
-                        .groupBy { fieldDescriptor -> fieldDescriptor.group }
+                        .groupBy { fieldDescriptor -> fieldDescriptor.group?.asString() }
                         .forEach { (group, fieldDescriptors) ->
                             if (group != null) {
                                 OutlinedGroupBox(
-                                    label = { Text(group.asString()) },
+                                    label = { Text(group) },
                                     space = space
                                 ) {
                                     FlowRow(
