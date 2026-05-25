@@ -147,6 +147,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                             horizontalArrangement = Arrangement.spacedBy(space)
                         ) {
                             Text(
+                                modifier = Modifier.weight(1f),
                                 text = item,
                                 style = MaterialTheme.typography.bodySmall
                             )
@@ -292,7 +293,10 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         leadingIconTint = iconTint
                     ) {
                         items.update(previousItems)
-                        onValueChange(KeyValue(fieldState.fieldDescriptor, items.joinToString(",")))
+                        onValueChange(KeyValue(
+                            descriptor = fieldState.fieldDescriptor,
+                            value = items
+                        ))
                         showDialog = false
                     }
                 }
