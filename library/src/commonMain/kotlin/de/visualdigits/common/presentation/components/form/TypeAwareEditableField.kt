@@ -61,7 +61,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 || fieldState.fieldDescriptor.itemClass?.java?.let { fc -> Enumerable::class.java.isAssignableFrom(fc) } == true -> {
             if (fieldState.fieldDescriptor.fieldClass == BooleanEnum::class) {
                 SwitchBox(
-                    fieldState = fieldState,
+                    enabled = fieldState.fieldDescriptor.enabled,
+                    currentValue = fieldState.currentValue,
                     label = fieldState.fieldDescriptor.label.asString(),
                     fieldHeight = fieldHeight,
                     focusedBorderColor = focusedBorderColor,

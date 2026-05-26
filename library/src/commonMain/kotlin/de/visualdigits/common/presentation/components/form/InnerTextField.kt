@@ -18,8 +18,8 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.FieldKey
-import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
@@ -27,8 +27,9 @@ import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHei
 @OptIn(ExperimentalMaterial3Api::class)
 fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
     modifier: Modifier,
-    fieldState: FieldState<K, FK>,
-    enabled: Boolean = fieldState.fieldDescriptor.enabled,
+    label: UiText,
+    toolTip: UiText?,
+    enabled: Boolean,
     space: Dp,
     toolTipBackgroundColor: Color,
     toolTipShape: Shape,
@@ -42,7 +43,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
 ) {
     val halfHeight = minimizedLabelHalfHeight(textStyle)
 
-    val toolTip = fieldState.fieldDescriptor.toolTip?.asString()
+    val toolTip = toolTip?.asString()
     PlatformToolTip(
         text = toolTip,
         space = space,
@@ -56,7 +57,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
             textStyle = textStyle.copy(fontSize = textStyle.fontSize * 0.8f),
             label = {
                 Text(
-                    text = fieldState.fieldDescriptor.label.asString(),
+                    text = label.asString(),
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

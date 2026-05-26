@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
+import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import org.jetbrains.compose.resources.painterResource
 
 
@@ -65,17 +66,19 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                 modifier = modifier
                     .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     .exposedDropdownSize(),
-                fieldState = fieldState,
+                enabled = true,
+                label = fieldState.fieldDescriptor.label,
+                toolTip = fieldState.fieldDescriptor.toolTip,
                 space = space,
                 toolTipBackgroundColor = toolTipBackgroundColor,
                 toolTipShape = toolTipShape,
-                textStyle = textStyle,
                 fieldHeight = fieldHeight,
+                textStyle = textStyle,
                 buttonShape = buttonShape,
                 textFieldState = textFieldState,
                 expanded = expanded,
-                unfocusedBorderColor = unfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor
             )
 
             ExposedDropdownMenu(
@@ -84,7 +87,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                fieldState.options.forEach { option ->
+                BooleanEnum.options.forEach { option ->
                     // todo this is probably incorrect due to changes in field descriptor
                     val text = option.second?.asString() ?:""
                     DropdownMenuItem(
@@ -129,13 +132,14 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
     } else {
         InnerTextField(
             modifier = modifier,
-            fieldState = fieldState,
-            enabled = false,
+            label = fieldState.fieldDescriptor.label,
+            toolTip = fieldState.fieldDescriptor.toolTip,
+            enabled = fieldState.fieldDescriptor.enabled,
             space = space,
             toolTipBackgroundColor = toolTipBackgroundColor,
             toolTipShape = toolTipShape,
-            textStyle = textStyle,
             fieldHeight = fieldHeight,
+            textStyle = textStyle,
             buttonShape = buttonShape,
             textFieldState = textFieldState,
             expanded = expanded,

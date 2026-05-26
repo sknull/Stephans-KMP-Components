@@ -35,9 +35,10 @@ import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 
 @Composable
-fun <K : FieldKey<K>, FK : FieldKey<FK>> SwitchBox(
+fun SwitchBox(
     modifier: Modifier = Modifier,
-    fieldState: FieldState<K, FK>,
+    enabled: Boolean = true,
+    currentValue: Any? = false,
     switchColors: SwitchColors = SwitchDefaults.colors().copy(
         checkedTrackColor = MaterialTheme.colorScheme.onSurface,
         checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -48,19 +49,19 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> SwitchBox(
     ),
     space: Dp = 8.dp,
     label: String,
-    fieldHeight: Dp,
-    focusedBorderColor: Color,
-    unfocusedBorderColor: Color,
-    buttonShape: Shape,
+    fieldHeight: Dp = Dp.Unspecified,
+    focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
+    unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
+    buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     textStyle: TextStyle,
     alignForForm: Boolean = true,
     onValueChange: (BooleanEnum) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val booleanValue = when (val v = fieldState.currentValue) {
-        is BooleanEnum -> v.booleanValue
-        is Boolean -> v
-        is String -> v.toBoolean()
+    val booleanValue = when (currentValue) {
+        is BooleanEnum -> currentValue.booleanValue
+        is Boolean -> currentValue
+        is String -> currentValue.toBoolean()
         else -> false
     }
     var checked by remember { mutableStateOf(booleanValue) }
@@ -84,7 +85,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> SwitchBox(
                     overflow = TextOverflow.Ellipsis
                 )
             },
-            enabled = fieldState.fieldDescriptor.enabled,
+            enabled = enabled,
             shape = buttonShape,
             readOnly = true,
             state = textFieldState,

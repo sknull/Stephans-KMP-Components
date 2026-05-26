@@ -39,8 +39,9 @@ import de.visualdigits.common.presentation.components.util.conditional
 @Composable
 fun VerticalCollapsibleBox(
     modifier: Modifier = Modifier,
-    iconArrowRight: Painter,
-    iconArrowDown: Painter,
+    enabled: Boolean = true,
+    iconArrowRight: Painter? = null,
+    iconArrowDown: Painter? = null,
     space: Dp = 8.dp,
     paddingContainer: PaddingValues = PaddingValues(bottom = 8.dp),
     title: String? = null,
@@ -71,6 +72,7 @@ fun VerticalCollapsibleBox(
     } else {
         VerticalCollapsibleBoxFull(
             modifier = modifier,
+            enabled = enabled,
             paddingContainer = paddingContainer,
             iconArrowRight = iconArrowRight,
             iconArrowDown = iconArrowDown,
@@ -94,9 +96,10 @@ fun VerticalCollapsibleBox(
 @Composable
 fun VerticalCollapsibleBoxFull(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     paddingContainer: PaddingValues,
-    iconArrowRight: Painter,
-    iconArrowDown: Painter,
+    iconArrowRight: Painter? = null,
+    iconArrowDown: Painter? = null,
     space: Dp = 9.dp,
     title: String? = null,
     titleContent: (@Composable () -> Unit)? = null,
@@ -117,7 +120,7 @@ fun VerticalCollapsibleBoxFull(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor, shape)
-            .conditional(animateContent) {
+            .conditional(animateContent && enabled) {
                 animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioNoBouncy,
@@ -163,7 +166,7 @@ fun VerticalCollapsibleBoxFull(
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            if (isExpanded) {
+                            if (isExpanded && iconArrowDown != null) {
                                 Icon(
                                     modifier = Modifier
                                         .padding(space),
@@ -171,7 +174,7 @@ fun VerticalCollapsibleBoxFull(
                                     contentDescription = null,
                                     tint = iconTint
                                 )
-                            } else {
+                            } else if (iconArrowRight != null){
                                 Icon(
                                     modifier = Modifier
                                         .padding(space),
