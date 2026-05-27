@@ -5,21 +5,26 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +51,8 @@ fun VerticalCollapsibleBox(
     paddingContainer: PaddingValues = PaddingValues(bottom = 8.dp),
     title: String? = null,
     titleContent: (@Composable () -> Unit)? = null,
+    isTitleHoverable: Boolean = false,
+    titleHoverColor: Color = Color.Transparent,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
@@ -73,6 +80,8 @@ fun VerticalCollapsibleBox(
         VerticalCollapsibleBoxFull(
             modifier = modifier,
             enabled = enabled,
+            isTitleHoverable = isTitleHoverable,
+            titleHoverColor = titleHoverColor,
             paddingContainer = paddingContainer,
             iconArrowRight = iconArrowRight,
             iconArrowDown = iconArrowDown,
@@ -103,6 +112,8 @@ fun VerticalCollapsibleBoxFull(
     space: Dp = 9.dp,
     title: String? = null,
     titleContent: (@Composable () -> Unit)? = null,
+    isTitleHoverable: Boolean = false,
+    titleHoverColor: Color,
     unfocusedBorderColor: Color,
     focusedBorderColor: Color,
     backgroundColor: Color,
@@ -115,11 +126,14 @@ fun VerticalCollapsibleBoxFull(
     content: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
 
     BasicTextField(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor, shape)
+            .conditional(isTitleHoverable) { hoverable(interactionSource = interactionSource) }
+            .conditional(isTitleHoverable) { pointerHoverIcon(PointerIcon.Hand) }
             .conditional(animateContent && enabled) {
                 animateContentSize(
                     animationSpec = spring(
@@ -145,46 +159,67 @@ fun VerticalCollapsibleBoxFull(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .conditional(isHovered) { background(titleHoverColor) }
                                 .pointerHoverIcon(PointerIcon.Hand)
                                 .clickable {
                                     onStateChange(!isExpanded)
                                 },
-                            horizontalArrangement = Arrangement.spacedBy(space),
+//                            horizontalArrangement = Arrangement.spacedBy(space),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if (title != null) {
-                                Text(
-                                    modifier = Modifier
-                                        .padding(space),
-                                    text = title,
-                                    style = MaterialTheme.typography.titleSmall
-                                )
-                            } else if (titleContent != null) {
-                                titleContent()
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                            ) {
+                                if (title != null) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(space),
+                                        text = title,
+                                        style = MaterialTheme.typography.titleSmall
+                                    )
+                                } else if (titleContent != null) {
+                                    titleContent()
+                                }
                             }
 
-
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            if (isExpanded && iconArrowDown != null) {
-                                Icon(
-                                    modifier = Modifier
-                                        .padding(space),
-                                    painter = iconArrowDown,
-                                    contentDescription = null,
-                                    tint = iconTint
-                                )
-                            } else if (iconArrowRight != null){
-                                Icon(
-                                    modifier = Modifier
-                                        .padding(space),
-                                    painter = iconArrowRight,
-                                    contentDescription = null,
-                                    tint = iconTint
-                                )
+                            Box(
+                                modifier = Modifier
+                                    .width(40.dp)
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (isExpanded && iconArrowDown != null) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .width(30.dp)
+                                            .height(30.dp)
+                                            .padding(space),
+                                        painter = iconArrowDown,
+                                        contentDescription = null,
+                                        tint = iconTint
+                                    )
+                                } else if (iconArrowRight != null){
+                                    Icon(
+                                        modifier = Modifier
+                                            .width(30.dp)
+                                            .height(30.dp)
+                                            .padding(space),
+                                        painter = iconArrowRight,
+                                        contentDescription = null,
+                                        tint = iconTint
+                                    )
+                                }
                             }
 
-                            trailingIcon?.let { ti -> ti() }
+                            trailingIcon?.let { ti ->
+                                Box(
+                                    modifier = Modifier
+                                ) {
+                                    ti()
+                                }
+                            }
                         }
 
                         if (isExpanded) {

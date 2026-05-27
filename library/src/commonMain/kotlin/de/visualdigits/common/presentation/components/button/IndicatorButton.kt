@@ -48,6 +48,7 @@ import de.visualdigits.common.presentation.components.util.conditional
 @Composable
 fun IndicatorButton(
     modifier: Modifier = Modifier,
+    isHoverable: Boolean = true,
     space: Dp = 8.dp,
     text: String? = null,
     maxLines: Int = 1,
@@ -87,8 +88,8 @@ fun IndicatorButton(
         .height(height)
     if (enabled) {
         indicatorModifier = indicatorModifier
-            .hoverable(interactionSource = interactionSource)
-            .pointerHoverIcon(PointerIcon.Hand)
+            .conditional(isHoverable) { hoverable(interactionSource = interactionSource) }
+            .conditional(isHoverable) { pointerHoverIcon(PointerIcon.Hand) }
             .platformFocus(onClick)
             .conditional(onClick != null) {
                 clickable(
