@@ -36,3 +36,11 @@ fun String.toHsvColor(): HsvColor {
         HsvColor.fromHex(this)
     }
 }
+
+fun Color.toWebColor(): String {
+    return String.format("#%08X", toArgb())
+}
+
+fun Color.toWebColorShort(): String {
+    return String.format("#%06X", 0xFFFFFF and toArgb())
+}

@@ -11,7 +11,7 @@ fun TabButtonRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal,
     initializeViewModel: () -> Unit = {},
-    items: LinkedHashMap<UiText, @Composable () -> Unit>,
+    items: LinkedHashMap<Pair<String, UiText>, @Composable () -> Unit>,
     selectedTab: () -> Int,
     button: @Composable (UiText, Int) -> Unit
 ) {
@@ -22,7 +22,7 @@ fun TabButtonRow(
         horizontalArrangement = horizontalArrangement
     ) {
         items.keys.forEachIndexed { index, label ->
-            button(label, index)
+            button(label.second, index)
         }
     }
 

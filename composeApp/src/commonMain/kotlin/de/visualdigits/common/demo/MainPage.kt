@@ -44,14 +44,14 @@ fun MainPage() {
 
     var state by remember { mutableStateOf(DemoState()) }
 
-    val items = linkedMapOf<UiText, @Composable (() -> Unit)>(
-        UiText.DynamicString("Studio Clock") to {
+    val items = linkedMapOf<Pair<String, UiText>, @Composable (() -> Unit)>(
+        Pair("Studio Clock", UiText.DynamicString("Studio Clock")) to {
             StudioClockDemo()
         },
-        UiText.DynamicString("Button Demo") to {
+        Pair("Button Demo", UiText.DynamicString("Button Demo")) to {
             ButtonDemo()
         },
-        UiText.DynamicString("Form Demo") to {
+        Pair("Form Demo", UiText.DynamicString("Form Demo")) to {
             FormDemo(
                 state = state,
                 setState = { newState ->
