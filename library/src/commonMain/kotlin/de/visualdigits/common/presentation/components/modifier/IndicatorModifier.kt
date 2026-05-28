@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.HsvColor
 import de.visualdigits.common.domain.util.copyFactor
-import de.visualdigits.common.domain.util.toHsvColor
 
 fun Modifier.indicator(
     width: Dp,
@@ -134,13 +134,13 @@ fun Modifier.indicator(
                 // background
                 val finalButtonColor = buttonColor ?: Color.Black
                 if (!flatLook) {
-                    val hsvColor = finalButtonColor.toHsvColor()
+                    val hsvColor = HsvColor.fromComposeColor(finalButtonColor)
                     val valueFactor = if (hsvColor.value < 0.5f) 1.5f else 0.5f
                     drawRect(
                         brush = Brush.verticalGradient(
                             colorStops = arrayOf(
                                 0.0f to finalButtonColor,
-                                1.0f to finalButtonColor.copyFactor(valueFactor = valueFactor),
+                                1.0f to hsvColor.copy(value = hsvColor.value * valueFactor).toComposeColor(),
                             )
                         )
                     )

@@ -1,46 +1,47 @@
 package de.visualdigits.common.presentation.components
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.takeOrElse
-import de.visualdigits.common.domain.util.copy
+import de.visualdigits.common.domain.model.HsvColor
 
 class StudioClockColors(
-    val colorHours: Color = Color(0xFFFF0040),
-    val colorMinutes: Color = Color(0xFFFB7C9C),
-    val colorSeconds: Color = Color(0xFFFF0040),
-    val colorTime: Color = Color(0xFFFF0040),
-    val colorDate: Color = Color(0xFF9E4F62),
+    val colorHours: HsvColor = HsvColor.fromComposeColor(Color(0xFFFF0040)),
+    val colorMinutes: HsvColor = HsvColor.fromComposeColor(Color(0xFFFB7C9C)),
+    val colorSeconds: HsvColor = HsvColor.fromComposeColor(Color(0xFFFF0040)),
+    val colorTime: HsvColor = HsvColor.fromComposeColor(Color(0xFFFF0040)),
+    val colorDate: HsvColor = HsvColor.fromComposeColor(Color(0xFF9E4F62)),
     val colorBackground: Color = Color(0xdd000000),
 ) {
     companion object {
-        val STUDIO_CLOCK_COLOR_DEFAULT: Color = Color(0xFFFF0040)
+        val STUDIO_CLOCK_COLOR_DEFAULT: HsvColor = HsvColor.fromComposeColor(Color(0xFFFF0040))
     }
 
     fun copy(
-        colorHours: Color = this.colorHours,
-        colorMinutes: Color = this.colorMinutes,
-        colorSeconds: Color = this.colorSeconds,
-        colorTime: Color = this.colorTime,
-        colorDate: Color = this.colorDate,
+        colorHours: HsvColor = this.colorHours,
+        colorMinutes: HsvColor = this.colorMinutes,
+        colorSeconds: HsvColor = this.colorSeconds,
+        colorTime: HsvColor = this.colorTime,
+        colorDate: HsvColor = this.colorDate,
         colorBackground: Color = this.colorBackground,
     ) = StudioClockColors(
-        colorHours.takeOrElse { this.colorHours },
-        colorMinutes.takeOrElse { this.colorMinutes },
-        colorSeconds.takeOrElse { this.colorSeconds },
-        colorTime.takeOrElse { this.colorTime },
-        colorDate.takeOrElse { this.colorDate },
-        colorBackground.takeOrElse { this.colorBackground }
+        colorHours,
+        colorMinutes,
+        colorSeconds,
+        colorTime,
+        colorDate,
+        colorBackground
     )
 }
 
 val defaultStudioClockColors: StudioClockColors
     get() = studioClockColors(spotColor = StudioClockColors.STUDIO_CLOCK_COLOR_DEFAULT)
 
-fun studioClockColors(spotColor: Color): StudioClockColors = StudioClockColors(
-    colorHours = spotColor,
-    colorMinutes = spotColor,
-    colorSeconds = spotColor,
-    colorTime = spotColor,
-    colorDate = spotColor.copy(saturation = 0.25f, value = 0.75f),
-    colorBackground = Color(0xdd000000),
-)
+fun studioClockColors(spotColor: HsvColor): StudioClockColors {
+    return StudioClockColors(
+        colorHours = spotColor,
+        colorMinutes = spotColor,
+        colorSeconds = spotColor,
+        colorTime = spotColor,
+        colorDate = spotColor.copy(saturation = spotColor.saturation * 0.5f, value = spotColor.value * 0.75f),
+        colorBackground = Color(0xdd000000),
+    )
+}

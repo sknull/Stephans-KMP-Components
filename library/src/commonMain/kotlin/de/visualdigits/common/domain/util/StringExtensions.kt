@@ -2,6 +2,7 @@ package de.visualdigits.common.domain.util
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import de.visualdigits.common.domain.model.HsvColor
 
 /**
  * Expands the variables in format ${name}
@@ -28,10 +29,10 @@ fun String.toComposeColor(): Color {
     }
 }
 
-fun Color.toWebColor(): String {
-    return String.format("#%08X", toArgb())
-}
-
-fun Color.toWebColorShort(): String {
-    return String.format("#%06X", 0xFFFFFF and toArgb())
+fun String.toHsvColor(): HsvColor {
+    return if (startsWith("#") || startsWith("0x")) {
+        HsvColor.fromComposeColor(toComposeColor())
+    } else {
+        HsvColor.fromHex(this)
+    }
 }

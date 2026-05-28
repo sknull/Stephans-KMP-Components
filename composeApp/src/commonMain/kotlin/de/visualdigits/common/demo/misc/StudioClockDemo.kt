@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.HsvColor
 import de.visualdigits.common.presentation.components.StudioClock
 import de.visualdigits.common.presentation.components.StudioClockColors
 import org.jetbrains.compose.resources.Font
@@ -28,11 +29,11 @@ fun StudioClockDemo() {
                 .fillMaxSize(),
             fontFamily = FontFamily(Font(Res.font.digital_dream_skew_fat)),
             colors = StudioClockColors(
-                colorHours = Color(0xFFFF0040),
-                colorMinutes = Color(0xFFFB7C9C),
-                colorSeconds = Color(0xFFFF0040),
-                colorTime = Color(0xFFFF0040),
-                colorDate = Color(0xFF9E4F62),
+                colorHours = HsvColor.fromComposeColor(Color(0xFFFF0040)),
+                colorMinutes = HsvColor.fromComposeColor(Color(0xFFFB7C9C)),
+                colorSeconds = HsvColor.fromComposeColor(Color(0xFFFF0040)),
+                colorTime = HsvColor.fromComposeColor(Color(0xFFFF0040)),
+                colorDate = HsvColor.fromComposeColor(Color(0xFF9E4F62)),
                 colorBackground = Color(0xdd000000),
             ),
             showSeconds = true,

@@ -1,6 +1,6 @@
 package de.visualdigits.common.domain.model.configuration
 
-import androidx.compose.ui.graphics.Color
+import de.visualdigits.common.domain.model.HsvColor
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.ColorKeyFactory
 
@@ -18,12 +18,12 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     visible: Boolean = true,
     readOnly: Boolean = false,
 
-    default: Color? = null,
+    default: HsvColor? = null,
 
     valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
 
-): AbstractFieldDescriptor<Color, Color, K, K, String>(
-    fieldClass = Color::class,
+): AbstractFieldDescriptor<HsvColor, HsvColor, K, K, String>(
+    fieldClass = HsvColor::class,
     group = group,
     key = key,
     label = label,

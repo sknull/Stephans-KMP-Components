@@ -22,8 +22,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
-import de.visualdigits.common.domain.util.copy
-import de.visualdigits.common.domain.util.copyFactor
+import de.visualdigits.common.domain.model.HsvColor
 import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.LocalDateTime
@@ -120,7 +119,7 @@ fun StudioClock(
                             fontFamily = fontFamily,
                             fontSize = finalFontSize,
                             shadow = Shadow(
-                                color = colors.colorTime.copy(alpha = 0.7f),
+                                color = colors.colorTime.toComposeColor().copy(alpha = 0.7f),
                                 offset = Offset(0f, 0f),
                                 blurRadius = unit.toFloat()
                             )
@@ -134,7 +133,7 @@ fun StudioClock(
                             fontFamily = fontFamily,
                             fontSize = finalFontSize * 0.5f,
                             shadow = Shadow(
-                                color = colors.colorDate.copy(alpha = 0.7f),
+                                color = colors.colorDate.toComposeColor().copy(alpha = 0.7f),
                                 offset = Offset(0f, 0f),
                                 blurRadius = unit.toFloat()
                             )
@@ -148,7 +147,7 @@ fun StudioClock(
                             fontFamily = fontFamily,
                             fontSize = finalFontSize,
                             shadow = Shadow(
-                                color = colors.colorTime.copy(alpha = 0.7f),
+                                color = colors.colorTime.toComposeColor().copy(alpha = 0.7f),
                                 offset = Offset(0f, 0f),
                                 blurRadius = unit.toFloat()
                             )
@@ -203,7 +202,7 @@ fun StudioClock(
                                 x = offsetX - timeLayoutResult.size.width / 2.0f,
                                 y = offsetY - timeLayoutResult.size.height / 2.0f - (if(showDate) 3.0f else 0.0f)
                             ),
-                            color = colors.colorTime
+                            color = colors.colorTime.toComposeColor()
                         )
 
                         if (showDate) {
@@ -213,7 +212,7 @@ fun StudioClock(
                                     x = offsetX - dateLayoutResult.size.width / 2.0f,
                                     y = offsetY - dateLayoutResult.size.height / 2.0f + timeLayoutResult.size.height * 0.75f
                                 ),
-                                color = colors.colorDate
+                                color = colors.colorDate.toComposeColor()
                             )
                         }
 
@@ -224,7 +223,7 @@ fun StudioClock(
                                     x = offsetX - frameLayoutResult.size.width / 2.0f,
                                     y = offsetY - dateLayoutResult.size.height / 2.0f + timeLayoutResult.size.height * 0.75f + frameLayoutResult.size.height * 0.6f
                                 ),
-                                color = colors.colorTime
+                                color = colors.colorTime.toComposeColor()
                             )
                         }
 
@@ -243,8 +242,8 @@ private fun ContentDrawScope.drawDots(
     size: Float,
     numberOfDots: Int,
     highlightedDots: Int,
-    colorHighlighted: Color,
-    colorDimmed: Color
+    colorHighlighted: HsvColor,
+    colorDimmed: HsvColor
 ) {
     var a = 0.0f
     val highlightOffset = 360.0f / numberOfDots * (highlightedDots + 1)
@@ -261,7 +260,7 @@ private fun ContentDrawScope.drawDots(
             brush = Brush.radialGradient(
                 colorStops = arrayOf(
                     0.5f to Color.Transparent,
-                    0.51f to baseColor.copy(alpha = 0.3f),
+                    0.51f to baseColor.toComposeColor().copy(alpha = 0.3f),
                     1.0f to Color.Transparent,
                 ),
                 center = drawCenter,
@@ -276,8 +275,8 @@ private fun ContentDrawScope.drawDots(
         drawCircle(
             brush = Brush.radialGradient(
                 colorStops = arrayOf(
-                    0.0f to baseColor,
-                    1.0f to baseColor.copyFactor(valueFactor = 0.2f),
+                    0.0f to baseColor.toComposeColor(),
+                    1.0f to baseColor.copy(value = baseColor.value * 0.2f).toComposeColor(),
                 ),
                 center = drawCenter,
                 radius = size

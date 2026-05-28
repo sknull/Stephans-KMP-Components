@@ -17,9 +17,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.HsvColor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
-import de.visualdigits.common.domain.util.toHsvColor
 import de.visualdigits.common.presentation.components.ColorPicker
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
@@ -36,7 +36,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
     buttonShape: Shape,
     textStyle: TextStyle,
     alignForForm: Boolean = true,
-    onValueChange: (Color) -> Unit,
+    onValueChange: (HsvColor) -> Unit,
 ) {
     val textFieldState = rememberTextFieldState(" ")
     val halfHeight = minimizedLabelHalfHeight(textStyle)
@@ -67,14 +67,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
                     modifier = Modifier
                         .padding(start = space * 3, top = space, end = space, bottom = space),
                     label = label,
-                    initialColor = (fieldState.currentValue as? Color)?.toHsvColor(),
+                    initialColor = fieldState.currentValue as? HsvColor,
                     size = fieldHeight * 3,
                     space = space,
                     hasSwatch = true
-                ) { colorEnvelope ->
-                    if (colorEnvelope.fromUser) {
-                        onValueChange(colorEnvelope.color)
-                    }
+                ) { hsvColor ->
+                    onValueChange(hsvColor)
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(

@@ -11,50 +11,25 @@ import de.visualdigits.common.domain.model.HsvColor
  * value 0.0f - 1.0f
  *
  */
-fun Color.copy(hue: Int? = null, saturation: Float? = null, value: Float? = null, alpha: Float = 1.0f): Color {
-    val hsvColor = toHsvColor()
-    return hsvColor.toColor(hue = hue, saturation = saturation?.coerceIn(0f, 1f), value = value?.coerceIn(0f, 1f), alpha = alpha.coerceIn(0f, 1f))
+fun Color.copy(hue: Int = 0, saturation: Float = 1.0f, value: Float = 1.0f, alpha: Float = 1.0f): Color {
+    return HsvColor.fromComposeColor(this)
+        .copy(
+            hue = ((hue % 360) + 360) % 360,
+            saturation = saturation.coerceIn(0f, 1f),
+            value = value.coerceIn(0f, 1f),
+        )
+        .toComposeColor()
+        .copy(alpha = alpha)
 }
 
 fun Color.copyFactor(hueShift: Int = 0, saturationFactor: Float = 1.0f, valueFactor: Float = 1.0f, alphaFactor: Float = 1.0f): Color {
-    val hsvColor = toHsvColor()
-
-    return hsvColor.toColor(
-        hue = (((hsvColor.hue + hueShift) % 360) + 360) % 360,
-        saturation = (hsvColor.saturation * saturationFactor).coerceIn(0f, 1f),
-        value = (hsvColor.value * valueFactor).coerceIn(0f, 1f),
-        alpha = (alpha * alphaFactor).coerceIn(0f, 1f)
-    )
-}
-
-/**
- * Returns this color expressed as hue, saturation, value
- *
- * hue 0 - 360
- * saturation 0.0f - 1.0f
- * value 0.0f - 1.0f
- */
-fun Color.toHsvColor(): HsvColor {
-    val r = red
-    val g = green
-    val b = blue
-
-    val max = maxOf(r, maxOf(g, b))
-    val min = minOf(r, minOf(g, b))
-    val delta = max - min
-
-    var h = 0f
-    if (delta != 0f) {
-        h = when (max) {
-            r -> 60f * (((g - b) / delta) % 6f)
-            g -> 60f * (((b - r) / delta) + 2f)
-            else -> 60f * (((r - g) / delta) + 4f)
-        }
-    }
-    if (h < 0f) h += 360f
-
-    val s = if (max == 0f) 0f else delta / max
-    max
-
-    return HsvColor(hue = h.toInt(), saturation = s, value = max)
+    val hsvColor = HsvColor.fromComposeColor(this)
+    return hsvColor
+        .copy(
+            hue = (((hsvColor.hue + hueShift) % 360) + 360) % 360,
+            saturation = (hsvColor.saturation * saturationFactor).coerceIn(0f, 1f),
+            value = (hsvColor.value * valueFactor).coerceIn(0f, 1f),
+        )
+        .toComposeColor()
+        .copy(alpha = this.alpha * alphaFactor)
 }

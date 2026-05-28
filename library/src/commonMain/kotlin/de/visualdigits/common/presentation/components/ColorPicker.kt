@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
-import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.visualdigits.common.domain.model.HsvColor
@@ -32,9 +33,20 @@ fun ColorPicker(
     size: Dp = 200.dp,
     space: Dp,
     hasSwatch: Boolean = true,
-    onColorChanged: (colorEnvelope: ColorEnvelope) -> Unit = {}
+    onColorChanged: (hsvColor: HsvColor) -> Unit = {}
 ) {
     val controller = rememberColorPickerController()
+
+    val composeColor = remember(initialColor) {
+        initialColor?.toComposeColor() ?: Color.Transparent
+    }
+
+    LaunchedEffect(composeColor) {
+        if (controller.selectedColor.value != composeColor && composeColor != Color.Transparent) {
+            controller.selectByColor(composeColor, fromUser = false)
+        }
+    }
+
     Column(
         modifier = modifier
             .width(size)
@@ -50,23 +62,23 @@ fun ColorPicker(
             textAlign = TextAlign.Start
         )
 
-        val initialColor1 = initialColor?.toColor() ?: Color.Transparent
-
         HsvColorPicker(
             modifier = Modifier
                 .pointerHoverIcon(PointerIcon.Hand)
                 .width(size)
                 .height(size),
             controller = controller,
-            initialColor = initialColor1,
-            onColorChanged = onColorChanged
+            onColorChanged = { colorEnvelope ->
+                if (colorEnvelope.fromUser) {
+                    onColorChanged(HsvColor.fromComposeColor(colorEnvelope.color))
+                }
+            }
         )
 
         BrightnessSlider(
             modifier = Modifier
                 .pointerHoverIcon(PointerIcon.Hand)
                 .height(35.dp),
-            initialColor = initialColor1,
             controller = controller,
         )
 
