@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
-import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import org.jetbrains.compose.resources.painterResource
 
 
@@ -77,8 +76,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                 buttonShape = buttonShape,
                 textFieldState = textFieldState,
                 expanded = expanded,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedBorderColor = unfocusedBorderColor
+                unfocusedBorderColor = unfocusedBorderColor,
+                focusedBorderColor = focusedBorderColor
             )
 
             ExposedDropdownMenu(
@@ -87,7 +86,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                BooleanEnum.options.forEach { option ->
+                fieldState.options.forEach { option ->
                     // todo this is probably incorrect due to changes in field descriptor
                     val text = option.second?.asString() ?:""
                     DropdownMenuItem(

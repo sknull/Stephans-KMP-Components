@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
 import java.time.OffsetDateTime
+import java.util.Collections.synchronizedList
 
 @Immutable
 data class LogMessage(
@@ -39,7 +40,7 @@ data class LogMessage(
     @Suppress("NOTHING_TO_INLINE")
     companion object {
 
-        val logs: MutableList<LogMessage> = mutableListOf()
+        val logs: MutableList<LogMessage> = synchronizedList(mutableListOf())
 
         inline fun log(
             severity: Severity,
