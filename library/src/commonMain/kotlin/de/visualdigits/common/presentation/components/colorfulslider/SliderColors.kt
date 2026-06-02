@@ -69,7 +69,7 @@ data class SliderBrushColor(
 object MaterialSliderDefaults {
 
     @Composable
-    private fun primarySolidColor() = MaterialTheme.colorScheme.primary
+    private fun primarySolidColor() = MaterialTheme.colorScheme.background
 
     /*
         Thumb

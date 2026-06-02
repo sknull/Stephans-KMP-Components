@@ -9,7 +9,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +33,7 @@ import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
@@ -92,15 +92,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
                 onValueChange(value.text)
             },
             singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = finalUnfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor
-            ),
+            colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
             trailingIcon = {
                 visibilityIcon?.let { vi ->
                     Icon(

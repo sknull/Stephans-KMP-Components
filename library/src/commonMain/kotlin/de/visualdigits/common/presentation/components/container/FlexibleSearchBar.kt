@@ -1,6 +1,5 @@
 package de.visualdigits.common.presentation.components.container
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -114,7 +113,7 @@ fun FlexibleSearchBar(
                     onExpandedChange?.let { oec -> oec(v) }
                 },
                 shape = MaterialTheme.shapes.extraSmall,
-                colors = SearchBarDefaults.colors(),
+                colors = SearchBarDefaults.colors(containerColor = Color.Transparent),
                 tonalElevation = SearchBarDefaults.TonalElevation,
                 shadowElevation = SearchBarDefaults.ShadowElevation,
                 content = content,

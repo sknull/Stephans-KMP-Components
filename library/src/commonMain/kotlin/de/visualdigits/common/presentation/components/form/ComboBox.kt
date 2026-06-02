@@ -82,12 +82,11 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
 
             ExposedDropdownMenu(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                    .background(MaterialTheme.colorScheme.background),
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
                 fieldState.options.forEach { option ->
-                    // todo this is probably incorrect due to changes in field descriptor
                     val text = option.second?.asString() ?:""
                     DropdownMenuItem(
                         modifier = Modifier
@@ -115,13 +114,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                                     modifier = Modifier
                                         .height(30.dp),
                                     text = t.asString(),
-                                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSecondary)
+                                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground)
                                 )
                             } ?: Text(
                                 modifier = Modifier
                                     .height(30.dp),
                                 text = text1,
-                                style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSecondary)
+                                style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground)
                             )
                         }
                     )

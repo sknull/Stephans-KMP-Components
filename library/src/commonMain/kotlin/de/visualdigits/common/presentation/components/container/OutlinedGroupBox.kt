@@ -14,9 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
-import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.color
 import de.visualdigits.common.presentation.components.PlatformToolTip
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
 
 @Composable
@@ -67,19 +66,13 @@ fun OutlinedGroupBox(
                     enabled = true,
                     isError = false,
                     interactionSource = interactionSource,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = if (valid() == true) unfocusedBorderColor else Severity.Error.color(),
-                        focusedBorderColor = focusedBorderColor,
-                    ),
+                    colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
                     container = {
                         OutlinedTextFieldDefaults.Container(
                             enabled = true,
                             isError = false,
                             interactionSource = interactionSource,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedBorderColor = if (valid() == true) unfocusedBorderColor else Severity.Error.color(),
-                                focusedBorderColor = focusedBorderColor,
-                            ),
+                            colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
                             shape = buttonShape,
                         )
                     },

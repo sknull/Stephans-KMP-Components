@@ -66,7 +66,7 @@ fun IndicatorButton(
     indicatorColor: Color? = null,
     flatLook: Boolean = true,
     horizontalColors: List<Color>? = null,
-    hoverColor: Color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.2f),
+    hoverColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
     shape: Shape = MaterialTheme.shapes.extraSmall,
     selected: Boolean = false,
     leadingImage: (@Composable () -> Unit)? = null,

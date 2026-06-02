@@ -40,6 +40,7 @@ import de.visualdigits.common.domain.model.UiPlatform
 import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.platformFocus
 import de.visualdigits.common.presentation.components.util.conditional
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
 @Composable
 fun VerticalCollapsibleBox(
@@ -238,20 +239,14 @@ fun VerticalCollapsibleBoxFull(
                 enabled = true,
                 isError = false,
                 interactionSource = interactionSource,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = unfocusedBorderColor,
-                    focusedBorderColor = focusedBorderColor,
-                ),
+                colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 OutlinedTextFieldDefaults.Container(
                     enabled = true,
                     isError = false,
                     interactionSource = interactionSource,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = unfocusedBorderColor,
-                        focusedBorderColor = focusedBorderColor
-                    ),
+                    colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
                     shape = shape,
                 )
             }

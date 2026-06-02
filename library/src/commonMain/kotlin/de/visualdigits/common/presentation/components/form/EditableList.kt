@@ -68,7 +68,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     containerShape: Shape = MaterialTheme.shapes.small,
-    buttonColor: Color = MaterialTheme.colorScheme.onTertiary,
+    buttonColor: Color = MaterialTheme.colorScheme.surface,
     visibilityIcon: Painter? = null,
     textStyle: TextStyle,
     scrollable: Boolean = false,

@@ -2,10 +2,8 @@ package de.visualdigits.common.presentation.components.form
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +22,7 @@ import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
@@ -75,20 +74,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
                 onValueChange(value.text)
             },
             singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = finalUnfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor,
-                selectionColors = TextSelectionColors(
-                    handleColor = MaterialTheme.colorScheme.onSurface,
-                    backgroundColor = MaterialTheme.colorScheme.background,
-                ),
-
-            )
+            colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor)
         )
     }
 }

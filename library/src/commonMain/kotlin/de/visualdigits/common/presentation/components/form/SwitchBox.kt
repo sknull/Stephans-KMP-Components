@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
@@ -28,25 +27,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.visualdigits.common.domain.model.configuration.FieldKey
-import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
+import de.visualdigits.common.presentation.components.util.switchBoxColors
 
 @Composable
 fun SwitchBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     currentValue: Any? = false,
-    switchColors: SwitchColors = SwitchDefaults.colors().copy(
-        checkedTrackColor = MaterialTheme.colorScheme.onSurface,
-        checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        checkedBorderColor = MaterialTheme.colorScheme.onSurface,
-        uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-        uncheckedThumbColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        uncheckedBorderColor = MaterialTheme.colorScheme.onSecondaryContainer
-    ),
+    switchColors: SwitchColors = switchBoxColors(),
     space: Dp = 8.dp,
     label: String,
     fieldHeight: Dp = Dp.Unspecified,
@@ -103,15 +95,7 @@ fun SwitchBox(
                     )
                 }
             },
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = unfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor
-            )
+            colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor)
         )
     }
 }

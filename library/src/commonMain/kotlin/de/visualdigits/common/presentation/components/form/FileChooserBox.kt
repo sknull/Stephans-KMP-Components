@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,6 +23,7 @@ import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -109,15 +109,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
             shape = buttonShape,
             onValueChange = onValueChange,
             singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = finalUnfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor
-            )
+            colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor)
         )
     }
 }

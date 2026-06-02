@@ -9,7 +9,7 @@ fun Severity.color(): Color {
         Severity.Warn -> Color(0xffffff00)
         Severity.Error -> Color(0xffff0000)
         Severity.Verbose -> Color(0xff666666)
-        Severity.Debug -> Color(0xffaaaaaa)
+        Severity.Debug -> Color(0xFF6535FB)
         Severity.Assert -> Color(0xffff7700)
     }
 }

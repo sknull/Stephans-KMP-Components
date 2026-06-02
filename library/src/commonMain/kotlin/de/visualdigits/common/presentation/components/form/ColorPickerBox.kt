@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,6 +22,7 @@ import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.presentation.components.ColorPicker
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
@@ -43,7 +43,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
             .conditional(!alignForForm) { offset(y = halfHeight * -1.0f) }
     ) {
         OutlinedTextField(
@@ -66,7 +65,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
                 ColorPicker(
                     modifier = Modifier
                         .padding(start = space * 3, top = space, end = space, bottom = space),
-                    label = label,
                     initialColor = fieldState.currentValue as? HsvColor,
                     size = fieldHeight * 3,
                     space = space,
@@ -75,15 +73,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
                     onValueChange(hsvColor)
                 }
             },
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = unfocusedBorderColor,
-                focusedBorderColor = focusedBorderColor,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
-                focusedLabelColor = focusedBorderColor
-            )
+            colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor)
         )
     }
 }

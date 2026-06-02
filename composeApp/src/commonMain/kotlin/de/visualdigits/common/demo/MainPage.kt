@@ -196,15 +196,8 @@ fun MainPage() {
             )
         ),
         colorScheme = darkColorScheme(
-            primary = Color(0xFF3C3F40),
-            onPrimary = Color(0xFFFFFFFF),
-            onPrimaryContainer = Color(0xFFFFFFFF),
-
             secondary = Color(0xFF313030),
             onSecondary = Color(0xFFFFFFFF),
-
-            secondaryContainer = Color(0xFFE1E1E1),
-            onSecondaryContainer = Color(0xFF9A9A9A),
 
             background = Color(0xFF3C3F40),
             onBackground = Color(0xFFFFFFFF),
@@ -212,16 +205,11 @@ fun MainPage() {
             surface = Color.Transparent,
             onSurface = Color(0xFF439DDE), // deco color
 
-            inverseSurface = Color(0xFFFFFFFF),
             surfaceContainer = Color(0xFFFFFFFF),
             surfaceContainerHigh = Color.Transparent,
             surfaceContainerLow = Color.Transparent,
             surfaceContainerLowest = Color(0xFF373737),
-            onTertiary = Color(0xFF6D6D6D),
-            surfaceDim = Color(0xFF393939),
 
-            error = Color(0xffff002a),
-            onError = Color(0xFFFFFFFF),
             errorContainer = Color(0xffff002a),
             onErrorContainer = Color(0xFFFFFFFF),
 

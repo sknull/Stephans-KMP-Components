@@ -64,7 +64,7 @@ actual fun PlatformVerticalScrollbarBox(
         LazyColumn(
             modifier = modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainerLow),
+                .background(MaterialTheme.colorScheme.surfaceContainer),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
             state = lazyListState
         ) {

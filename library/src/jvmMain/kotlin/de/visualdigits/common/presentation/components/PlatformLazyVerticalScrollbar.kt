@@ -22,7 +22,7 @@ actual fun PlatformLazyVerticalScrollbar(
             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
         style = defaultScrollbarStyle().copy(
             unhoverColor = MaterialTheme.colorScheme.onSurface,
-            hoverColor = MaterialTheme.colorScheme.inverseSurface
+            hoverColor = MaterialTheme.colorScheme.onBackground
         ),
         interactionSource = interactionSource
     )
