@@ -69,11 +69,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     containerShape: Shape = MaterialTheme.shapes.small,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     space: Dp = 8.dp,
+    colorPickerUseOnlySliders: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     onCancelClick: () -> Unit,
     onOkClick: () -> Unit,
     onCommonAction: (CommonAction) -> Unit,
-    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _,_ -> true }
+    deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _,_ -> true },
+    headerContent: (@Composable () -> Unit)? = null
 ) {
     PlatformVerticalScrollbarBox(
         modifier = modifier
@@ -87,6 +89,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
         onCommonAction = onCommonAction
     ) {
         listOf(
+            Pair("header", @Composable {
+                headerContent?.let { hc -> hc() }
+            }),
             Pair("fields", @Composable {
                 FlowRow(
                     modifier = Modifier.fillMaxSize(),
@@ -126,6 +131,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                             buttonShape = buttonShape,
                                             containerShape = containerShape,
                                             textStyle = textStyle,
+                                            colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                                             onValueChange = onValueChange,
                                             deleteAllowed = deleteAllowed
                                         )
@@ -150,6 +156,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                     buttonShape = buttonShape,
                                     containerShape = containerShape,
                                     textStyle = textStyle,
+                                    colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                                     onValueChange = onValueChange,
                                     deleteAllowed = deleteAllowed
                                 )
@@ -214,6 +221,7 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> renderFields(
     buttonShape: Shape,
     containerShape: Shape,
     textStyle: TextStyle,
+    colorPickerUseOnlySliders: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     deleteAllowed: (AbstractFieldDescriptor<*, *, *, *, *>?, String) -> Boolean
 ) {
@@ -257,6 +265,7 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> renderFields(
                     buttonShape = buttonShape,
                     containerShape = containerShape,
                     textStyle = textStyle,
+                    colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                     onValueChange = onValueChange,
                     deleteAllowed = deleteAllowed
                 )

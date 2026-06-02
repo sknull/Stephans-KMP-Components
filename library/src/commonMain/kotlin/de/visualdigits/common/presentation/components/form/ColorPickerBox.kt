@@ -36,6 +36,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
     buttonShape: Shape,
     textStyle: TextStyle,
     alignForForm: Boolean = true,
+    slidersOnly: Boolean = false,
     onValueChange: (HsvColor) -> Unit,
 ) {
     val textFieldState = rememberTextFieldState(" ")
@@ -68,6 +69,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
                     initialColor = fieldState.currentValue as? HsvColor,
                     size = fieldHeight * 3,
                     space = space,
+                    slidersOnly = slidersOnly,
                     hasSwatch = true
                 ) { hsvColor ->
                     onValueChange(hsvColor)

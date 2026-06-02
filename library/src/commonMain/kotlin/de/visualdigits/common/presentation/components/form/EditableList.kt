@@ -73,6 +73,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     textStyle: TextStyle,
     scrollable: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
+    colorPickerUseOnlySliders: Boolean = false,
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _, _ -> true }
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -253,6 +254,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         iconTint = iconTint,
                         buttonShape = buttonShape,
                         buttonColor = buttonColor,
+                        colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                         onValueChange = { keyValue ->
                             currentText = keyValue.value?.toString() ?: ""
                         }

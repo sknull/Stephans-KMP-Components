@@ -43,6 +43,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     buttonColor: Color = MaterialTheme.colorScheme.surface,
+    colorPickerUseOnlySliders: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -132,6 +133,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 unfocusedBorderColor = unfocusedBorderColor,
                 buttonShape = buttonShape,
                 textStyle = textStyle,
+                slidersOnly = colorPickerUseOnlySliders,
                 onValueChange = { value ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 },

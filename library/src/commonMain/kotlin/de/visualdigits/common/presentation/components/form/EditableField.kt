@@ -37,6 +37,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
     buttonShape: Shape,
     containerShape: Shape,
     textStyle: TextStyle,
+    colorPickerUseOnlySliders: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean
 ) {
@@ -60,6 +61,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
                 buttonColor = buttonColor,
                 visibilityIcon = visibilityIcon,
                 textStyle = textStyle,
+                colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                 onValueChange = onValueChange,
                 deleteAllowed = deleteAllowed
             )
@@ -87,6 +89,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
                 iconTint = iconTint,
                 buttonShape = buttonShape,
                 buttonColor = buttonColor,
+                colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                 onValueChange = onValueChange
             )
         }
