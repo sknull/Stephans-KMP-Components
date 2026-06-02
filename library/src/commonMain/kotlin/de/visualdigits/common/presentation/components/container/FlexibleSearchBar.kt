@@ -113,7 +113,7 @@ fun FlexibleSearchBar(
                     onExpandedChange?.let { oec -> oec(v) }
                 },
                 shape = MaterialTheme.shapes.extraSmall,
-                colors = SearchBarDefaults.colors(containerColor = Color.Transparent),
+                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
                 tonalElevation = SearchBarDefaults.TonalElevation,
                 shadowElevation = SearchBarDefaults.ShadowElevation,
                 content = content,
@@ -172,7 +172,7 @@ fun FlexibleSearchBar(
                     onExpandedChange?.let { oec -> oec(v) }
                 },
                 shape = MaterialTheme.shapes.extraSmall,
-                colors = SearchBarDefaults.colors(),
+                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
                 tonalElevation = SearchBarDefaults.TonalElevation,
                 shadowElevation = SearchBarDefaults.ShadowElevation,
                 windowInsets = SearchBarDefaults.windowInsets,
