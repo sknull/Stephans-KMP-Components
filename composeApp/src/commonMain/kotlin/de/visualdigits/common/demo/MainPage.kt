@@ -30,6 +30,7 @@ import de.visualdigits.common.demo.buttons.ButtonDemo
 import de.visualdigits.common.demo.form.FormDemo
 import de.visualdigits.common.demo.misc.StudioClockDemo
 import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.button.TabButtonRow
 import de.visualdigits.common.presentation.components.container.ErrorCard
@@ -40,7 +41,9 @@ import stephans_kmp_components.composeapp.generated.resources.Roboto_Bold
 import stephans_kmp_components.composeapp.generated.resources.Roboto_Regular
 
 @Composable
-fun MainPage() {
+fun MainPage(
+    platformType: PlatformType
+) {
 
     var state by remember { mutableStateOf(DemoState()) }
 

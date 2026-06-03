@@ -7,5 +7,5 @@ import de.visualdigits.common.domain.model.platform.PlatformType
 @Composable
 fun App(platformType: PlatformType) {
 
-    MainPage()
+    MainPage(platformType)
 }
