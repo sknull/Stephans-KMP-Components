@@ -238,12 +238,49 @@ fun ColorPicker(
                 }
             )
 
-            BrightnessSlider(
+            // Value
+            val valGradientBrush = remember(currentColor.hue, currentColor.saturation) {
+                Brush.linearGradient(
+                    colors = listOf(
+                        currentColor.copy(value = 0.0f).toComposeColor(),
+                        currentColor.copy(value = 1.0f).toComposeColor()
+                    ),
+                    start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                    end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f)
+                )
+            }
+            ColorfulSlider(
                 modifier = Modifier
-                    .pointerHoverIcon(PointerIcon.Hand)
-                    .height(35.dp),
-                controller = controller,
+                    .align(Alignment.CenterHorizontally)
+                    .width(size),
+                value = initialColor?.value ?: 1.0f,
+                onValueChange = {
+                    currentColor = currentColor.copy(value = it)
+                    onColorChanged(currentColor)
+                },
+                valueRange = 0.0f .. 1.0f,
+                trackHeight = 28.dp,
+                thumbRadius = 17.dp,
+                colors = MaterialSliderDefaults.materialColors(
+                    thumbColor = SliderBrushColor(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    inactiveTrackColor = SliderBrushColor(
+                        brush = valGradientBrush
+                    ),
+                    activeTrackColor = SliderBrushColor(
+                        brush = valGradientBrush
+                    )
+                )
             )
+
+// todo broken since 05.06.2026
+//            BrightnessSlider(
+//                modifier = Modifier
+//                    .pointerHoverIcon(PointerIcon.Hand)
+//                    .height(35.dp),
+//                controller = controller,
+//            )
 
             if (hasSwatch) {
                 IndicatorButton(
