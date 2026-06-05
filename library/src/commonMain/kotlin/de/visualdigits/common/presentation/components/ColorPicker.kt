@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.visualdigits.common.domain.model.HsvColor
@@ -60,6 +59,14 @@ fun ColorPicker(
                 controller.selectByColor(composeColor, fromUser = false)
             }
         }
+    }
+
+    // internal color to decouple from initial color
+    var sliderColor by remember { mutableStateOf(currentColor) }
+
+    LaunchedEffect(controller.selectedColor.value) {
+        val hsv = HsvColor.fromComposeColor(controller.selectedColor.value)
+        sliderColor = sliderColor.copy(hue = hsv.hue, saturation = hsv.saturation)
     }
 
     Column(
@@ -135,8 +142,8 @@ fun ColorPicker(
             val satGradientBrush = remember(currentColor.hue, currentColor.value) {
                 Brush.linearGradient(
                     colors = listOf(
-                        currentColor.copy(saturation = 0.0f).toComposeColor(),
-                        currentColor.copy(saturation = 1.0f).toComposeColor()
+                        currentColor.copy(saturation = 0.0).toComposeColor(),
+                        currentColor.copy(saturation = 1.0).toComposeColor()
                     ),
                     start = androidx.compose.ui.geometry.Offset(0f, 0f),
                     end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f)
@@ -146,9 +153,9 @@ fun ColorPicker(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(size),
-                value = initialColor?.saturation ?: 1.0f,
+                value = initialColor?.saturation?.toFloat() ?: 1.0f,
                 onValueChange = {
-                    currentColor = currentColor.copy(saturation = it)
+                    currentColor = currentColor.copy(saturation = it.toDouble())
                     onColorChanged(currentColor)
                 },
                 valueRange = 0.0f .. 1.0f,
@@ -171,8 +178,8 @@ fun ColorPicker(
             val valGradientBrush = remember(currentColor.hue, currentColor.saturation) {
                 Brush.linearGradient(
                     colors = listOf(
-                        currentColor.copy(value = 0.0f).toComposeColor(),
-                        currentColor.copy(value = 1.0f).toComposeColor()
+                        currentColor.copy(value = 0.0).toComposeColor(),
+                        currentColor.copy(value = 1.0).toComposeColor()
                     ),
                     start = androidx.compose.ui.geometry.Offset(0f, 0f),
                     end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f)
@@ -182,9 +189,9 @@ fun ColorPicker(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(size),
-                value = initialColor?.value ?: 1.0f,
-                onValueChange = {
-                    currentColor = currentColor.copy(value = it)
+                value = initialColor?.value?.toFloat() ?: 1.0f,
+                onValueChange = { value ->
+                    currentColor = currentColor.copy(value = value.toDouble())
                     onColorChanged(currentColor)
                 },
                 valueRange = 0.0f .. 1.0f,
@@ -232,6 +239,7 @@ fun ColorPicker(
                     .height(size),
                 controller = controller,
                 onColorChanged = { colorEnvelope ->
+                    sliderColor = sliderColor.copy(hue = HsvColor.fromComposeColor(controller.selectedColor.value).hue)
                     if (colorEnvelope.fromUser) {
                         onColorChanged(HsvColor.fromComposeColor(colorEnvelope.color))
                     }
@@ -239,11 +247,11 @@ fun ColorPicker(
             )
 
             // Value
-            val valGradientBrush = remember(currentColor.hue, currentColor.saturation) {
+            val valGradientBrush = remember(sliderColor.hue, sliderColor.saturation) {
                 Brush.linearGradient(
                     colors = listOf(
-                        currentColor.copy(value = 0.0f).toComposeColor(),
-                        currentColor.copy(value = 1.0f).toComposeColor()
+                        sliderColor.copy(value = 0.0).toComposeColor(),
+                        sliderColor.copy(value = 1.0).toComposeColor()
                     ),
                     start = androidx.compose.ui.geometry.Offset(0f, 0f),
                     end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f)
@@ -253,10 +261,11 @@ fun ColorPicker(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(size),
-                value = initialColor?.value ?: 1.0f,
-                onValueChange = {
-                    currentColor = currentColor.copy(value = it)
-                    onColorChanged(currentColor)
+                value = sliderColor.value.toFloat(),
+                onValueChange = { value ->
+                    sliderColor = sliderColor.copy(value = value.toDouble())
+                    controller.selectByColor(sliderColor.toComposeColor(), fromUser = false)
+                    onColorChanged(sliderColor)
                 },
                 valueRange = 0.0f .. 1.0f,
                 trackHeight = 28.dp,

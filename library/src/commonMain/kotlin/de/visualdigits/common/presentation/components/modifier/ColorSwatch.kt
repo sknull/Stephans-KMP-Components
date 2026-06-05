@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.ColorPickerController
 import de.visualdigits.common.domain.model.HsvColor
-import de.visualdigits.common.domain.util.copyFactor
 
 fun Modifier.colorSwatch(
     size: Dp,
@@ -61,12 +60,11 @@ fun Modifier.colorSwatch(
                 // background
                 if (!flatLook) {
                     val hsvColor = HsvColor.fromComposeColor(color)
-                    val valueFactor = if (hsvColor.value < 0.5f) 1.5f else 0.5f
                     drawRect(
                         brush = Brush.verticalGradient(
                             colorStops = arrayOf(
                                 0.0f to color,
-                                1.0f to hsvColor.copy(value = hsvColor.value * valueFactor).toComposeColor(),
+                                1.0f to hsvColor.copy(value = hsvColor.value * 0.5).toComposeColor(),
                             )
                         )
                     )

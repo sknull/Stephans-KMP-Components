@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import de.visualdigits.common.domain.util.toComposeColor
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -11,40 +12,15 @@ import kotlin.math.roundToInt
 @Immutable
 data class HsvColor(
     val hue: Int,
-    val saturation: Float,
-    val value: Float
+    val saturation: Double,
+    val value: Double
 ) {
 
-    private constructor(hsv: FloatArray) : this(hsv[0].roundToInt(), hsv[1], hsv[2])
+    private constructor(hsv: DoubleArray) : this(hsv[0].roundToInt(), hsv[1], hsv[2])
 
     companion object {
 
         private const val CHARS = "0123456789abcdef"
-
-        fun fromComposeColor(color: Color): HsvColor {
-            val r = color.red
-            val g = color.green
-            val b = color.blue
-            val max = max(r, max(g, b))
-            val min = min(r, min(g, b))
-            val delta = max - min
-            val hue = when {
-                delta == 0f -> 0f
-                max == r -> ((g - b) / delta) % 6f
-                max == g -> ((b - r) / delta) + 2f
-                else -> ((r - g) / delta) + 4f
-            } * 60f
-            val normalizedHue = ((hue % 360f) + 360f) % 360f
-            val saturation = if (max == 0f) 0f else delta / max
-            val value = max
-            return HsvColor(
-                floatArrayOf(
-                    normalizedHue,
-                    saturation,
-                    value
-                )
-            )
-        }
 
         fun fromHex(hex: String): HsvColor {
             return if (hex.startsWith("#") || hex.startsWith("0x")) {
@@ -57,10 +33,82 @@ data class HsvColor(
         fun fromLong(value: Long): HsvColor {
             return HsvColor(
                 hue = ((value and 0xFFFF0000L) shr 16).toInt(),
-                saturation = ((value and 0x0000FF00L) shr 8).toFloat() / 255f,
-                value = (value and 0x000000FFL).toFloat() / 255f
+                saturation = ((value and 0x0000FF00L) shr 8).toDouble() / 255f,
+                value = (value and 0x000000FFL).toDouble() / 255f
             )
         }
+
+        fun fromComposeColor(color: Color): HsvColor {
+            val r = color.red.toDouble()
+            val g = color.green.toDouble()
+            val b = color.blue.toDouble()
+            val min = min(r, min(g, b))
+            val max = max(r, max(g, b))
+            val delta = max - min
+            val s: Double
+            var h: Double
+            if (max == 0.0) {
+                s = 0.0
+                h = 0.0
+            } else {
+                s = delta / max
+                h = if (r == max) {
+                    (g - b) / delta
+                } else if (g == max) {
+                    2 + (b - r) / delta
+                } else {
+                    4 + (r - g) / delta
+                }
+                h *= 60.0
+                if (h < 0) {
+                    h += 360.0
+                }
+                if (java.lang.Double.isNaN(h)) {
+                    h = 0.0
+                }
+            }
+            return HsvColor(
+                doubleArrayOf(
+                    h,
+                    s,
+                    max
+                )
+            )
+        }
+    }
+
+    fun clone(): HsvColor {
+        return HsvColor(hue, saturation, value)
+    }
+
+    fun toComposeColor(): Color {
+        val h = hue / 360.0
+        val s = saturation
+        val v = value
+        val components = (if (s == 0.0) {
+            listOf(v, v, v)
+        } else {
+            val varH = h * 6
+            val varI = floor(varH)
+            val var1 = v * (1 - s)
+            val var2 = v * (1 - s * (varH - varI))
+            val var3 = v * (1 - s * (1 - (varH - varI)))
+
+            when (varI) {
+                0.0 -> listOf(v, var3, var1)
+                1.0 -> listOf(var2, v, var1)
+                2.0 -> listOf(var1, v, var3)
+                3.0 -> listOf(var1, var2, v)
+                4.0 -> listOf(var3, var1, v)
+                else -> listOf(v, var1, var2)
+            }
+        }).map { 255.coerceAtMost((it * 255.0).roundToInt()) }
+
+        return Color(
+            red = components[0],
+            green = components[1],
+            blue = components[2]
+        )
     }
 
     fun value(): Long {
@@ -78,25 +126,5 @@ data class HsvColor(
             v = v shr 4
         }
         return sb.reverse().toString()
-    }
-
-    fun toComposeColor(): Color {
-        val hh = hue
-        val ss = saturation
-        val vv = value
-
-        val c = vv * ss
-        val x = c * (1 - abs((hh / 60f) % 2 - 1))
-        val m = vv - c
-        val (r, g, b) = when {
-            hh < 60 -> Triple(c, x, 0f)
-            hh < 120 -> Triple(x, c, 0f)
-            hh < 180 -> Triple(0f, c, x)
-            hh < 240 -> Triple(0f, x, c)
-            hh < 300 -> Triple(x, 0f, c)
-            else -> Triple(c, 0f, x)
-        }
-
-        return Color(red = r + m, green = g + m, blue = b + m)
     }
 }

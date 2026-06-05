@@ -167,7 +167,7 @@ fun StudioClock(
                             numberOfDots = 12,
                             highlightedDots = currentDateTime.hour % 12,
                             colorHighlighted = colors.colorHours,
-                            colorDimmed = colors.colorHours.copy(value = 0.2f)
+                            colorDimmed = colors.colorHours.copy(value = 0.2)
                         )
 
                         // minutes
@@ -179,7 +179,7 @@ fun StudioClock(
                             numberOfDots = 60,
                             highlightedDots = currentDateTime.minute,
                             colorHighlighted = colors.colorMinutes,
-                            colorDimmed = colors.colorMinutes.copy(value = 0.2f)
+                            colorDimmed = colors.colorMinutes.copy(value = 0.2)
                         )
 
                         // seconds
@@ -192,7 +192,7 @@ fun StudioClock(
                                 numberOfDots = 60,
                                 highlightedDots = currentDateTime.second,
                                 colorHighlighted = colors.colorSeconds,
-                                colorDimmed = colors.colorSeconds.copy(value = 0.2f)
+                                colorDimmed = colors.colorSeconds.copy(value = 0.2)
                             )
                         }
 

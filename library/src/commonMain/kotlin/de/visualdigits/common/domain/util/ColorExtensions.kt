@@ -15,8 +15,8 @@ fun Color.copy(hue: Int = 0, saturation: Float = 1.0f, value: Float = 1.0f, alph
     return HsvColor.fromComposeColor(this)
         .copy(
             hue = ((hue % 360) + 360) % 360,
-            saturation = saturation.coerceIn(0f, 1f),
-            value = value.coerceIn(0f, 1f),
+            saturation = saturation.toDouble().coerceIn(0.0, 1.0),
+            value = value.toDouble().coerceIn(0.0, 1.0),
         )
         .toComposeColor()
         .copy(alpha = alpha)
@@ -27,8 +27,8 @@ fun Color.copyFactor(hueShift: Int = 0, saturationFactor: Float = 1.0f, valueFac
     return hsvColor
         .copy(
             hue = (((hsvColor.hue + hueShift) % 360) + 360) % 360,
-            saturation = (hsvColor.saturation * saturationFactor).coerceIn(0f, 1f),
-            value = (hsvColor.value * valueFactor).coerceIn(0f, 1f),
+            saturation = (hsvColor.saturation * saturationFactor).coerceIn(0.0, 1.0),
+            value = (hsvColor.value * valueFactor).coerceIn(0.0, 1.0),
         )
         .toComposeColor()
         .copy(alpha = this.alpha * alphaFactor)
