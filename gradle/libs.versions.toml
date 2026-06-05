@@ -3,61 +3,52 @@ agp = "8.13.2"
 android-compileSdk = "36"
 android-minSdk = "26"
 android-targetSdk = "35" # DO NOT UPGRADE FOR NOW
-tvMaterial = "1.0.1"
+tvMaterial = "1.1.0"
 
 version-androidx-activityCompose = "1.13.0"
 version-androidx-lifecycle = "2.10.0"
 version-colorpicker = "1.1.4"
 version-gradle-pdf = "4.0.5"
-version-jetbrains-kotlin = "1.10.3"
-version-junit = "6.0.3"
+version-jetbrains-kotlin = "1.11.1"
+version-kotlinx-coroutines = "1.11.0"
+version-junit = "6.1.0"
 version-kermit = "2.1.0"
 version-kotlin = "2.3.20" # DO NOT UPGRADE FOR NOW
 version-kotlin-xml-util = "0.91.3"
-version-kotlin-coroutines = "1.10.2"
-version-kotlinx-coroutines-swing="1.10.2"
-version-kotlinx-datetime = "0.7.1"
+version-kotlinx-datetime = "0.8.0"
 version-kotlinx-io-core = "0.9.0"
 version-material3 = "1.9.0"
 version-navigation-compose = "2.9.2"
 version-skikoAwtRuntimeWindowsX64 = "0.9.47" # DO NOT UPGRADE FOR NOW
 
 [libraries]
-androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
-androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "version-kotlin" }
-kotlin-xml-util = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "version-kotlin-xml-util" }
-kotlin-xml-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "version-kotlin-xml-util" }
-kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "version-kotlinx-coroutines-swing" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "version-kotlinx-datetime" }
-kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "version-kotlinx-io-core" }
-kotlinx-io-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-io-core-jvm", version.ref = "version-kotlinx-io-core" }
-
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "version-androidx-activityCompose" }
 androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "version-androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "version-androidx-lifecycle" }
-
+androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "version-colorpicker" }
 compose-components = { module = "org.jetbrains.compose.components:components-resources", version.ref = "version-jetbrains-kotlin" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "version-jetbrains-kotlin" }
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "version-material3" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "version-jetbrains-kotlin" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "version-jetbrains-kotlin" }
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "version-jetbrains-kotlin" }
-
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "version-navigation-compose" }
-
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "version-junit" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "version-junit" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "version-junit" }
-
 kermit = { module = "co.touchlab:kermit", version.ref = "version-kermit" }
-
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "version-kotlin" }
+kotlin-xml-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "version-kotlin-xml-util" }
+kotlin-xml-util = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "version-kotlin-xml-util" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "version-kotlinx-coroutines" }
+kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "version-jetbrains-kotlin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "version-kotlinx-datetime" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "version-kotlinx-io-core" }
+kotlinx-io-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-io-core-jvm", version.ref = "version-kotlinx-io-core" }
 skiko-awt-runtime-windows-x64 = { module = "org.jetbrains.skiko:skiko-awt-runtime-windows-x64", version.ref = "version-skikoAwtRuntimeWindowsX64" }
-
-compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "version-colorpicker" }
-
-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "version-kotlin-coroutines" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
