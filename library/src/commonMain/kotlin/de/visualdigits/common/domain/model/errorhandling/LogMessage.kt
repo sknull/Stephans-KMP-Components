@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
 import java.time.OffsetDateTime
-import java.util.Collections.synchronizedList
 
 @Immutable
 data class LogMessage(
@@ -40,9 +39,7 @@ data class LogMessage(
     @Suppress("NOTHING_TO_INLINE")
     companion object {
 
-        val logs: MutableList<LogMessage> = synchronizedList(mutableListOf())
-
-        inline fun log(
+        inline fun logMessage(
             severity: Severity,
             message: String,
             throwable: Throwable? = null,
@@ -56,8 +53,31 @@ data class LogMessage(
                 throwable = throwable
             )
             logMessage.log(withTag)
-            logs.add(logMessage)
+
             return logMessage
+        }
+
+        inline fun log(
+            severity: Severity,
+            message: String,
+            throwable: Throwable? = null,
+            withTag: String = ""
+        ) {
+            val logger = Logger.withTag(withTag)
+            val stackTrace = throwable?.let { t ->
+                "\n${
+                    t.stackTraceToString().split("\n").joinToString("\n") { l -> "${severity}: $l" }
+                }"
+            }?:""
+            val logMessage = "${message}$stackTrace"
+            when (severity) {
+                Severity.Info -> logger.i(logMessage, throwable)
+                Severity.Warn -> logger.w(logMessage, throwable)
+                Severity.Error -> logger.e(logMessage, throwable)
+                Severity.Verbose -> logger.v(logMessage, throwable)
+                Severity.Debug -> logger.d(logMessage, throwable)
+                Severity.Assert -> logger.a(logMessage, throwable)
+            }
         }
     }
 }
