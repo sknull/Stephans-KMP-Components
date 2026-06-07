@@ -41,7 +41,7 @@ fun studioClockColors(spotColor: HsvColor): StudioClockColors {
         colorMinutes = spotColor,
         colorSeconds = spotColor,
         colorTime = spotColor,
-        colorDate = spotColor.copy(saturation = spotColor.saturation * 0.5f, value = spotColor.value * 0.75f),
+        colorDate = spotColor.copy(value = spotColor.value * 0.75f),
         colorBackground = Color(0xdd000000),
     )
 }
