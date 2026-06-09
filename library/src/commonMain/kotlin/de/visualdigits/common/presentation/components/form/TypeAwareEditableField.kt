@@ -48,10 +48,10 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val finalUnfocusedBorderColor = if (!fieldState.valid) {
-        Severity.Error.color()
-    } else if (fieldState.currentValue == null) {
-        Severity.Warn.color()
+    val finalUnfocusedBorderColor = if (!fieldState.fieldDescriptor.enabled) {
+        Color.Gray
+    } else if (fieldState.valid == Severity.Error || fieldState.valid == Severity.Warn) {
+        fieldState.valid.color()
     } else {
         unfocusedBorderColor
     }
@@ -62,7 +62,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 || fieldState.fieldDescriptor.itemClass?.java?.let { fc -> Enumerable::class.java.isAssignableFrom(fc) } == true -> {
             if (fieldState.fieldDescriptor.fieldClass == BooleanEnum::class) {
                 SwitchBox(
-                    enabled = fieldState.fieldDescriptor.enabled,
+                    enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
                     currentValue = fieldState.currentValue,
                     label = fieldState.fieldDescriptor.label.asString(),
                     fieldHeight = fieldHeight,

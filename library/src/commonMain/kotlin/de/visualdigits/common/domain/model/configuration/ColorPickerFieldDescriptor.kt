@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.configuration
 
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.HsvColor
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.ColorKeyFactory
@@ -20,8 +21,11 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
 
     default: HsvColor? = null,
 
-    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    enabled: Boolean = true,
 
+    enabledCondition: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
 ): AbstractFieldDescriptor<HsvColor, HsvColor, K, K, String>(
     fieldClass = HsvColor::class,
     group = group,
@@ -31,6 +35,8 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     visible = visible,
     readOnly = readOnly,
     default = default,
+    enabled = enabled,
+    enabledCondition = enabledCondition,
     valid = valid,
     keyFactory = ColorKeyFactory
 )

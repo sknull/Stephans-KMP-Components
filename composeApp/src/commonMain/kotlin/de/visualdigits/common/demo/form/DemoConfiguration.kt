@@ -1,6 +1,7 @@
 package de.visualdigits.common.demo.form
 
 import androidx.compose.runtime.Immutable
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.FileMode
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
@@ -25,7 +26,7 @@ class DemoConfiguration(
                 key = DC.username,
                 label = UiText.DynamicString("Username"),
                 toolTip = UiText.DynamicString("Username"),
-                valid = { _, value -> value != null },
+                valid = { _, value -> if (value != null) { Severity.Info } else { Severity.Error } },
             ),
 
             PasswordFieldDescriptor(
@@ -33,14 +34,14 @@ class DemoConfiguration(
                 key = DC.password,
                 label = UiText.DynamicString("Password"),
                 toolTip = UiText.DynamicString("Password"),
-                valid = { _, value -> value != null },
+                valid = { _, value -> if (value != null) { Severity.Info } else { Severity.Error } },
             ),
 
             StringFieldDescriptor(
                 key = DC.text,
                 label = UiText.DynamicString("Text"),
                 toolTip = UiText.DynamicString("Some text"),
-                valid = { _, value -> value != null },
+                valid = { _, value -> if (value != null) { Severity.Info } else { Severity.Error } },
             ),
 
             EnumFieldDescriptor(

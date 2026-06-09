@@ -155,7 +155,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
 
                             Spacer(Modifier.weight(1f))
 
-                            if (fieldState.fieldDescriptor.enabled) {
+                            if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
                                 IndicatorButton(
                                     leadingIcon = resources.iconEdit?.let { r -> painterResource(r) },
                                     leadingIconTint = iconTint,
@@ -189,7 +189,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                     }
                 }
 
-                if (fieldState.fieldDescriptor.enabled) {
+                if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()

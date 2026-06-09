@@ -1,5 +1,7 @@
 package de.visualdigits.common.domain.model.configuration
 
+import co.touchlab.kermit.Severity
+
 /**
  * Base class for all configuration classes.
  */
@@ -38,7 +40,7 @@ abstract class AbstractConfiguration<T : AbstractConfiguration<T, K>, K : FieldK
      * When the [key] is not given it checks whether the entire configuration is valid or not.
      */
     open fun valid(key: K): Boolean? {
-        return lookupFieldDescriptors.all { ( key, descriptor) -> descriptor.valid(this, values[key]) }
+        return lookupFieldDescriptors.all { ( key, descriptor) -> descriptor.valid(this, values[key]) == Severity.Info }
     }
 
     fun copy(values: Map<K, Any?>? = null): T {

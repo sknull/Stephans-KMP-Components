@@ -1,6 +1,7 @@
 package de.visualdigits.common.domain.model.configuration
 
 import androidx.compose.runtime.Immutable
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -12,5 +13,5 @@ data class FieldState<K : FieldKey<K>, FK : FieldKey<FK>> (
     val currentValue: Any?,
     val currentOption: Triple<*, UiText?, DrawableResource?>?,
     val currentOptionUIText: UiText,
-    val valid: Boolean
+    val valid: Severity
 )

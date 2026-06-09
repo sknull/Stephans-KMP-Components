@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.configuration
 
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFactory
 
@@ -19,7 +20,11 @@ class StringFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
 
     default: String? = null,
 
-    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    enabled: Boolean = true,
+
+    enabledCondition: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
 ): AbstractFieldDescriptor<String, String, K, K, String>(
     fieldClass = String::class,
     group = group,
@@ -29,6 +34,8 @@ class StringFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     visible = visible,
     readOnly = readOnly,
     default = default,
+    enabled = enabled,
+    enabledCondition = enabledCondition,
     valid = valid,
     keyFactory = StringKeyFactory
 )

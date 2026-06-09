@@ -54,7 +54,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
             replace(0, length, text)
         }
     }
-    if (fieldState.fieldDescriptor.enabled) {
+    if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
         ExposedDropdownMenuBox(
             modifier = Modifier
                 .fillMaxWidth(),

@@ -9,10 +9,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.KeyValue
 import de.visualdigits.common.domain.model.UiText
-import de.visualdigits.common.domain.model.color
 import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
@@ -41,8 +39,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
     onValueChange: (KeyValue) -> Unit,
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean
 ) {
-    if (fieldState.valid) Color.Unspecified else Severity.Error.color()
-
     when(fieldState.fieldDescriptor) {
         is ListFieldDescriptor<*,*> -> {
             EditableList(

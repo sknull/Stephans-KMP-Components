@@ -58,7 +58,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
                 .fillMaxWidth()
                 .height(fieldHeight + minimizedLabelHalfHeight(textStyle)),
             textStyle = textStyle,
-            enabled = fieldState.fieldDescriptor.enabled,
+            enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
             label = {
                 Text(
                     text = fieldState.fieldDescriptor.label.asString(),

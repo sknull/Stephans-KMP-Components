@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.configuration
 
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
 import org.jetbrains.compose.resources.DrawableResource
@@ -25,7 +26,11 @@ class ReferenceListFieldDescriptor<V : Any, K : FieldKey<K>, FK : FieldKey<FK>>(
 
     default: V? = null,
 
-    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    enabled: Boolean = true,
+
+    enabledCondition: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
     options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, FK>?) -> List<Triple<V, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
     keyFactory: KeyFactory<V>
@@ -38,6 +43,8 @@ class ReferenceListFieldDescriptor<V : Any, K : FieldKey<K>, FK : FieldKey<FK>>(
     visible = visible,
     readOnly = readOnly,
     default = default,
+    enabled = enabled,
+    enabledCondition = enabledCondition,
     valid = valid,
     options = options,
     keyFactory = keyFactory,

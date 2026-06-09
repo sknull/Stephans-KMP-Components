@@ -65,7 +65,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
                 .fillMaxWidth()
                 .height(fieldHeight + halfHeight),
             textStyle = textStyle,
-            enabled = fieldState.fieldDescriptor.enabled,
+            enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
             value = fieldState.currentValue?.toString() ?: "",
             label = {
                 Text(
@@ -79,7 +79,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
             trailingIcon = {
                 trailingIcon?.let { ti -> ti() }
 
-                if (fieldState.fieldDescriptor.enabled) {
+                if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
                     IndicatorButton(
                         modifier = Modifier
                             .padding(start = 5.dp),

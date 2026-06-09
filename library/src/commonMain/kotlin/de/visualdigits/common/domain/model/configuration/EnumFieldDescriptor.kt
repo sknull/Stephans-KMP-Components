@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.configuration
 
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
 import org.jetbrains.compose.resources.DrawableResource
@@ -23,7 +24,11 @@ class EnumFieldDescriptor<V : Any, K : FieldKey<K>>(
 
     default: V? = null,
 
-    valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    enabled: Boolean = true,
+
+    enabledCondition: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
+    valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
     options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, K>?) -> List<Triple<V, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
     keyFactory: KeyFactory<V>
@@ -36,6 +41,8 @@ class EnumFieldDescriptor<V : Any, K : FieldKey<K>>(
     visible = visible,
     readOnly = readOnly,
     default = default,
+    enabled = enabled,
+    enabledCondition = enabledCondition,
     valid = valid,
     options = options,
     keyFactory = keyFactory

@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.configuration
 
+import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
 import org.jetbrains.compose.resources.DrawableResource
@@ -39,9 +40,11 @@ abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>, FK : F
 
     var enabled: Boolean = true,
 
+    val enabledCondition: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+
     val default: S? = null,
 
-    val valid: (AbstractConfiguration<*, K>, Any?) -> Boolean = { _, _ -> true },
+    val valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
 
     /**
      *  For fields which are represented by a combobox or editable list this should generate the
@@ -51,6 +54,7 @@ abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>, FK : F
 
     /** A factory class which handles conversion to and from string values. */
     val keyFactory: KeyFactory<V>
+
 ) {
 
     override fun toString(): String = "$key: $options"

@@ -17,7 +17,6 @@ class HsvColorTest {
         var v = 1.0 - step
         var rgbOld = color.toComposeColor()
         while (v >= 0.0) {
-            println(v)
             val hsv = color.copy(value = v)
             val rgb = hsv.toComposeColor()
             val red = rgb.red
