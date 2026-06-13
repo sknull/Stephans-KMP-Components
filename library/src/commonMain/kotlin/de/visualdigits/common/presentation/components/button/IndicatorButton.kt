@@ -136,44 +136,7 @@ fun IndicatorButton(
         modifier = indicatorModifier,
         contentAlignment = Alignment.Center
     ) {
-        val paddings = when (indicatorPosition) {
-            Alignment.TopCenter -> listOf(
-                padding * 3 + paddingValues.calculateTopPadding(),
-                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                padding + paddingValues.calculateBottomPadding(),
-                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
-            )
-            Alignment.BottomCenter -> listOf(
-                padding + paddingValues.calculateTopPadding(),
-                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                padding * 3 + paddingValues.calculateBottomPadding(),
-                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
-            )
-            Alignment.CenterStart -> listOf(
-                padding + paddingValues.calculateTopPadding(),
-                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                padding + paddingValues.calculateBottomPadding(),
-                padding * 3 + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
-            )
-            Alignment.CenterEnd -> listOf(
-                padding + paddingValues.calculateTopPadding(),
-                padding * 3 + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                padding + paddingValues.calculateBottomPadding(),
-                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
-            )
-            Alignment.Center -> listOf(
-                padding * 3 + paddingValues.calculateTopPadding(),
-                padding * 3 + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                padding * 3 + paddingValues.calculateBottomPadding(),
-                padding * 3 + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
-            )
-            else -> listOf(
-                padding + paddingValues.calculateTopPadding(),
-                padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                padding + paddingValues.calculateBottomPadding(),
-                padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
-            )
-        }
+        val paddings = calculatePaddings(indicatorPosition, padding, paddingValues)
         PlatformToolTip(
             text = toolTip,
             space = space,
@@ -226,4 +189,56 @@ fun IndicatorButton(
             }
         }
     }
+}
+
+@Composable
+private fun calculatePaddings(
+    indicatorPosition: Alignment?,
+    padding: Dp,
+    paddingValues: PaddingValues
+): List<Dp> {
+    val paddings = when (indicatorPosition) {
+        Alignment.TopCenter -> listOf(
+            padding * 3 + paddingValues.calculateTopPadding(),
+            padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+            padding + paddingValues.calculateBottomPadding(),
+            padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+        )
+
+        Alignment.BottomCenter -> listOf(
+            padding + paddingValues.calculateTopPadding(),
+            padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+            padding * 3 + paddingValues.calculateBottomPadding(),
+            padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+        )
+
+        Alignment.CenterStart -> listOf(
+            padding + paddingValues.calculateTopPadding(),
+            padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+            padding + paddingValues.calculateBottomPadding(),
+            padding * 3 + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+        )
+
+        Alignment.CenterEnd -> listOf(
+            padding + paddingValues.calculateTopPadding(),
+            padding * 3 + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+            padding + paddingValues.calculateBottomPadding(),
+            padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+        )
+
+        Alignment.Center -> listOf(
+            padding * 3 + paddingValues.calculateTopPadding(),
+            padding * 3 + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+            padding * 3 + paddingValues.calculateBottomPadding(),
+            padding * 3 + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+        )
+
+        else -> listOf(
+            padding + paddingValues.calculateTopPadding(),
+            padding + paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+            padding + paddingValues.calculateBottomPadding(),
+            padding + paddingValues.calculateStartPadding(LayoutDirection.Ltr)
+        )
+    }
+    return paddings
 }

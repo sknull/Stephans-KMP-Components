@@ -10,9 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import de.visualdigits.common.domain.model.HsvColor
 import de.visualdigits.common.presentation.components.StudioClock
-import de.visualdigits.common.presentation.components.StudioClockColors
 import org.jetbrains.compose.resources.Font
 import stephans_kmp_components.composeapp.generated.resources.Res
 import stephans_kmp_components.composeapp.generated.resources.digital_dream_skew_fat
@@ -30,11 +28,11 @@ fun StudioClockDemo() {
                 .padding(10.dp)
                 .fillMaxSize(),
             fontFamily = FontFamily(Font(Res.font.digital_dream_skew_fat)),
-            showSeconds = false,
+            showSeconds = true,
             showDate = true,
-            showYear = true,
-            showFrames = false,
-            framesPerSecond = 60
+            showYear = false,
+            showFrames = true,
+            framesPerSecond = 24
         )
     }
 }

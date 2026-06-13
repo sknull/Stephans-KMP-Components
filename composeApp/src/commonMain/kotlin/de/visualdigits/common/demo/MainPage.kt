@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -202,7 +203,7 @@ fun MainPage(
             secondary = Color(0xFF313030),
             onSecondary = Color(0xFFFFFFFF),
 
-            background = Color(0xFF3C3F40),
+            background = Color(0xFF000000),
             onBackground = Color(0xFFFFFFFF),
 
             surface = Color.Transparent,
@@ -225,7 +226,6 @@ fun MainPage(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
         ) {
             ErrorCard(
                 errorMessage = state.uiMessage,
