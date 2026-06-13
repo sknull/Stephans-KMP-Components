@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 actual fun PlatformVerticalScrollbarBox(
     modifier: Modifier,
+    space: Dp,
     backgroundColor: Color,
     backgroundImage: (@Composable () -> Unit)?,
     scrollbarModifier: Modifier,

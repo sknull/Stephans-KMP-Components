@@ -33,6 +33,7 @@ expect fun BindBackHandler(isEnabled: Boolean, onBack: () -> Unit)
 @Composable
 expect fun PlatformVerticalScrollbarBox(
     modifier: Modifier = Modifier,
+    space: Dp = 0.dp,
     backgroundColor: Color = Color.Unspecified,
     backgroundImage: (@Composable () -> Unit)? = null,
     scrollbarModifier: Modifier = Modifier,

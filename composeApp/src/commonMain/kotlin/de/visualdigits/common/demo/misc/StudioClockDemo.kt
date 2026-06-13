@@ -30,10 +30,10 @@ fun StudioClockDemo() {
                 .padding(10.dp)
                 .fillMaxSize(),
             fontFamily = FontFamily(Font(Res.font.digital_dream_skew_fat)),
-            showSeconds = true,
+            showSeconds = false,
             showDate = true,
             showYear = true,
-            showFrames = true,
+            showFrames = false,
             framesPerSecond = 60
         )
     }

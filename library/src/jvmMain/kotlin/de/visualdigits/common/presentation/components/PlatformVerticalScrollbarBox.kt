@@ -29,6 +29,7 @@ import de.visualdigits.common.presentation.model.ScrollIntent
 @Composable
 actual fun PlatformVerticalScrollbarBox(
     modifier: Modifier,
+    space: Dp,
     backgroundColor: Color,
     backgroundImage: (@Composable () -> Unit)?,
     scrollbarModifier: Modifier,
@@ -67,7 +68,7 @@ actual fun PlatformVerticalScrollbarBox(
             modifier = modifier
                 .fillMaxSize()
                 .background(backgroundColor)
-                .padding(end = 10.dp)
+                .padding(end = 10.dp + space)
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementGap)
         ) {
