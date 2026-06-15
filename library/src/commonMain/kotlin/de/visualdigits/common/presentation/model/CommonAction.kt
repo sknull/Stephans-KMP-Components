@@ -6,7 +6,7 @@ sealed interface CommonAction {
 
     @Immutable
     data class OnScrollPositionChange(
-        val id: String,
+        val id: String?,
         val position: Int,
         val offset: Int? = null,
         val scrollIntent: ScrollIntent = ScrollIntent.standard

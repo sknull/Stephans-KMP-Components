@@ -1,13 +1,11 @@
 package de.visualdigits.common.presentation.components
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +15,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import co.touchlab.kermit.Severity
+import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
@@ -34,8 +34,6 @@ actual fun PlatformVerticalScrollbarBox(
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: ((CommonAction) -> Unit)?,
     verticalArrangementGap: Dp,
-    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
-    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val items = rows()
@@ -60,7 +58,6 @@ actual fun PlatformVerticalScrollbarBox(
                 lazyListState.scrollToItem(0, 0)
             }
         }
-        scrollToTopLazy?.let { st -> st(lazyListState, scrollPosition[scrollbarId]?.third) }
 
         LazyColumn(
             modifier = modifier

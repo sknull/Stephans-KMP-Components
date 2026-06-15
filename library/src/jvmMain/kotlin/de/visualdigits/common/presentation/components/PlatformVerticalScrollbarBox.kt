@@ -1,6 +1,5 @@
 package de.visualdigits.common.presentation.components
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -11,20 +10,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Severity
+import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 actual fun PlatformVerticalScrollbarBox(
@@ -38,16 +40,18 @@ actual fun PlatformVerticalScrollbarBox(
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: ((CommonAction) -> Unit)?,
     verticalArrangementGap: Dp,
-    scrollToTop: (@Composable (ScrollState, ScrollIntent?) -> Unit)?,
-    scrollToTopLazy: (@Composable (LazyListState, ScrollIntent?) -> Unit)?,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     val scrollState = rememberScrollState(scrollPosition[scrollbarId]?.first?:0)
-    LaunchedEffect(scrollState.value) {
-        if (scrollbarId != null && onCommonAction != null) {
-            onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, scrollState.value))
+    LaunchedEffect(scrollState) {
+        snapshotFlow {
+            scrollState.value
+        }.collectLatest { index ->
+            if (scrollbarId != null && onCommonAction != null) {
+                onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index))
+            }
         }
     }
     LaunchedEffect(scrollPosition[scrollbarId]) {
@@ -55,7 +59,6 @@ actual fun PlatformVerticalScrollbarBox(
             scrollState.animateScrollTo(0)
         }
     }
-    scrollToTop?.let { st -> st(scrollState, scrollPosition[scrollbarId]?.third) }
 
     Box(
         modifier = Modifier
