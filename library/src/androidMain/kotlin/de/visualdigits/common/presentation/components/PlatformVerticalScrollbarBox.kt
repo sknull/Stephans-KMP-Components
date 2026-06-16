@@ -51,16 +51,20 @@ actual fun PlatformVerticalScrollbarBox(
                 }.collectLatest { (index, offset) ->
                     if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
                         lazyListState.scrollToItem(0, 0)
-                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0))
+                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
                     } else {
-                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset))
+                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset, ScrollIntent.standard))
                     }
                 }
             }
         }
         LaunchedEffect(scrollPosition[scrollbarId]) {
-            if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
+            val current = scrollPosition[scrollbarId]
+            if (current?.third == ScrollIntent.scrollToStart) {
                 lazyListState.scrollToItem(0, 0)
+                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
+            } else {
+                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, current?.first?:0, current?.second, ScrollIntent.standard))
             }
         }
 

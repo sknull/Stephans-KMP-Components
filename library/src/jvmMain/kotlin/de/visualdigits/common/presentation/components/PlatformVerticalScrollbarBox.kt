@@ -50,16 +50,21 @@ actual fun PlatformVerticalScrollbarBox(
             scrollState.value
         }.collectLatest { index ->
             if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
-                scrollState.animateScrollTo(0)
-                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, index))
-            } else {
-                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, index))
+log(Severity.Info, "LaunchedEffect 1 TOP")
+                scrollState.scrollTo(0)
             }
+            onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, index, 0, ScrollIntent.standard))
         }
     }
     LaunchedEffect(scrollPosition[scrollbarId]) {
-        if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
-            scrollState.animateScrollTo(0)
+        val current = scrollPosition[scrollbarId]
+        if (current?.third == ScrollIntent.scrollToStart) {
+log(Severity.Info, "LaunchedEffect 2 TOP")
+            scrollState.scrollTo(0)
+            onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
+        } else {
+log(Severity.Info, "LaunchedEffect 2 STANDARD")
+            onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, current?.first?:0, current?.second, ScrollIntent.standard))
         }
     }
 
