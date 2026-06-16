@@ -45,11 +45,16 @@ actual fun PlatformVerticalScrollbarBox(
         )
 
         LaunchedEffect(lazyListState) {
-            snapshotFlow {
-                lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
-            }.collectLatest { (index, offset) ->
-                if (scrollbarId != null && onCommonAction != null) {
-                    onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset))
+            if (scrollbarId != null && onCommonAction != null) {
+                snapshotFlow {
+                    lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
+                }.collectLatest { (index, offset) ->
+                    if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
+                        lazyListState.scrollToItem(0, 0)
+                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0))
+                    } else {
+                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset))
+                    }
                 }
             }
         }
