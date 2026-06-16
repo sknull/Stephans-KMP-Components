@@ -49,8 +49,11 @@ actual fun PlatformVerticalScrollbarBox(
         snapshotFlow {
             scrollState.value
         }.collectLatest { index ->
-            if (scrollbarId != null && onCommonAction != null) {
-                onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index))
+            if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
+                scrollState.animateScrollTo(0)
+                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, index))
+            } else {
+                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, index))
             }
         }
     }
