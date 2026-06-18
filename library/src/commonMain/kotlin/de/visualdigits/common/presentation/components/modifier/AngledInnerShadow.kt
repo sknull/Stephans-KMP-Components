@@ -44,7 +44,7 @@ fun Modifier.angledInnerShadow(
     )
 
     return if (drawInsets) {
-        shadowModifier.drawBehind() {
+        shadowModifier.drawBehind {
             if (angleInDegrees in 0f..180f) {
                 drawLineBottom(insetColorLight, insetSize)
                 drawLineTop(insetColorShadow, insetSize)

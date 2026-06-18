@@ -236,7 +236,7 @@ fun MainPage(
             TabButtonRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .drawBehind() {
+                    .drawBehind {
                         val strokeWidth = 2.dp.toPx()
                         drawLine(
                             color = Color(0xaa111111),

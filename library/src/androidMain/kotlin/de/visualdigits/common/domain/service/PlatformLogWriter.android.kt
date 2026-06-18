@@ -9,7 +9,7 @@ import java.io.FileOutputStream
 
 actual fun getPlatformLogWriters(homeDirectoryPath: String, logFileName: String): List<LogWriter> {
     val downloadFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    val logFile = File(downloadFolder, "newshomereader_logs.txt")
+    val logFile = File(downloadFolder, "logs.txt")
 
     // WICHTIG: Du brauchst WRITE_EXTERNAL_STORAGE Permissions in der AndroidManifest.xml
     // und musst diese zur Laufzeit anfragen, wenn du in den Download-Ordner willst.

@@ -25,7 +25,7 @@ fun Modifier.tintedBackgroundImage(
     finalOffsetY: Dp = 0.dp,
     finalAlpha: Float = 1.0f,
 ): Modifier {
-    return drawWithCache() {
+    return drawWithCache {
         val srcSize = Size(image.width.toFloat(), image.height.toFloat())
         val scaleFactor = contentScale.computeScaleFactor(
             srcSize = srcSize,
