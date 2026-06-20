@@ -247,7 +247,6 @@ fun MainPage(
                     },
                 horizontalArrangement = Arrangement.spacedBy(0.dp),
                 selectedTab = { selectedTabIndex },
-                initializeViewModel = {},
                 items = items
             ) { label, index ->
                 IndicatorButton(
