@@ -2,6 +2,7 @@ package de.visualdigits.common.presentation.components.form
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.SwitchColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,6 +18,7 @@ import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.ListFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.SpacerFieldDescriptor
 import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.presentation.components.util.switchBoxColors
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
@@ -27,6 +29,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
     editableListResources: EditableListResources,
     fieldHeight: Dp,
     space: Dp,
+    switchColors: SwitchColors = switchBoxColors(),
     unfocusedBorderColor: Color,
     focusedBorderColor: Color,
     visibilityIcon: Painter? = null,
@@ -49,6 +52,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
                 resources = editableListResources,
                 fieldHeight = fieldHeight,
                 space = space,
+                switchColors = switchColors,
                 focusedBorderColor = focusedBorderColor,
                 unfocusedBorderColor = unfocusedBorderColor,
                 iconTint = iconTint,
@@ -78,6 +82,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>>  EditableField(
                 titleChooseFile = titleChooseFile,
                 iconFolder = iconFolder,
                 fieldHeight = fieldHeight,
+                switchColors = switchColors,
                 focusedBorderColor = focusedBorderColor,
                 unfocusedBorderColor = unfocusedBorderColor,
                 textStyle = textStyle,

@@ -128,3 +128,5 @@ data class HsvColor(
         return sb.reverse().toString()
     }
 }
+
+fun Color.toHsvColor(): HsvColor = HsvColor.fromComposeColor(this)

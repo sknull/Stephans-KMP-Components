@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +52,7 @@ import de.visualdigits.common.presentation.components.PlatformVerticalScrollbar
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
+import de.visualdigits.common.presentation.components.util.switchBoxColors
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -63,6 +65,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     resources: EditableListResources = EditableListResources.DEFAULT_RESOURCES,
     fieldHeight: Dp = Dp.Unspecified,
     space: Dp,
+    switchColors: SwitchColors = switchBoxColors(),
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
@@ -247,6 +250,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         titleChooseFile = titleChooseFile,
                         iconFolder = iconFolder,
                         fieldHeight = fieldHeight,
+                        switchColors = switchColors,
                         focusedBorderColor = focusedBorderColor,
                         unfocusedBorderColor = unfocusedBorderColor,
                         textStyle = textStyle,

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -34,6 +35,7 @@ import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarBox
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.container.OutlinedGroupBox
+import de.visualdigits.common.presentation.components.util.switchBoxColors
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
@@ -61,6 +63,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     scrollbarId: String,
     scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     fieldHeight: Dp = Dp.Unspecified,
+    switchColors: SwitchColors = switchBoxColors(),
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     iconTint: Color = MaterialTheme.colorScheme.onSurface,
@@ -120,6 +123,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                             titleChooseDirectory = titleChooseDirectory,
                                             titleChooseFile = titleChooseFile,
                                             iconFolder = iconFolder,
+                                            switchColors = switchColors,
                                             editableListResources = editableListResources,
                                             fieldHeight = fieldHeight,
                                             space = space,
@@ -148,6 +152,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                     editableListResources = editableListResources,
                                     fieldHeight = fieldHeight,
                                     space = space,
+                                    switchColors = switchColors,
                                     unfocusedBorderColor = unfocusedBorderColor,
                                     focusedBorderColor = focusedBorderColor,
                                     visibilityIcon = visibilityIcon,
@@ -213,6 +218,7 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> renderFields(
     editableListResources: EditableListResources,
     fieldHeight: Dp,
     space: Dp,
+    switchColors: SwitchColors = switchBoxColors(),
     unfocusedBorderColor: Color,
     focusedBorderColor: Color,
     visibilityIcon: Painter?,
@@ -257,6 +263,7 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> renderFields(
                     editableListResources = editableListResources,
                     fieldHeight = fieldHeight,
                     space = space,
+                    switchColors = switchColors,
                     unfocusedBorderColor = unfocusedBorderColor,
                     focusedBorderColor = focusedBorderColor,
                     visibilityIcon = visibilityIcon,

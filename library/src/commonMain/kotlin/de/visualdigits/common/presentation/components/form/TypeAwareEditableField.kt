@@ -1,6 +1,7 @@
 package de.visualdigits.common.presentation.components.form
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwitchColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +23,7 @@ import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ReferenceListFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
+import de.visualdigits.common.presentation.components.util.switchBoxColors
 import java.io.File
 
 @Composable
@@ -36,6 +38,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
     toolTipBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
     toolTipShape: Shape = MaterialTheme.shapes.extraSmall,
     fieldHeight: Dp = Dp.Unspecified,
+    switchColors: SwitchColors = switchBoxColors(),
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     textStyle: TextStyle,
@@ -66,6 +69,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                     currentValue = fieldState.currentValue,
                     label = fieldState.fieldDescriptor.label.asString(),
                     fieldHeight = fieldHeight,
+                    switchColors = switchColors,
                     focusedBorderColor = focusedBorderColor,
                     unfocusedBorderColor = finalUnfocusedBorderColor,
                     buttonShape = buttonShape,

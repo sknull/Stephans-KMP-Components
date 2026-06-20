@@ -1,3 +1,5 @@
+rootProject.name = "Stephans-KMP-Components"
+
 pluginManagement {
     repositories {
         google()
@@ -22,8 +24,6 @@ dependencyResolutionManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
-
-rootProject.name = "Stephans-KMP-Components"
 
 include(":library")
 include(":composeApp")
