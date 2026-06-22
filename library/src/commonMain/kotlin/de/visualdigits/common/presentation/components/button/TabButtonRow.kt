@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.UiText
 
 @Composable
 fun TabButtonRow(

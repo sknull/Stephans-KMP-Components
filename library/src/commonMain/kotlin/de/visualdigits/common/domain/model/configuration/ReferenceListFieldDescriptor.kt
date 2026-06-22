@@ -1,8 +1,8 @@
 package de.visualdigits.common.domain.model.configuration
 
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
+import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.reflect.KClass
 

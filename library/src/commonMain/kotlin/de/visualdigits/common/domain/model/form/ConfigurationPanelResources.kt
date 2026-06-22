@@ -1,6 +1,6 @@
 package de.visualdigits.common.domain.model.form
 
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
 data class ConfigurationPanelResources(

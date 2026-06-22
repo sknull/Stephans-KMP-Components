@@ -1,7 +1,8 @@
 package de.visualdigits.common.domain.util
 
 import androidx.compose.ui.graphics.Color
-import de.visualdigits.common.domain.model.HsvColor
+import androidx.compose.ui.graphics.toArgb
+import de.visualdigits.common.domain.model.color.HsvColor
 
 /**
  * Returns a copy of this color with the given [hue], [saturation] and [value] values.
@@ -32,4 +33,34 @@ fun Color.copyFactor(hueShift: Int = 0, saturationFactor: Float = 1.0f, valueFac
         )
         .toComposeColor()
         .copy(alpha = this.alpha * alphaFactor)
+}
+
+fun String.toComposeColor(): Color {
+    val hex = this.removePrefix("#").removePrefix("0x")
+
+    return when (hex.length) {
+        6 -> {
+            Color("FF$hex".toLong(16))
+        }
+        8 -> {
+            Color(hex.toLong(16))
+        }
+        else -> throw IllegalArgumentException("Invalid format: $this")
+    }
+}
+
+fun String.toHsvColor(): HsvColor {
+    return if (startsWith("#") || startsWith("0x")) {
+        HsvColor.fromComposeColor(toComposeColor())
+    } else {
+        HsvColor.fromHex(this)
+    }
+}
+
+fun Color.toWebColor(): String {
+    return String.format("#%08X", toArgb())
+}
+
+fun Color.toWebColorShort(): String {
+    return String.format("#%06X", 0xFFFFFF and toArgb())
 }

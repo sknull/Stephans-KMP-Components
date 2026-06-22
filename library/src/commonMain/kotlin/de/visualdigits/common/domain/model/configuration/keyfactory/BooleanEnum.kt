@@ -1,7 +1,7 @@
 package de.visualdigits.common.domain.model.configuration.keyfactory
 
-import de.visualdigits.common.domain.model.StringResourceEnumerable
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.StringResourceEnumerable
+import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class BooleanEnum(

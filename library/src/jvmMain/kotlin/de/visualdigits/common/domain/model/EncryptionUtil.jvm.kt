@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model
 
+import de.visualdigits.common.domain.util.CryptoBox
 import java.io.File
 import java.util.Base64
 import javax.crypto.Cipher

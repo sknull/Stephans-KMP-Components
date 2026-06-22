@@ -11,10 +11,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.Enumerable
-import de.visualdigits.common.domain.model.KeyValue
-import de.visualdigits.common.domain.model.UiText
-import de.visualdigits.common.domain.model.color
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
@@ -23,6 +19,10 @@ import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ReferenceListFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
+import de.visualdigits.common.domain.model.ui.Enumerable
+import de.visualdigits.common.domain.model.ui.KeyValue
+import de.visualdigits.common.domain.model.ui.UiText
+import de.visualdigits.common.domain.util.color
 import de.visualdigits.common.presentation.components.util.switchBoxColors
 import java.io.File
 

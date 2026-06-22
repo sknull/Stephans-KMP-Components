@@ -9,7 +9,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import co.touchlab.kermit.Logger
-import de.visualdigits.common.domain.model.FileMode
+import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import java.io.File
 import java.io.OutputStream

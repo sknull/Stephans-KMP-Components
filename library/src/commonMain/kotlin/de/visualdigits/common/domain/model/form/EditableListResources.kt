@@ -1,7 +1,7 @@
 package de.visualdigits.common.domain.model.form
 
 import androidx.compose.runtime.Immutable
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
 @Immutable

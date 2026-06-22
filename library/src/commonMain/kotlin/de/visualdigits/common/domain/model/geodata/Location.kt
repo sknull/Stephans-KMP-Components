@@ -1,0 +1,179 @@
+package de.visualdigits.common.domain.model.geodata
+
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.floor
+import kotlin.math.pow
+import kotlin.math.round
+import kotlin.math.roundToInt
+import kotlin.math.sin
+import kotlin.math.sqrt
+
+
+// Regex searches for: Grad°, Minuten', Sekunden" and directions (N, S, E, W)
+private val regex = """(\d+)°(\d+)'([\d.]+)"([NSEW])""".toRegex()
+
+data class Location(
+    val latitude: Double,
+    val longitude: Double,
+) {
+
+    override fun toString(): String {
+        return toDmsString()
+    }
+
+    /**
+     * Converts the given pair (lat,lon) to a DMS formatted string.
+     */
+    fun toDmsString(): String {
+        val latitude = this.latitude
+        val longitude = this.longitude
+
+        val latDms = convertToDms(latitude, isLatitude = true)
+        val lonDms = convertToDms(longitude, isLatitude = false)
+
+        return "$latDms $lonDms"
+    }
+    /**
+     * Calculates the exact distance from this location to the given other location in meters.
+     */
+    fun distanceTo(
+        other: Location
+    ): Double {
+        val earthRadiusMeters = 6371000.0 // Erdradius in Metern
+
+        val dLat = Math.toRadians(other.latitude - this.latitude)
+        val dLon = Math.toRadians(other.longitude - this.longitude)
+
+        val a = sin(dLat / 2).pow(2) +
+                cos(Math.toRadians(this.latitude)) * cos(Math.toRadians(other.latitude)) *
+                sin(dLon / 2).pow(2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return earthRadiusMeters * c
+    }
+
+    fun isInBoundingBox(boundingBox: BoundingBox): Boolean {
+        // Norden (topLeft) ist der MAXIMALE Breitengrad, Süden (bottomRight) der MINIMALE
+        val isWithinLatitude = latitude <= boundingBox.topLeft.latitude &&
+                latitude >= boundingBox.bottomRight.latitude
+
+        // Westen (topLeft) ist der MINIMALE Längengrad, Osten (bottomRight) der MAXIMALE
+        val isWithinLongitude = longitude >= boundingBox.topLeft.longitude &&
+                longitude <= boundingBox.bottomRight.longitude
+
+        return isWithinLatitude && isWithinLongitude
+    }
+
+    /**
+     * Spans a square around this location having side lengths of the given radius in meters.
+     *
+     * @param radiusInMeters The radius (distance from the center to the edges of the square) in meterns.
+     */
+    fun calculateBoundingBox(
+        radiusInMeters: Double
+    ): BoundingBox {
+        val earthRadius = 6371000.0 // Erdradius in Metern
+
+        // degree shift for the latitude - same on the whole earth
+        val latOffset = (radiusInMeters / earthRadius) * (180.0 / PI)
+
+        // degree shift for the longitude - affected by the latitude
+        val latRadians = Math.toRadians(latitude)
+        val lonOffset = (radiusInMeters / (earthRadius * cos(latRadians))) * (180.0 / PI)
+
+        // calculate coordinates and round to 6 digits
+        fun roundCoordinate(value: Double) = (value * 1000000.0).roundToInt() / 1000000.0
+
+        return BoundingBox(
+            topLeft = Location(
+                latitude = roundCoordinate(latitude + latOffset), // Norden +
+                longitude = roundCoordinate(longitude - lonOffset) // Westen -
+            ),
+            bottomRight = Location(
+                latitude = roundCoordinate(latitude - latOffset), // Süden -
+                longitude = roundCoordinate(longitude + lonOffset) // Osten +
+            )
+        )
+    }
+
+    /**
+     * Converts the given degree value into a DMS string.
+     */
+    private fun convertToDms(value: Double, isLatitude: Boolean): String {
+        val direction = if (isLatitude) {
+            if (value >= 0) "N" else "S"
+        } else {
+            if (value >= 0) "E" else "W"
+        }
+
+        val absolute = abs(value)
+        val degrees = floor(absolute).toInt()
+
+        val minutesNotTruncated = (absolute - degrees) * 60.0
+        val minutes = floor(minutesNotTruncated).toInt()
+
+        // Sekunden berechnen und auf zwei Nachkommastellen runden
+        val secondsNotTruncated = (minutesNotTruncated - minutes) * 60.0
+        val seconds = round(secondsNotTruncated * 100.0) / 100.0
+
+        // KMP-sichere Formatierung ohne String.format()
+        return "$degrees°$minutes'$seconds\"$direction"
+    }
+}
+
+/**
+ * Formats this distanz in meters in human-readable form (i.e. "350 m" or "4.2 km").
+ */
+fun Double.formatDistance(): String {
+    return if (this < 1000.0) {
+        "${this.roundToInt()} m"
+    } else {
+        val km = this / 1000.0
+        val roundedKm = (km * 10).roundToInt() / 10.0
+        "$roundedKm km"
+    }
+}
+
+/**
+ * Converts the given DMS formatted string into a pair (lat,lon)
+ */
+fun String.toLocation(): Location? {
+    return if (this.contains("°") && this.contains("'") && this.contains("\"")) {
+        val matches = regex.findAll(this).toList()
+
+        if (matches.size != 2) {
+            throw IllegalArgumentException("Invalid format. Expects two DMS strings or decimal values.")
+        }
+
+        Location(
+            latitude = calculateDecimal(matches[0]),
+            longitude = calculateDecimal(matches[1])
+        )
+    } else if (!this.isBlank()) {
+        val parts = this.split(" +".toRegex()).map { it.trim().toDouble() }
+        if (parts.size == 2) {
+            Location(parts[0], parts[1])
+        } else {
+            throw IllegalArgumentException("Invalid format. Expects two DMS strings decimal values.")
+        }
+    } else {
+        null
+    }
+}
+
+/**
+ * Converts the given matchresult containing (degrees, minutes, seconds, direction) into a degree value as Double.
+ */
+private fun calculateDecimal(matchResult: MatchResult): Double {
+    val (degrees, minutes, seconds, direction) = matchResult.destructured
+
+    // make negative for south or west
+    val factor = if (direction == "S" || direction == "W") -1 else 1
+    val decimal = factor * (degrees.toDouble() + (minutes.toDouble() / 60.0) + (seconds.toDouble() / 3600.0))
+
+    // round to 6 digits (standard for GPS coordinates)
+    return round(decimal * 1000000.0) / 1000000.0
+}

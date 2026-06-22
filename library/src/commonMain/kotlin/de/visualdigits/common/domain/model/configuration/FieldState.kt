@@ -2,7 +2,7 @@ package de.visualdigits.common.domain.model.configuration
 
 import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
 @Immutable

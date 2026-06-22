@@ -31,8 +31,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import de.visualdigits.common.domain.model.color
 import de.visualdigits.common.domain.model.errorhandling.LogMessage
+import de.visualdigits.common.domain.util.color
 import de.visualdigits.common.presentation.components.PlatformLazyVerticalScrollbar
 
 

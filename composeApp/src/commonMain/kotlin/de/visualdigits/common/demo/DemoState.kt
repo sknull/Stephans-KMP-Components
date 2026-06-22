@@ -5,7 +5,7 @@ import co.touchlab.kermit.Severity
 import de.visualdigits.common.demo.form.DC
 import de.visualdigits.common.demo.form.DemoConfiguration
 import de.visualdigits.common.demo.form.Language
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.UiText
 
 data class DemoState(
     val uiMessage: UiText? = null,

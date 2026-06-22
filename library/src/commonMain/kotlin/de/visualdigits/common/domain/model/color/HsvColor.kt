@@ -1,9 +1,8 @@
-package de.visualdigits.common.domain.model
+package de.visualdigits.common.domain.model.color
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import de.visualdigits.common.domain.util.toComposeColor
-import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min

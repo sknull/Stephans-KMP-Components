@@ -1,4 +1,4 @@
-package de.visualdigits.common.domain.model
+package de.visualdigits.common.domain.util
 
 import androidx.compose.ui.graphics.Color
 import co.touchlab.kermit.Severity

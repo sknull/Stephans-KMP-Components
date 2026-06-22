@@ -1,7 +1,7 @@
 package de.visualdigits.common.domain.util
 
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.Table
+import de.visualdigits.common.domain.model.common.Table
 import de.visualdigits.common.domain.model.errorhandling.LogMessage
 import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.logMessage
 import kotlinx.coroutines.Dispatchers

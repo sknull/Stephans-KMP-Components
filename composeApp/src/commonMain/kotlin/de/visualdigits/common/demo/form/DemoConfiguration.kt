@@ -2,8 +2,8 @@ package de.visualdigits.common.demo.form
 
 import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.FileMode
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.FileMode
+import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor

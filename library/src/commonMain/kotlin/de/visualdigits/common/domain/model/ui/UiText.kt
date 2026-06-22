@@ -1,4 +1,4 @@
-package de.visualdigits.common.domain.model
+package de.visualdigits.common.domain.model.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable

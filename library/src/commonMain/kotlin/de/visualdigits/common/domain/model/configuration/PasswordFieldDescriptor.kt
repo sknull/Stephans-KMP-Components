@@ -1,8 +1,8 @@
 package de.visualdigits.common.domain.model.configuration
 
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFactory
+import de.visualdigits.common.domain.model.ui.UiText
 
 /**
  * Represents a field which is rendered as a text field in the UI.

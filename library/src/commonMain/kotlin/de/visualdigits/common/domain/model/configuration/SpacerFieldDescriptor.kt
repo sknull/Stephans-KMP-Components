@@ -1,7 +1,7 @@
 package de.visualdigits.common.domain.model.configuration
 
-import de.visualdigits.common.domain.model.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.StringKeyFactory
+import de.visualdigits.common.domain.model.ui.UiText
 
 
 /**

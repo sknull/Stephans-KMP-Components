@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_UNDEFINED
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_VR_HEADSET
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_WATCH
 import androidx.compose.ui.unit.dp
-import de.visualdigits.common.domain.model.UiPlatform
+import de.visualdigits.common.domain.model.ui.UiPlatform
 
 @Composable
 actual fun androidPlatform(): UiPlatform {

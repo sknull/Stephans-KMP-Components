@@ -1,7 +1,7 @@
 package de.visualdigits.common.presentation.components
 
 import androidx.compose.ui.graphics.Color
-import de.visualdigits.common.domain.model.HsvColor
+import de.visualdigits.common.domain.model.color.HsvColor
 
 class StudioClockColors(
     val colorHours: HsvColor = HsvColor.fromComposeColor(Color(0xFFFF0040)),

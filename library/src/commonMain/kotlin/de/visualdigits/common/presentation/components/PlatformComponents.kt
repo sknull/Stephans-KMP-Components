@@ -13,9 +13,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.visualdigits.common.domain.model.FileMode
-import de.visualdigits.common.domain.model.UiPlatform
 import de.visualdigits.common.domain.model.platform.ConnectivityMode
+import de.visualdigits.common.domain.model.ui.FileMode
+import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent

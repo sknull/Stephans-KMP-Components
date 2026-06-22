@@ -1,8 +1,8 @@
 package de.visualdigits.common.domain.model.configuration.keyfactory
 
 import androidx.compose.ui.graphics.Color
-import de.visualdigits.common.domain.model.HsvColor
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.color.HsvColor
+import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
 class ColorKeyFactory {

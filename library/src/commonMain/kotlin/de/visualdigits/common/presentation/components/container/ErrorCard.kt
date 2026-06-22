@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.UiText
-import de.visualdigits.common.domain.model.color
+import de.visualdigits.common.domain.model.ui.UiText
+import de.visualdigits.common.domain.util.color
 
 
 @Composable

@@ -48,6 +48,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.bundles.compose)
             implementation(libs.kotlinx.coroutines)
+            api(libs.kotlinx.datetime) // needed in client projects
             implementation(libs.kermit)
 
             implementation(libs.compose.colorpicker)

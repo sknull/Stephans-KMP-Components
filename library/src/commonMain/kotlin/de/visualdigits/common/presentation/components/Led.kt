@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import de.visualdigits.common.domain.model.toHsvColor
+import de.visualdigits.common.domain.model.color.toHsvColor
 import de.visualdigits.common.presentation.components.util.drawLed
 
 @Composable

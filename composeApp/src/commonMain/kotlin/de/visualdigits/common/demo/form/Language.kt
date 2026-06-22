@@ -1,7 +1,7 @@
 package de.visualdigits.common.demo.form
 
-import de.visualdigits.common.domain.model.StringResourceEnumerable
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.ui.StringResourceEnumerable
+import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
 import org.jetbrains.compose.resources.DrawableResource
 import stephans_kmp_components.composeapp.generated.resources.Res

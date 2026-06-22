@@ -1,4 +1,4 @@
-package de.visualdigits.common.domain.model
+package de.visualdigits.common.domain.model.common
 
 class Table(
     val keys: List<String> = listOf(),

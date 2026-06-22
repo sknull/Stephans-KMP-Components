@@ -1,9 +1,9 @@
 package de.visualdigits.common.domain.model.configuration
 
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.HsvColor
-import de.visualdigits.common.domain.model.UiText
+import de.visualdigits.common.domain.model.color.HsvColor
 import de.visualdigits.common.domain.model.configuration.keyfactory.ColorKeyFactory
+import de.visualdigits.common.domain.model.ui.UiText
 
 /**
  * Represents a field which is rendered as a text field in the UI.
