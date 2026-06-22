@@ -77,10 +77,17 @@ fun IndicatorButton(
     trailingIconTint: Color = MaterialTheme.colorScheme.onSurface,
     trailingIconTintDisabled: Color = trailingIconTint.copy(alpha = 0.5f),
     enabled: Boolean = true,
+    content: (@Composable () -> Unit)? = null, // cannot be last attribute for back compatibility
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Center,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+
+    val hasLeadingIcon = leadingIcon != null
+    val hasContent = text != null  || content != null
+    val hasTrailingIcon = trailingIcon != null
 
     var indicatorModifier = modifier
         .semantics { role = Role.Button }
@@ -147,20 +154,20 @@ fun IndicatorButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = paddings[0], end = paddings[1], bottom = paddings[2], start = paddings[3]),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = horizontalArrangement,
+                verticalAlignment = verticalAlignment,
             ) {
-                if (leadingIcon != null) {
+                if (hasLeadingIcon) {
                     Icon(
                         modifier = Modifier,
                         painter = leadingIcon,
                         contentDescription = null,
                         tint = if (enabled) leadingIconTint else leadingIconTintDisabled
                     )
-                    if (text != null) Spacer(Modifier.width(space))
+                    if (hasContent) Spacer(Modifier.width(space))
                 } else if (leadingImage != null) {
                     leadingImage()
-                    if (text != null) Spacer(Modifier.width(space))
+                    if (hasContent) Spacer(Modifier.width(space))
                 }
 
                 if (text?.isNotEmpty() == true) {
@@ -175,10 +182,12 @@ fun IndicatorButton(
                         style = textStyle,
                         color = if (enabled) textColor else textColorDisabled,
                     )
+                } else if (content != null) {
+                    content()
                 }
 
-                if (trailingIcon != null) {
-                    if (text != null || leadingIcon != null) Spacer(Modifier.width(space))
+                if (hasTrailingIcon) {
+                    if (hasContent || hasLeadingIcon) Spacer(Modifier.width(space))
                     Icon(
                         modifier = Modifier,
                         painter = trailingIcon,

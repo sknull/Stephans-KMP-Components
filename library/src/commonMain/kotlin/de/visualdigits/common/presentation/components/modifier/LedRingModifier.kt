@@ -32,8 +32,8 @@ fun Modifier.ledRing(
 ): Modifier {
     return drawWithCache {
         val d = density
-        val widthPx = width.toPx()
-        val heightPx = height.toPx()
+        val widthPx = if (width == Dp.Unspecified) size.width else width.toPx()
+        val heightPx = if (height == Dp.Unspecified) size.height else height.toPx()
         val ringWidth = ringSize.toPx()
 
         val outerOffset = 4.0f

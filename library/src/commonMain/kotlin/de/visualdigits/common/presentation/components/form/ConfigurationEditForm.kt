@@ -59,8 +59,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     iconOk: Painter,
     tooltipCancel: UiText,
     iconCancel: Painter,
-    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
-    scrollbarId: String,
+    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
+    scrollbarId: String? = null,
     scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     fieldHeight: Dp = Dp.Unspecified,
     switchColors: SwitchColors = switchBoxColors(),
@@ -76,7 +76,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     onValueChange: (KeyValue) -> Unit,
     onCancelClick: () -> Unit,
     onOkClick: () -> Unit,
-    onCommonAction: (CommonAction) -> Unit,
+    onCommonAction: ((CommonAction) -> Unit)? = null,
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _,_ -> true },
     headerContent: (@Composable () -> Unit)? = null
 ) {

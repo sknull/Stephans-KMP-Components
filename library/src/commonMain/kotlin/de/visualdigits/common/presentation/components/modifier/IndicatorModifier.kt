@@ -33,8 +33,8 @@ fun Modifier.indicator(
     isHovered: Boolean = false
 ): Modifier {
     return drawWithCache {
-        val widthPx = width.toPx()
-        val heightPx = height.toPx()
+        val widthPx = if (width == Dp.Unspecified) size.width else width.toPx()
+        val heightPx = if (height == Dp.Unspecified) size.height else height.toPx()
         val indicatorWidth = indicatorSize.toPx()
 
         val (indicatorOffsetX, indicatorOffsetY) = when (indicatorPosition) {

@@ -21,8 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
@@ -43,29 +41,35 @@ actual fun PlatformVerticalScrollbarBox(
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-
     val scrollState = rememberScrollState(scrollPosition[scrollbarId]?.first?:0)
-    LaunchedEffect(scrollState) {
-        snapshotFlow {
-            scrollState.value
-        }.collectLatest { index ->
-            if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
-log(Severity.Info, "LaunchedEffect 1 TOP")
+    val currentRows = rows()
+    val cachedRows = remember(currentRows) {
+        currentRows.ifEmpty { null }
+    } ?: currentRows
+
+    // 3. Nur EIN zentraler Effekt für die Synchronisation von AUßEN nach INNEN
+    LaunchedEffect(scrollbarId, scrollPosition[scrollbarId]) {
+        val current = scrollPosition[scrollbarId]
+        if (current != null) {
+            if (current.third == ScrollIntent.scrollToStart) {
                 scrollState.scrollTo(0)
+                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
+            } else if (scrollState.value == 0 && current.first > 0) {
+                // Stellt die Position beim ersten Laden oder nach Wiederherstellung her
+                scrollState.scrollTo(current.first)
             }
-            onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, index, 0, ScrollIntent.standard))
         }
     }
-    LaunchedEffect(scrollPosition[scrollbarId]) {
-        val current = scrollPosition[scrollbarId]
-        if (current?.third == ScrollIntent.scrollToStart) {
-log(Severity.Info, "LaunchedEffect 2 TOP")
-            scrollState.scrollTo(0)
-            onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
-        } else {
-log(Severity.Info, "LaunchedEffect 2 STANDARD")
-            onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, current?.first?:0, current?.second, ScrollIntent.standard))
-        }
+
+    // 4. Nur EIN Effekt, um Änderungen von INNEN nach AUßEN zu melden (Debounced über snapshotFlow)
+    LaunchedEffect(scrollState, scrollbarId) {
+        snapshotFlow { scrollState.value }
+            .collectLatest { pixels ->
+                // Verhindere das Zurückmelden, wenn gerade ein 'scrollToStart' erzwungen wird
+                if (scrollPosition[scrollbarId]?.third != ScrollIntent.scrollToStart) {
+                    onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, pixels, 0, ScrollIntent.standard))
+                }
+            }
     }
 
     Box(
@@ -83,7 +87,7 @@ log(Severity.Info, "LaunchedEffect 2 STANDARD")
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementGap)
         ) {
-            rows().forEach { row ->
+            cachedRows.forEach { row ->
                 row.second()
             }
         }
