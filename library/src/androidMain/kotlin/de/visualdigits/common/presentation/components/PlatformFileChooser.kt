@@ -15,7 +15,9 @@ import androidx.compose.ui.unit.Dp
 import co.touchlab.kermit.Logger
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.button.IndicatorButton
-import java.io.InputStream
+import kotlinx.io.Buffer
+import kotlinx.io.Source
+import kotlinx.io.files.Path
 
 @Composable
 actual fun PlatformFileChooser(
@@ -32,9 +34,10 @@ actual fun PlatformFileChooser(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
-    homeDirectoryPath: String,
+    startDirectory: Path,
     onCancel: (() -> Unit)?,
-    onOk: (String, InputStream) -> Unit
+    onOkSource: ((String, Source) -> Unit)?,
+    onOkPath: ((Path) -> Unit)?
 ) {
     val log = Logger.withTag("PlatformFileChooser")
 
@@ -57,7 +60,12 @@ actual fun PlatformFileChooser(
 
                 context.contentResolver.openInputStream(safeUri)?.use { ins ->
                     val bytes = ins.readBytes()
-                    onOk(fileName, bytes.inputStream())
+                    if (onOkSource != null) {
+                        val kmpSource: Source = Buffer().apply {
+                            write(bytes)
+                        }
+                        onOkSource(fileName, kmpSource)
+                    }
                 }
             }
         } catch (e: Exception) {

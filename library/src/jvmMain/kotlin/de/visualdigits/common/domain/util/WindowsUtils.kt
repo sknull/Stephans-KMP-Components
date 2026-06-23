@@ -3,7 +3,6 @@ package de.visualdigits.common.domain.util
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.common.Table
 import de.visualdigits.common.domain.model.errorhandling.LogMessage
-import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.logMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -18,7 +17,7 @@ object WindowsUtils {
         val log = mutableListOf<LogMessage>()
         runCommand(
             command = listOf("tasklist"),
-                workingDir = File(/* pathname = */ "C:\\Windows\\SysWOW64"),
+            workingDir = File(/* pathname = */ "C:\\Windows\\SysWOW64"),
             timeOut = Pair(0, TimeUnit.SECONDS),
             logger = { lm ->
                 log.add(lm)
@@ -30,7 +29,7 @@ object WindowsUtils {
             ?.message
             ?.split("\r\n")
             ?.filter { l -> l.isNotBlank() }
-            ?:listOf()
+            ?: listOf()
         val template = lines[1]
             .split(" ")
             .map { t -> t.length }
@@ -66,13 +65,13 @@ object WindowsUtils {
             }
             val message = proc.inputStream.bufferedReader().readText()
             if (message.isNotBlank()) {
-                logger(logMessage(Severity.Info, message))
+                logger(LogMessage.logMessage(Severity.Info, message))
             }
             val error = proc.errorStream.bufferedReader().readText()
             if (error.isNotBlank()) {
-                logger(logMessage(Severity.Error, error))
+                logger(LogMessage.logMessage(Severity.Error, error))
             }
-        } catch(e: IOException) {
+        } catch (e: IOException) {
             throw IllegalStateException("Could not execute command", e)
         }
     }

@@ -13,8 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.demo.DemoState
-import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.form.ConfigurationEditForm
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent

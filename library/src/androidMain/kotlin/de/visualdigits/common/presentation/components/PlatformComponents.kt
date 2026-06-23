@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_MASK
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_NO
-import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_UNDEFINED
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_APPLIANCE
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_CAR
@@ -29,14 +28,15 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_VR_HEADSE
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_WATCH
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.ui.UiPlatform
+import java.util.Locale
 
 @Composable
 actual fun androidPlatform(): UiPlatform {
     val context = LocalContext.current
     val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
     return when (uiModeManager.currentModeType) {
-        UI_MODE_TYPE_MASK -> UiPlatform.UI_MODE_TYPE_MASK
         UI_MODE_TYPE_UNDEFINED -> UiPlatform.UI_MODE_TYPE_UNDEFINED
+        UI_MODE_TYPE_MASK -> UiPlatform.UI_MODE_TYPE_MASK
         UI_MODE_TYPE_NORMAL -> UiPlatform.UI_MODE_TYPE_NORMAL
         UI_MODE_TYPE_DESK -> UiPlatform.UI_MODE_TYPE_DESK
         UI_MODE_TYPE_CAR -> UiPlatform.UI_MODE_TYPE_CAR
@@ -45,7 +45,6 @@ actual fun androidPlatform(): UiPlatform {
         UI_MODE_TYPE_WATCH -> UiPlatform.UI_MODE_TYPE_WATCH
         UI_MODE_TYPE_VR_HEADSET -> UiPlatform.UI_MODE_TYPE_VR_HEADSET
         UI_MODE_NIGHT_MASK -> UiPlatform.UI_MODE_NIGHT_MASK
-        UI_MODE_NIGHT_UNDEFINED -> UiPlatform.UI_MODE_NIGHT_UNDEFINED
         UI_MODE_NIGHT_NO -> UiPlatform.UI_MODE_NIGHT_NO
         UI_MODE_NIGHT_YES -> UiPlatform.UI_MODE_NIGHT_YES
         else -> UiPlatform.NONE
@@ -71,4 +70,10 @@ actual fun Modifier.platformFocus(onClick: (() -> Unit)?): Modifier {
     } else {
         if (onClick != null) this.clickable { onClick() } else this
     }
+}
+
+actual fun applyAppLanguage(languageTag: String) {
+     androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(
+         androidx.core.os.LocaleListCompat.forLanguageTags(languageTag)
+     )
 }

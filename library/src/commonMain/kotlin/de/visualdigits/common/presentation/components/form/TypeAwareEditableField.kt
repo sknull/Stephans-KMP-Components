@@ -24,7 +24,7 @@ import de.visualdigits.common.domain.model.ui.KeyValue
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.domain.util.color
 import de.visualdigits.common.presentation.components.util.switchBoxColors
-import java.io.File
+import kotlinx.io.files.Path
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
@@ -112,7 +112,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 buttonColor = buttonColor,
                 titleDirectories = titleChooseDirectory.asString(),
                 titleFiles = titleChooseFile.asString(),
-                startDirectory = (fieldState.currentValue as? File) ?: fieldState.fieldDescriptor.startDirectory(
+                startDirectory = (fieldState.currentValue as? Path) ?: fieldState.fieldDescriptor.startDirectory(
                     fieldState.configuration
                 ),
                 finalUnfocusedBorderColor = finalUnfocusedBorderColor,
@@ -120,8 +120,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 onValueChange = { value: String ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 },
-                onOk = { value ->
-                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                onOk = { path ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, path))
                 }
             )
         }

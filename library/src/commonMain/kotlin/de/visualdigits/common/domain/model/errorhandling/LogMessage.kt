@@ -3,12 +3,12 @@ package de.visualdigits.common.domain.model.errorhandling
 import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
-import java.time.OffsetDateTime
+import de.visualdigits.common.domain.model.common.KmpOffsetDateTime
 
 @Immutable
 data class LogMessage(
     val tag: String,
-    val timestamp: OffsetDateTime,
+    val timestamp: KmpOffsetDateTime,
     val severity: Severity,
     val message: String,
     val throwable: Throwable?
@@ -47,7 +47,7 @@ data class LogMessage(
         ): LogMessage {
             val logMessage = LogMessage(
                 tag = withTag,
-                timestamp = OffsetDateTime.now(),
+                timestamp = KmpOffsetDateTime.now(),
                 severity = severity,
                 message = message,
                 throwable = throwable

@@ -15,7 +15,10 @@ import androidx.compose.ui.unit.Dp
 import co.touchlab.kermit.Logger
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.button.IndicatorButton
-import java.io.OutputStream
+import kotlinx.io.Sink
+import kotlinx.io.asSink
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
 
 @Composable
 actual fun PlatformFileSaver(
@@ -33,9 +36,9 @@ actual fun PlatformFileSaver(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
-    homeDirectoryPath: String,
+    startDirectory: Path,
     onCancel: (() -> Unit)?,
-    onOk: (String, OutputStream) -> Unit
+    onOk: (String, Sink) -> Unit
 ) {
     val context = LocalContext.current
     val log = Logger.withTag("PlatformFileSaver")
@@ -56,9 +59,7 @@ actual fun PlatformFileSaver(
             }
             try {
                 val outs = context.contentResolver.openOutputStream(uri)
-                if (outs != null) {
-                    onOk(fileName, outs)
-                }
+                outs?.asSink()?.buffered()?.also { buffer -> onOk(fileName, buffer) }
             } catch (e: Exception) {
                 log.e("Could not save file", e)
             }

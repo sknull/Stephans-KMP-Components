@@ -2,31 +2,27 @@ package de.visualdigits.common.presentation.components.form
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.domain.model.ui.FileMode
+import de.visualdigits.common.presentation.components.PlatformFileChooser
 import de.visualdigits.common.presentation.components.PlatformToolTip
-import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
+import kotlinx.io.files.Path
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
@@ -45,14 +41,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
     buttonColor: Color,
     titleDirectories: String,
     titleFiles: String,
-    startDirectory: File,
+    startDirectory: Path,
     finalUnfocusedBorderColor: Color,
     focusedBorderColor: Color,
     onValueChange: (String) -> Unit,
-    onOk: (File) -> Unit
+    onOk: (Path) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-
     val halfHeight = minimizedLabelHalfHeight(textStyle)
     PlatformToolTip(
         text = fieldState.fieldDescriptor.toolTip?.asString(),
@@ -80,29 +74,19 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
                 trailingIcon?.let { ti -> ti() }
 
                 if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
-                    IndicatorButton(
-                        modifier = Modifier
-                            .padding(start = 5.dp),
-                        width = 30.dp,
-                        height = 30.dp,
+                    PlatformFileChooser(
+                        buttonTextStyle = MaterialTheme.typography.bodySmall,
+                        buttonTextAlign = TextAlign.Start,
+                        title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
+                            FileMode.DIRECTORIES_ONLY -> titleDirectories
+                            FileMode.FILES_ONLY -> titleFiles
+                        },
+                        fileMode = FileMode.FILES_ONLY,
+                        buttonColor = buttonColor,
                         leadingIcon = iconFolder,
                         leadingIconTint = iconTint,
-                        shape = buttonShape,
-                        buttonColor = buttonColor,
-                        onClick = {
-                            scope.launch(Dispatchers.IO) {
-                                desktopFileChooser(
-                                    fieldState = fieldState,
-                                    title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
-                                        FileMode.DIRECTORIES_ONLY -> titleDirectories
-                                        FileMode.FILES_ONLY -> titleFiles
-                                    },
-                                    fileMode = fieldState.fieldDescriptor.fileMode,
-                                    startDirectory = startDirectory,
-                                    onOk = onOk
-                                )
-                            }
-                        }
+                        startDirectory = startDirectory,
+                        onOkPath = onOk
                     )
                 }
             },

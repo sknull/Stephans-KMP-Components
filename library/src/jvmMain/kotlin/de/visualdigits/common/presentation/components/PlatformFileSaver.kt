@@ -11,9 +11,11 @@ import androidx.compose.ui.unit.Dp
 import co.touchlab.kermit.Logger
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.button.IndicatorButton
+import kotlinx.io.Sink
+import kotlinx.io.asSink
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
 import java.io.File
-import java.io.OutputStream
-import java.nio.file.Paths
 import javax.swing.JFileChooser
 
 @Composable
@@ -32,13 +34,13 @@ actual fun PlatformFileSaver(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
-    homeDirectoryPath: String,
+    startDirectory: Path,
     onCancel: (() -> Unit)?,
-    onOk: (String, OutputStream) -> Unit
+    onOk: (String, Sink) -> Unit
 ) {
     val log = Logger.withTag("PlatformFileSaver")
 
-    val saveDirectory = Paths.get(homeDirectoryPath, "backup").toFile()
+    val saveDirectory = File(startDirectory.toString())
     if (!saveDirectory.exists()) {
         if (!saveDirectory.mkdirs()) {
             log.e("Failed to create directory ${saveDirectory.absolutePath}")
@@ -68,7 +70,8 @@ actual fun PlatformFileSaver(
     ) {
         val result = chooser.showOpenDialog(null)
         if (result == JFileChooser.APPROVE_OPTION) {
-            onOk(chooser.selectedFile.name, chooser.selectedFile.outputStream())
+            val kmpSink = chooser.selectedFile.outputStream().asSink().buffered()
+            onOk(chooser.selectedFile.name, kmpSink)
         } else if (result == JFileChooser.CANCEL_OPTION) {
             onCancel?.also { oc -> oc() }
         }

@@ -4,8 +4,8 @@ import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.FileKeyFactory
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.domain.model.ui.UiText
+import kotlinx.io.files.Path
 import org.jetbrains.compose.resources.DrawableResource
-import java.io.File
 
 /**
  * Represents a field which should provide a file or directory picker.
@@ -21,7 +21,7 @@ class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     visible: Boolean = true,
     readOnly: Boolean = false,
 
-    default: File? = null,
+    default: Path? = null,
 
     enabled: Boolean = true,
 
@@ -31,11 +31,11 @@ class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, K>?) -> List<Triple<String, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
     val fileMode: FileMode,
-    var startDirectory: (AbstractConfiguration<*, *>) -> File = {
-        File(System.getProperty("user.home"))
+    var startDirectory: (AbstractConfiguration<*, *>) -> Path = {
+        Path(System.getProperty("user.home"))
     },
-): AbstractFieldDescriptor<File, File, K, K, String>(
-    fieldClass = File::class,
+): AbstractFieldDescriptor<Path, Path, K, K, String>(
+    fieldClass = Path::class,
     group = group,
     key = key,
     label = label,

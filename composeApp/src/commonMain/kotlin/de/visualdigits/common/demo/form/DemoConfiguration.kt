@@ -2,8 +2,6 @@ package de.visualdigits.common.demo.form
 
 import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.ui.FileMode
-import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
@@ -13,6 +11,8 @@ import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.StringFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import de.visualdigits.common.domain.model.configuration.keyfactory.StringListKeyFactory
+import de.visualdigits.common.domain.model.ui.FileMode
+import de.visualdigits.common.domain.model.ui.UiText
 
 @Immutable
 class DemoConfiguration(

@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
 import de.visualdigits.common.domain.model.color.HsvColor
+import de.visualdigits.common.domain.model.common.KmpOffsetDateTime
 import de.visualdigits.common.presentation.components.util.dateHeight
 import de.visualdigits.common.presentation.components.util.drawDate
 import de.visualdigits.common.presentation.components.util.drawFrame
@@ -30,16 +31,14 @@ import de.visualdigits.common.presentation.components.util.drawLed
 import de.visualdigits.common.presentation.components.util.drawTime
 import de.visualdigits.common.presentation.components.util.timeHeight
 import kotlinx.coroutines.delay
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.LocalDateTime
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.roundToLong
 import kotlin.math.sin
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Instant
 
 
 /*
@@ -55,10 +54,10 @@ fun StudioClock(
     showFrames: Boolean = false,
     framesPerSecond: Int = 24
 ) {
-    val formatterWithSeconds = if (fontFamily != null) DateTimeFormatter.ofPattern("HH:mm:ss") else DateTimeFormatter.ofPattern("HHmmss")
-    val formatterWithoutSeconds = if (fontFamily != null) DateTimeFormatter.ofPattern("HH:mm") else DateTimeFormatter.ofPattern("HHmm")
-    val formatterDate = if (fontFamily != null) DateTimeFormatter.ofPattern("dd.MM.") else DateTimeFormatter.ofPattern("ddMM")
-    val formatterDateWithYear = if (fontFamily != null) DateTimeFormatter.ofPattern("dd.MM.yyyy") else DateTimeFormatter.ofPattern("ddMMyyyy")
+    val patternWithSeconds = if (fontFamily != null) "HH:mm:ss" else "HHmmss"
+    val patternWithoutSeconds = if (fontFamily != null) "HH:mm" else "HHmm"
+    val patternDate = if (fontFamily != null) "dd.MM." else "ddMM"
+    val patternDateWithYear = if (fontFamily != null) "dd.MM.yyyy" else "ddMMyyyy"
 
     var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var currentFrame by remember { mutableIntStateOf(0) }
@@ -89,11 +88,20 @@ fun StudioClock(
             }
         }
 
-        val currentDateTime = LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(currentTime), ZoneId.systemDefault()
+        val currentDateTime = KmpOffsetDateTime.ofInstant(
+            Instant.fromEpochMilliseconds(currentTime), KmpOffsetDateTime.systemDefaultOffset()
         )
-        val currentTimeString = if (showSeconds) formatterWithSeconds.format(currentDateTime) else formatterWithoutSeconds.format(currentDateTime)
-        val currentDateString = if (showYear) formatterDateWithYear.format(currentDateTime) else formatterDate.format(currentDateTime)
+
+        val currentTimeString = if (showSeconds) {
+            currentDateTime.format(patternWithSeconds)
+        } else {
+            currentDateTime.format(patternWithoutSeconds)
+        }
+        val currentDateString = if (showYear) {
+            currentDateTime.format(patternDateWithYear)
+        } else {
+            currentDateTime.format(patternDate)
+        }
         val currentFrameString = (currentFrame + 1).toString().padStart(frameDigits, '0')
 
         Box(
@@ -115,7 +123,7 @@ fun StudioClock(
                             unit = unit,
                             colors = colors,
                             showSeconds = showSeconds,
-                            currentDateTime = currentDateTime
+                            currentDateTime = currentDateTime.toLocalDateTime()
                         )
 
                         if (fontFamily != null) {

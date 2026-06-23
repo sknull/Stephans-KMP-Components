@@ -1,21 +1,22 @@
 package de.visualdigits.common.domain.model.configuration.keyfactory
 
 import de.visualdigits.common.domain.model.ui.UiText
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import org.jetbrains.compose.resources.DrawableResource
-import java.io.File
 
 class FileKeyFactory {
 
-    companion object : KeyFactory<File> {
+    companion object : KeyFactory<Path> {
 
-        override val options: List<Triple<File, UiText?, DrawableResource?>> = listOf()
+        override val options: List<Triple<Path, UiText?, DrawableResource?>> = listOf()
 
-        override fun fromString(value: String?): File?  = value?.let { v -> File(v) }
+        override fun fromString(value: String?): Path?  = value?.let { v -> Path(v) }
 
-        override fun fromValue(value: Any?): File? {
+        override fun fromValue(value: Any?): Path? {
             return when (value) {
                 is String -> fromString(value)
-                is File -> value
+                is Path -> value
                 else -> null
             }
         }
@@ -23,7 +24,7 @@ class FileKeyFactory {
         override fun stringValue(value: Any?): String? {
             return when (value) {
                 is String -> value
-                is File -> value.canonicalPath
+                is Path -> SystemFileSystem.resolve(value).toString()
                 else -> null
             }
         }

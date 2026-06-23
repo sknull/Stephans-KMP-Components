@@ -10,8 +10,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.button.IndicatorButton
-import java.io.InputStream
-import java.nio.file.Paths
+import kotlinx.io.Source
+import kotlinx.io.asSource
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -31,12 +34,12 @@ actual fun PlatformFileChooser(
     leadingIcon: Painter?,
     leadingIconTint: Color,
     toolTip: String?,
-    homeDirectoryPath: String,
+    startDirectory: Path,
     onCancel: (() -> Unit)?,
-    onOk: (String, InputStream) -> Unit
+    onOkSource: ((String, Source) -> Unit)?,
+    onOkPath: ((Path) -> Unit)?
 ) {
     val mode = fileMode.jFileChooserMode
-    val startDirectory = Paths.get(homeDirectoryPath,  "backup").toFile()
     val chooser = JFileChooser().apply {
         if (fileMode == FileMode.FILES_ONLY && options.isNotEmpty()) {
             val filter =
@@ -50,7 +53,7 @@ actual fun PlatformFileChooser(
         } else {
             this.isAcceptAllFileFilterUsed = true
         }
-        currentDirectory = startDirectory
+        currentDirectory = File(startDirectory.toString())
         fileSelectionMode = mode
         dialogTitle = title
     }
@@ -70,7 +73,10 @@ actual fun PlatformFileChooser(
     ) {
         val result = chooser.showOpenDialog(null)
         if (result == JFileChooser.APPROVE_OPTION) {
-            onOk(chooser.selectedFile.name, chooser.selectedFile.inputStream())
+            val name = chooser.selectedFile.name
+            val kmpSource = chooser.selectedFile.inputStream().asSource().buffered()
+            onOkSource?.also { onOk -> onOk(name, kmpSource) }
+            onOkPath?.also { onOk -> onOk(Path(chooser.selectedFile.canonicalPath)) }
         } else if (result == JFileChooser.CANCEL_OPTION) {
             onCancel?.also { oc -> oc() }
         }

@@ -35,6 +35,7 @@ kotlin {
                 // android
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.appcompat)
 
                 // android tv
                 implementation(project.dependencies.platform("androidx.compose:compose-bom:2026.03.00"))
@@ -48,10 +49,12 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.bundles.compose)
             implementation(libs.kotlinx.coroutines)
-            api(libs.kotlinx.datetime) // needed in client projects
             implementation(libs.kermit)
-
             implementation(libs.compose.colorpicker)
+
+            // needed in client projects
+            api(libs.kotlinx.io.core)
+            api(libs.kotlinx.datetime)
         }
 
         commonTest.dependencies {
@@ -68,7 +71,10 @@ kotlin {
             dependsOn(jvmMain)
 
             dependencies {
-                implementation("org.jetbrains.compose.foundation:foundation:1.10.3")
+                implementation(libs.compose.foundation)
+
+                // needed in client projects
+                api(libs.kotlinx.io.core.jvm)
             }
         }
 

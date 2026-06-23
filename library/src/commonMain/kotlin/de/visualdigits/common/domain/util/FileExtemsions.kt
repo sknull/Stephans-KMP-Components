@@ -3,27 +3,53 @@ package de.visualdigits.common.domain.util
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.errorhandling.LogMessage
 import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.logMessage
-import java.io.File
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import java.io.IOException
 
-fun File.copyToIfNotExists(
-    targetFile: File,
+fun Path.copyToIfNotExists(
+    targetFile: Path,
     logger: (LogMessage) -> Unit,
 ) {
-    if (!targetFile.exists()) {
-        logger(logMessage(Severity.Info, "Copy file '${this.canonicalPath}' to '$targetFile'..."))
+    if (!SystemFileSystem.exists(targetFile)) {
+        logger(logMessage(Severity.Info, "Copy file '${SystemFileSystem.resolve(this)}' to '$targetFile'..."))
         this.copyTo(targetFile)
     }
 }
 
-fun File.createDirectoryIfNotExists(
+fun Path.createDirectoryIfNotExists(
     logger: (LogMessage) -> Unit,
-): File {
-    if (!exists()) {
-        logger(logMessage(Severity.Info, "Creating target directory '${this.canonicalPath}'"))
-        if (!mkdirs()) {
+): Path {
+    if (!SystemFileSystem.exists(this)) {
+        logger(logMessage(Severity.Info, "Creating target directory '${SystemFileSystem.resolve(this)}'"))
+        if (!this.mkdirs()) {
             logger(logMessage(Severity.Error, "Could not create target directory"))
         }
     }
 
     return this
+}
+
+fun Path.mkdirs(): Boolean = try {
+    SystemFileSystem.createDirectories(this)
+    true
+} catch (_: IOException) {
+    false
+}
+
+fun Path.copyTo(target: Path) {
+    // make sure the target path exists
+    target.parent?.let { parentPath ->
+        if (!SystemFileSystem.exists(parentPath)) {
+            SystemFileSystem.createDirectories(parentPath)
+        }
+    }
+
+    // work with stream to copy block data over
+    SystemFileSystem.source(this).buffered().use { source ->
+        SystemFileSystem.sink(target).buffered().use { sink ->
+            source.transferTo(sink)
+        }
+    }
 }

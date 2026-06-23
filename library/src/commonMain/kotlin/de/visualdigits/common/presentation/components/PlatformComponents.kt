@@ -20,12 +20,15 @@ import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
 import de.visualdigits.common.presentation.model.defaultScrollbarStyle
-import java.io.InputStream
-import java.io.OutputStream
+import kotlinx.io.Sink
+import kotlinx.io.Source
+import kotlinx.io.files.Path
 
 expect class ConnectivityManager {
     fun connectivityMode(): ConnectivityMode
 }
+
+expect fun applyAppLanguage(languageTag: String)
 
 @Composable
 expect fun BindBackHandler(isEnabled: Boolean, onBack: () -> Unit)
@@ -96,9 +99,10 @@ expect fun PlatformFileChooser(
     leadingIcon: Painter? = null,
     leadingIconTint: Color = MaterialTheme.colorScheme.onSurface,
     toolTip: String? = null,
-    homeDirectoryPath: String,
+    startDirectory: Path,
     onCancel: (() -> Unit)? = null,
-    onOk: (String, InputStream) -> Unit
+    onOkSource: ((String, Source) -> Unit)? = null,
+    onOkPath: ((Path) -> Unit)? = null
 )
 
 @Composable
@@ -117,7 +121,7 @@ expect fun PlatformFileSaver(
     leadingIcon: Painter? = null,
     leadingIconTint: Color = MaterialTheme.colorScheme.onSurface,
     toolTip: String? = null,
-    homeDirectoryPath: String,
+    startDirectory: Path,
     onCancel: (() -> Unit)? = null,
-    onOk: (String, OutputStream) -> Unit
+    onOk: (String, Sink) -> Unit
 )
