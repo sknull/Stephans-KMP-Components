@@ -49,6 +49,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.bundles.compose)
             implementation(libs.kotlinx.coroutines)
+            implementation(libs.kotlinx.serialization)
             implementation(libs.kermit)
             implementation(libs.compose.colorpicker)
 
