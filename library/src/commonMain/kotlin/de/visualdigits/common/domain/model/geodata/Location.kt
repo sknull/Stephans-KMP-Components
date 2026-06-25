@@ -1,5 +1,7 @@
 package de.visualdigits.common.domain.model.geodata
 
+import co.touchlab.kermit.Severity
+import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -137,6 +139,9 @@ fun Double.formatDistance(): String {
     }
 }
 
+const val COORDINATES_DEFAULT = "53.545977 9.9680454"
+val COORDINATES_DEFAULT_DOUBLE = listOf(53.545977, 9.9680454)
+
 /**
  * Converts the given DMS formatted string into a pair (lat,lon)
  */
@@ -153,7 +158,12 @@ fun String.toLocation(): Location? {
             longitude = calculateDecimal(matches[1])
         )
     } else if (!this.isBlank()) {
-        val parts = this.split(" +".toRegex()).map { it.trim().toDouble() }
+        val parts = try {
+            this.trim().split(" +".toRegex()).map { it.trim().toDouble() }
+        } catch (_: Exception) {
+            log(Severity.Error, "Invalid format for double: $this - falling back to Hamburg Harbor", withTag = "AIS" )
+            COORDINATES_DEFAULT_DOUBLE
+        }
         if (parts.size == 2) {
             Location(parts[0], parts[1])
         } else {

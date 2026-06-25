@@ -5,12 +5,17 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +40,7 @@ import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
     modifier: Modifier,
@@ -51,10 +57,20 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
     focusedBorderColor: Color,
     onValueChange: (String) -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val text = currentValue?.toString() ?: fieldState.currentValue?.toString() ?: ""
+
     var textFieldValue by remember { mutableStateOf(TextFieldValue(text = text)) }
+    val interactionSource = remember { MutableInteractionSource() }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val textSelectionColors = remember {
+        TextSelectionColors(
+            handleColor = primaryColor,
+            backgroundColor = primaryColor.copy(alpha = 0.4f)
+        )
+    }
 
     LaunchedEffect(text) {
         if (text != textFieldValue.text) {
@@ -67,46 +83,73 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
         backgroundColor = toolTipBackgroundColor,
         shape = toolTipShape
     ) {
-        OutlinedTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(fieldHeight + minimizedLabelHalfHeight(textStyle)),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
-            textStyle = textStyle,
-            enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
-            label = {
-                Text(
-                    text = fieldState.fieldDescriptor.label.asString(),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            value = textFieldValue,
-            shape = buttonShape,
-            onValueChange = { value ->
-                textFieldValue = value
-                onValueChange(value.text)
-            },
-            singleLine = true,
-            colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
-            trailingIcon = {
-                visibilityIcon?.let { vi ->
-                    Icon(
-                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
-                            .hoverable(interactionSource)
-                            .clickable {
-                                passwordVisible = !passwordVisible
-                            },
-                        painter = vi,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
+        CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
+            BasicTextField(
+                value = textFieldValue,
+                onValueChange = { value ->
+                    textFieldValue = value
+                    onValueChange(value.text)
+                },
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(fieldHeight + minimizedLabelHalfHeight(textStyle)),
+                textStyle = textStyle,
+                singleLine = true,
+                enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
+                interactionSource = interactionSource,
+                // Wichtig für Passwort-Felder: Maskierung und Keyboard-Typ an das Basis-Feld übergeben
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(primaryColor),
+                visualTransformation = visualTransformation,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                decorationBox = { innerTextField ->
+                    OutlinedTextFieldDefaults.DecorationBox(
+                        value = textFieldValue.text,
+                        innerTextField = innerTextField,
+                        enabled = fieldState.fieldDescriptor.enabled,
+                        singleLine = true,
+                        // Transformation muss auch an die DecorationBox für die korrekte Label-Animation
+                        visualTransformation = visualTransformation,
+                        interactionSource = interactionSource,
+                        label = {
+                            Text(
+                                text = fieldState.fieldDescriptor.label.asString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
+                        // Hier wird dein funktionierendes TrailingIcon für die Sichtbarkeit platziert
+                        trailingIcon = {
+                            visibilityIcon?.let { vi ->
+                                Icon(
+                                    modifier = Modifier
+                                        .pointerHoverIcon(PointerIcon.Hand)
+                                        .hoverable(interactionSource)
+                                        .clickable {
+                                            passwordVisible = !passwordVisible
+                                        },
+                                    painter = vi,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        },
+                        colors = outlinedTextFieldColors(
+                            focusedBorderColor = focusedBorderColor,
+                            unfocusedBorderColor = finalUnfocusedBorderColor
+                        ),
+                        container = {
+                            OutlinedTextFieldDefaults.ContainerBox(
+                                enabled = fieldState.fieldDescriptor.enabled,
+                                isError = false,
+                                interactionSource = interactionSource,
+                                colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
+                                shape = buttonShape
+                            )
+                        }
                     )
                 }
-            }
-        )
+            )
+        }
     }
 }
