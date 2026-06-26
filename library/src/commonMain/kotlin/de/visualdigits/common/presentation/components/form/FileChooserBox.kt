@@ -52,48 +52,49 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
         text = fieldState.fieldDescriptor.toolTip?.asString(),
         space = space,
         backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape
-    ) {
-        OutlinedTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(fieldHeight + halfHeight),
-            textStyle = textStyle,
-            enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
-            value = fieldState.currentValue?.toString() ?: "",
-            label = {
-                Text(
-                    text = fieldState.fieldDescriptor.label.asString(),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            leadingIcon = leadingIcon,
-            trailingIcon = {
-                trailingIcon?.let { ti -> ti() }
-
-                if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
-                    PlatformFileChooser(
-                        buttonTextStyle = MaterialTheme.typography.bodySmall,
-                        buttonTextAlign = TextAlign.Start,
-                        title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
-                            FileMode.DIRECTORIES_ONLY -> titleDirectories
-                            FileMode.FILES_ONLY -> titleFiles
-                        },
-                        fileMode = FileMode.FILES_ONLY,
-                        buttonColor = buttonColor,
-                        leadingIcon = iconFolder,
-                        leadingIconTint = iconTint,
-                        startDirectory = startDirectory,
-                        onOkPath = onOk
+        shape = toolTipShape,
+        content = {
+            OutlinedTextField(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(fieldHeight + halfHeight),
+                textStyle = textStyle,
+                enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
+                value = fieldState.currentValue?.toString() ?: "",
+                label = {
+                    Text(
+                        text = fieldState.fieldDescriptor.label.asString(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                }
-            },
-            shape = buttonShape,
-            onValueChange = onValueChange,
-            singleLine = true,
-            colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor)
-        )
-    }
+                },
+                leadingIcon = leadingIcon,
+                trailingIcon = {
+                    trailingIcon?.let { ti -> ti() }
+
+                    if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
+                        PlatformFileChooser(
+                            buttonTextStyle = MaterialTheme.typography.bodySmall,
+                            buttonTextAlign = TextAlign.Start,
+                            title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
+                                FileMode.DIRECTORIES_ONLY -> titleDirectories
+                                FileMode.FILES_ONLY -> titleFiles
+                            },
+                            fileMode = FileMode.FILES_ONLY,
+                            buttonColor = buttonColor,
+                            leadingIcon = iconFolder,
+                            leadingIconTint = iconTint,
+                            startDirectory = startDirectory,
+                            onOkPath = onOk
+                        )
+                    }
+                },
+                shape = buttonShape,
+                onValueChange = onValueChange,
+                singleLine = true,
+                colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor)
+            )
+        }
+    )
 }

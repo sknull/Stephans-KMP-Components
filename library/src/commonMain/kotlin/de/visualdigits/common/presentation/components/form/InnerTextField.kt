@@ -48,35 +48,36 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
         text = toolTip,
         space = space,
         backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape
-    ) {
-        OutlinedTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(fieldHeight + halfHeight),
-            textStyle = textStyle.copy(fontSize = textStyle.fontSize * 0.8f),
-            label = {
-                Text(
-                    text = label.asString(),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            enabled = enabled,
-            shape = buttonShape,
-            readOnly = true,
-            state = textFieldState,
-            trailingIcon = if (enabled) {
-                {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expanded,
-                        modifier = Modifier
-                            .pointerHoverIcon(PointerIcon.Hand)
+        shape = toolTipShape,
+        content = {
+            OutlinedTextField(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(fieldHeight + halfHeight),
+                textStyle = textStyle.copy(fontSize = textStyle.fontSize * 0.8f),
+                label = {
+                    Text(
+                        text = label.asString(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                }
-            } else null,
-            colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor)
-        )
-    }
+                },
+                enabled = enabled,
+                shape = buttonShape,
+                readOnly = true,
+                state = textFieldState,
+                trailingIcon = if (enabled) {
+                    {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = expanded,
+                            modifier = Modifier
+                                .pointerHoverIcon(PointerIcon.Hand)
+                        )
+                    }
+                } else null,
+                colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor)
+            )
+        }
+    )
 }

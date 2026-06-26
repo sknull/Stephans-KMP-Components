@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 actual fun PlatformToolTip(
+    modifier: Modifier,
     text: String?,
     textStyle: TextStyle,
-    modifier: Modifier,
     shadowSize: Dp,
     space: Dp,
     backgroundColor: Color,

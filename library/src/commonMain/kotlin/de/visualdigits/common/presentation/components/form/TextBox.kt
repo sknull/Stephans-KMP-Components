@@ -3,6 +3,8 @@ package de.visualdigits.common.presentation.components.form
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.presentation.components.PlatformToolTip
+import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
@@ -42,6 +45,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
     toolTipShape: Shape,
     fieldHeight: Dp,
     textStyle: TextStyle,
+    alignForForm: Boolean = true,
     buttonShape: Shape,
     finalUnfocusedBorderColor: Color,
     focusedBorderColor: Color,
@@ -59,6 +63,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
             backgroundColor = primaryColor.copy(alpha = 0.4f)
         )
     }
+    val halfHeight = minimizedLabelHalfHeight(textStyle)
 
     LaunchedEffect(text) {
         if (text != textFieldValue.text) {
@@ -67,61 +72,66 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TextBox(
     }
 
     PlatformToolTip(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = halfHeight * 3 / 4)
+            .conditional(!alignForForm) { offset(y = halfHeight * -1.0f) },
         text = fieldState.fieldDescriptor.toolTip?.asString(),
         space = space,
         backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape
-    ) {
-        CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
-            BasicTextField(
-                value = textFieldValue,
-                onValueChange = { value ->
-                    textFieldValue = value
-                    onValueChange(value.text)
-                },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(fieldHeight + minimizedLabelHalfHeight(textStyle)),
-                textStyle = textStyle,
-                singleLine = true,
-                enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
-                interactionSource = interactionSource,
-                // Der Cursor lässt sich hier ebenfalls passend färben
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(primaryColor),
-                decorationBox = { innerTextField ->
-                    // 2. Die DecorationBox stellt das exakte Material-Design-Gewand bereit
-                    OutlinedTextFieldDefaults.DecorationBox(
-                        value = textFieldValue.text,
-                        innerTextField = innerTextField,
-                        enabled = fieldState.fieldDescriptor.enabled,
-                        singleLine = true,
-                        visualTransformation = VisualTransformation.None,
-                        interactionSource = interactionSource,
-                        label = {
-                            Text(
-                                text = fieldState.fieldDescriptor.label.asString(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        colors = outlinedTextFieldColors(
-                            focusedBorderColor = focusedBorderColor,
-                            unfocusedBorderColor = finalUnfocusedBorderColor
-                        ),
-                        container = {
-                            // Zeichnet den eigentlichen Rahmen (Outline) mit deiner Form
-                            OutlinedTextFieldDefaults.ContainerBox(
-                                enabled = fieldState.fieldDescriptor.enabled,
-                                isError = false,
-                                interactionSource = interactionSource,
-                                colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
-                                shape = buttonShape
-                            )
-                        }
-                    )
-                }
-            )
+        shape = toolTipShape,
+        content = {
+            CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
+                BasicTextField(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(fieldHeight + halfHeight / 4),
+                    value = textFieldValue,
+                    onValueChange = { value ->
+                        textFieldValue = value
+                        onValueChange(value.text)
+                    },
+                    textStyle = textStyle,
+                    singleLine = true,
+                    enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
+                    interactionSource = interactionSource,
+                    // Der Cursor lässt sich hier ebenfalls passend färben
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(primaryColor),
+                    decorationBox = { innerTextField ->
+                        // 2. Die DecorationBox stellt das exakte Material-Design-Gewand bereit
+                        OutlinedTextFieldDefaults.DecorationBox(
+                            value = textFieldValue.text,
+                            innerTextField = innerTextField,
+                            enabled = fieldState.fieldDescriptor.enabled,
+                            singleLine = true,
+                            visualTransformation = VisualTransformation.None,
+                            interactionSource = interactionSource,
+                            label = {
+                                Text(
+                                    text = fieldState.fieldDescriptor.label.asString(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            colors = outlinedTextFieldColors(
+                                focusedBorderColor = focusedBorderColor,
+                                unfocusedBorderColor = finalUnfocusedBorderColor
+                            ),
+                            container = {
+                                // Zeichnet den eigentlichen Rahmen (Outline) mit deiner Form
+                                OutlinedTextFieldDefaults.ContainerBox(
+                                    enabled = fieldState.fieldDescriptor.enabled,
+                                    isError = false,
+                                    interactionSource = interactionSource,
+                                    colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
+                                    shape = buttonShape
+                                )
+                            }
+                        )
+                    }
+                )
+            }
         }
-    }
+    )
 }

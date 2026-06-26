@@ -37,47 +37,48 @@ fun OutlinedGroupBox(
     PlatformToolTip(
         text = toolTip,
         space = space,
+        backgroundColor = toolTipBackgroundColor,
         shape = toolTipShape,
-        backgroundColor = toolTipBackgroundColor
-    ) {
-        BasicTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = space),
-            value = " ",
-            onValueChange = { },
-            readOnly = true,
-            singleLine = false,
-            interactionSource = interactionSource,
-            decorationBox = { _ ->
-                OutlinedTextFieldDefaults.DecorationBox(
-                    value = " ",
-                    innerTextField = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                        ) {
-                            content()
-                        }
-                    },
-                    visualTransformation = VisualTransformation.None,
-                    label = label,
-                    singleLine = false,
-                    enabled = true,
-                    isError = false,
-                    interactionSource = interactionSource,
-                    colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
-                    container = {
-                        OutlinedTextFieldDefaults.Container(
-                            enabled = true,
-                            isError = false,
-                            interactionSource = interactionSource,
-                            colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
-                            shape = buttonShape,
-                        )
-                    },
-                )
-            },
-        )
-    }
+        content = {
+            BasicTextField(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = space),
+                value = " ",
+                onValueChange = { },
+                readOnly = true,
+                singleLine = false,
+                interactionSource = interactionSource,
+                decorationBox = { _ ->
+                    OutlinedTextFieldDefaults.DecorationBox(
+                        value = " ",
+                        innerTextField = {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                            ) {
+                                content()
+                            }
+                        },
+                        visualTransformation = VisualTransformation.None,
+                        label = label,
+                        singleLine = false,
+                        enabled = true,
+                        isError = false,
+                        interactionSource = interactionSource,
+                        colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
+                        container = {
+                            OutlinedTextFieldDefaults.Container(
+                                enabled = true,
+                                isError = false,
+                                interactionSource = interactionSource,
+                                colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
+                                shape = buttonShape,
+                            )
+                        },
+                    )
+                },
+            )
+        }
+    )
 }

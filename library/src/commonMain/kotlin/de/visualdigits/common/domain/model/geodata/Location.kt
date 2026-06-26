@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.geodata
 
+import androidx.compose.ui.geometry.Offset
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
 import kotlin.math.PI
@@ -38,6 +39,7 @@ data class Location(
 
         return "$latDms $lonDms"
     }
+
     /**
      * Calculates the exact distance from this location to the given other location in meters.
      */
@@ -55,6 +57,58 @@ data class Location(
 
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return earthRadiusMeters * c
+    }
+
+    /**
+    * Berechnet die Peilung (Anfangskurs) von dieser Location zu einer anderen Location in Grad (0..360).
+    * 0° = Nord, 90° = Ost, 180° = Süd, 270° = West.
+    */
+    fun bearingTo(other: Location): Double {
+        val lat1 = Math.toRadians(this.latitude)
+        val lat2 = Math.toRadians(other.latitude)
+        val dLon = Math.toRadians(other.longitude - this.longitude)
+
+        val y = sin(dLon) * cos(lat2)
+        val x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
+
+        val radiansBearing = atan2(y, x)
+
+        // Umrechnung in Grad und Normalisierung auf 0..360 Grad
+        val degreesBearing = Math.toDegrees(radiansBearing)
+        return (degreesBearing + 360.0) % 360.0
+    }
+
+    /**
+     * Rechnet Entfernung und Peilung in ein X/Y-Offset für die Compose-Canvas um.
+     * @param distance Die berechnete Entfernung zum Schiff in Metern.
+     * @param bearing Die berechnete Peilung zum Schiff in Grad (0..360).
+     * @param radarRadiusPx Der Radius deines Radarkreises auf dem Bildschirm in Pixeln.
+     * @param maxRadarDistanceMeters Die maximale Entfernung, die dein innerer Geofence anzeigt (z.B. 5000 Meter).
+     * @param center Das Zentrum deiner Canvas (Offset(width/2, height/2)).
+     */
+    fun calculateRadarOffset(
+        other: Location,
+        radarRadiusPx: Float,
+        maxRadarDistanceMeters: Double,
+        center: Offset
+    ): Offset {
+        val distance = distanceTo(other)
+        val bearing = bearingTo(other)
+
+        // 1. Skaliere die Entfernung relativ zum maximalen Radar-Radius
+        // Schiffe außerhalb des maximalen Radius werden am Rand des Radars gezeichnet
+        val clampedDistance = distance.coerceAtMost(maxRadarDistanceMeters)
+        val distanceFraction = clampedDistance / maxRadarDistanceMeters
+        val distanceFromCenterPx = radarRadiusPx * distanceFraction
+
+        // 2. Winkel anpassen (0° soll oben sein, im Uhrzeigersinn)
+        val angleRad = Math.toRadians(bearing - 90.0)
+
+        // 3. X- und Y-Abweichung berechnen
+        val x = center.x + (distanceFromCenterPx * cos(angleRad)).toFloat()
+        val y = center.y + (distanceFromCenterPx * sin(angleRad)).toFloat()
+
+        return Offset(x, y)
     }
 
     fun isInBoundingBox(boundingBox: BoundingBox): Boolean {
@@ -159,7 +213,11 @@ fun String.toLocation(): Location? {
         )
     } else if (!this.isBlank()) {
         val parts = try {
-            this.trim().split(" +".toRegex()).map { it.trim().toDouble() }
+            if (this.contains(",")) {
+                this.trim().split(",".toRegex()).map { it.trim().toDouble() }
+            } else {
+                this.trim().split(" +".toRegex()).map { it.trim().toDouble() }
+            }
         } catch (_: Exception) {
             log(Severity.Error, "Invalid format for double: $this - falling back to Hamburg Harbor", withTag = "AIS" )
             COORDINATES_DEFAULT_DOUBLE

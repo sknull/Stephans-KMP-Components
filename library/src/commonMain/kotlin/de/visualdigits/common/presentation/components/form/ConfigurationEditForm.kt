@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -97,7 +98,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
             }),
             Pair("fields", @Composable {
                 FlowRow(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     horizontalArrangement = Arrangement.spacedBy(space),
                     verticalArrangement = Arrangement.spacedBy(space)
                 ) {
@@ -112,9 +114,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                     space = space
                                 ) {
                                     FlowRow(
-                                        modifier = Modifier.fillMaxSize(),
+                                        modifier = Modifier
+                                            .fillMaxSize(),
                                         horizontalArrangement = Arrangement.spacedBy(space),
-                                        verticalArrangement = Arrangement.spacedBy(space)
+                                        verticalArrangement = Arrangement.spacedBy(
+                                            space = space,
+                                            alignment = Alignment.Bottom
+                                        )
                                     ) {
                                         renderFields(
                                             fieldDescriptors = fieldDescriptors,

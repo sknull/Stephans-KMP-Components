@@ -65,9 +65,9 @@ expect fun PlatformLazyVerticalScrollbar(
 
 @Composable
 expect fun PlatformToolTip(
+    modifier: Modifier = Modifier,
     text: String?,
     textStyle: TextStyle = MaterialTheme.typography.bodySmall,
-    modifier: Modifier = Modifier,
     shadowSize: Dp = 5.dp,
     space: Dp,
     backgroundColor: Color,

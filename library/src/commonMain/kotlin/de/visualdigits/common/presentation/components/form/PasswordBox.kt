@@ -5,6 +5,8 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.presentation.components.PlatformToolTip
+import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
@@ -51,6 +54,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
     toolTipShape: Shape,
     fieldHeight: Dp,
     textStyle: TextStyle,
+    alignForForm: Boolean = true,
     buttonShape: Shape,
     visibilityIcon: Painter?,
     finalUnfocusedBorderColor: Color,
@@ -71,6 +75,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
             backgroundColor = primaryColor.copy(alpha = 0.4f)
         )
     }
+    val halfHeight = minimizedLabelHalfHeight(textStyle)
 
     LaunchedEffect(text) {
         if (text != textFieldValue.text) {
@@ -78,78 +83,83 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
         }
     }
     PlatformToolTip(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = halfHeight * 3 / 4)
+            .conditional(!alignForForm) { offset(y = halfHeight * -1.0f) },
         text = fieldState.fieldDescriptor.toolTip?.asString(),
         space = space,
         backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape
-    ) {
-        CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
-            BasicTextField(
-                value = textFieldValue,
-                onValueChange = { value ->
-                    textFieldValue = value
-                    onValueChange(value.text)
-                },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(fieldHeight + minimizedLabelHalfHeight(textStyle)),
-                textStyle = textStyle,
-                singleLine = true,
-                enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
-                interactionSource = interactionSource,
-                // Wichtig für Passwort-Felder: Maskierung und Keyboard-Typ an das Basis-Feld übergeben
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(primaryColor),
-                visualTransformation = visualTransformation,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                decorationBox = { innerTextField ->
-                    OutlinedTextFieldDefaults.DecorationBox(
-                        value = textFieldValue.text,
-                        innerTextField = innerTextField,
-                        enabled = fieldState.fieldDescriptor.enabled,
-                        singleLine = true,
-                        // Transformation muss auch an die DecorationBox für die korrekte Label-Animation
-                        visualTransformation = visualTransformation,
-                        interactionSource = interactionSource,
-                        label = {
-                            Text(
-                                text = fieldState.fieldDescriptor.label.asString(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        // Hier wird dein funktionierendes TrailingIcon für die Sichtbarkeit platziert
-                        trailingIcon = {
-                            visibilityIcon?.let { vi ->
-                                Icon(
-                                    modifier = Modifier
-                                        .pointerHoverIcon(PointerIcon.Hand)
-                                        .hoverable(interactionSource)
-                                        .clickable {
-                                            passwordVisible = !passwordVisible
-                                        },
-                                    painter = vi,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurface
+        shape = toolTipShape,
+        content = {
+            CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
+                BasicTextField(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(fieldHeight + halfHeight / 4),
+                    value = textFieldValue,
+                    onValueChange = { value ->
+                        textFieldValue = value
+                        onValueChange(value.text)
+                    },
+                    textStyle = textStyle,
+                    singleLine = true,
+                    enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
+                    interactionSource = interactionSource,
+                    // Wichtig für Passwort-Felder: Maskierung und Keyboard-Typ an das Basis-Feld übergeben
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(primaryColor),
+                    visualTransformation = visualTransformation,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    decorationBox = { innerTextField ->
+                        OutlinedTextFieldDefaults.DecorationBox(
+                            value = textFieldValue.text,
+                            innerTextField = innerTextField,
+                            enabled = fieldState.fieldDescriptor.enabled,
+                            singleLine = true,
+                            // Transformation muss auch an die DecorationBox für die korrekte Label-Animation
+                            visualTransformation = visualTransformation,
+                            interactionSource = interactionSource,
+                            label = {
+                                Text(
+                                    text = fieldState.fieldDescriptor.label.asString(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            // Hier wird dein funktionierendes TrailingIcon für die Sichtbarkeit platziert
+                            trailingIcon = {
+                                visibilityIcon?.let { vi ->
+                                    Icon(
+                                        modifier = Modifier
+                                            .pointerHoverIcon(PointerIcon.Hand)
+                                            .hoverable(interactionSource)
+                                            .clickable {
+                                                passwordVisible = !passwordVisible
+                                            },
+                                        painter = vi,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            },
+                            colors = outlinedTextFieldColors(
+                                focusedBorderColor = focusedBorderColor,
+                                unfocusedBorderColor = finalUnfocusedBorderColor
+                            ),
+                            container = {
+                                OutlinedTextFieldDefaults.ContainerBox(
+                                    enabled = fieldState.fieldDescriptor.enabled,
+                                    isError = false,
+                                    interactionSource = interactionSource,
+                                    colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
+                                    shape = buttonShape
                                 )
                             }
-                        },
-                        colors = outlinedTextFieldColors(
-                            focusedBorderColor = focusedBorderColor,
-                            unfocusedBorderColor = finalUnfocusedBorderColor
-                        ),
-                        container = {
-                            OutlinedTextFieldDefaults.ContainerBox(
-                                enabled = fieldState.fieldDescriptor.enabled,
-                                isError = false,
-                                interactionSource = interactionSource,
-                                colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor),
-                                shape = buttonShape
-                            )
-                        }
-                    )
-                }
-            )
+                        )
+                    }
+                )
+            }
         }
-    }
+    )
 }

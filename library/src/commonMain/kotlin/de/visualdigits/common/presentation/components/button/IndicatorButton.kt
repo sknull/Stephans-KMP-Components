@@ -147,56 +147,57 @@ fun IndicatorButton(
         PlatformToolTip(
             text = toolTip,
             space = space,
+            backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest,
             shape = MaterialTheme.shapes.small,
-            backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = paddings[0], end = paddings[1], bottom = paddings[2], start = paddings[3]),
-                horizontalArrangement = horizontalArrangement,
-                verticalAlignment = verticalAlignment,
-            ) {
-                if (hasLeadingIcon) {
-                    Icon(
-                        modifier = Modifier,
-                        painter = leadingIcon,
-                        contentDescription = null,
-                        tint = if (enabled) leadingIconTint else leadingIconTintDisabled
-                    )
-                    if (hasContent) Spacer(Modifier.width(space))
-                } else if (leadingImage != null) {
-                    leadingImage()
-                    if (hasContent) Spacer(Modifier.width(space))
-                }
+            content = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = paddings[0], end = paddings[1], bottom = paddings[2], start = paddings[3]),
+                    horizontalArrangement = horizontalArrangement,
+                    verticalAlignment = verticalAlignment,
+                ) {
+                    if (hasLeadingIcon) {
+                        Icon(
+                            modifier = Modifier,
+                            painter = leadingIcon,
+                            contentDescription = null,
+                            tint = if (enabled) leadingIconTint else leadingIconTintDisabled
+                        )
+                        if (hasContent) Spacer(Modifier.width(space))
+                    } else if (leadingImage != null) {
+                        leadingImage()
+                        if (hasContent) Spacer(Modifier.width(space))
+                    }
 
-                if (text?.isNotEmpty() == true) {
-                    Text(
-                        modifier = Modifier
-                            .weight(1f),
-                        text = text,
-                        textAlign = textAlign,
-                        maxLines = maxLines,
-                        overflow = if (maxLines == 1) TextOverflow.Ellipsis else TextOverflow.Clip,
-                        softWrap = maxLines > 1,
-                        style = textStyle,
-                        color = if (enabled) textColor else textColorDisabled,
-                    )
-                } else if (content != null) {
-                    content()
-                }
+                    if (text?.isNotEmpty() == true) {
+                        Text(
+                            modifier = Modifier
+                                .weight(1f),
+                            text = text,
+                            textAlign = textAlign,
+                            maxLines = maxLines,
+                            overflow = if (maxLines == 1) TextOverflow.Ellipsis else TextOverflow.Clip,
+                            softWrap = maxLines > 1,
+                            style = textStyle,
+                            color = if (enabled) textColor else textColorDisabled,
+                        )
+                    } else if (content != null) {
+                        content()
+                    }
 
-                if (hasTrailingIcon) {
-                    if (hasContent || hasLeadingIcon) Spacer(Modifier.width(space))
-                    Icon(
-                        modifier = Modifier,
-                        painter = trailingIcon,
-                        contentDescription = null,
-                        tint = if (enabled) trailingIconTint else trailingIconTintDisabled
-                    )
+                    if (hasTrailingIcon) {
+                        if (hasContent || hasLeadingIcon) Spacer(Modifier.width(space))
+                        Icon(
+                            modifier = Modifier,
+                            painter = trailingIcon,
+                            contentDescription = null,
+                            tint = if (enabled) trailingIconTint else trailingIconTintDisabled
+                        )
+                    }
                 }
             }
-        }
+        )
     }
 }
 
