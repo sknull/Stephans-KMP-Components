@@ -1,8 +1,11 @@
 package de.visualdigits.common.domain.util
 
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import de.visualdigits.common.domain.model.color.HsvColor
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Returns a copy of this color with the given [hue], [saturation] and [value] values.
@@ -63,4 +66,34 @@ fun Color.toWebColor(): String {
 
 fun Color.toWebColorShort(): String {
     return String.format("#%06X", 0xFFFFFF and toArgb())
+}
+
+fun Color.mix(other: Color, factor: Float, blendMode: BlendMode): Color {
+    return when (blendMode) {
+        BlendMode.Multiply -> {
+            Color(
+                red = min(1.0f, (red + factor * (other.red - red))),
+                green = min(1.0f, (green + factor * (other.green - green))),
+                blue = min(1.0f, (blue + factor * (other.blue - blue))),
+                alpha = alpha
+            )
+        }
+        BlendMode.Lighten -> {
+            Color(
+                red = min(1.0f, (red + factor * (other.red))),
+                green = min(1.0f, (green + factor * (other.green))),
+                blue = min(1.0f, (blue + factor * (other.blue))),
+                alpha = alpha
+            )
+        }
+        BlendMode.Darken -> {
+            Color(
+                red = max(0.0f, (red - factor * (other.red))),
+                green = max(0.0f, (green - factor * (other.green))),
+                blue = max(0.0f, (blue - factor * (other.blue))),
+                alpha = alpha
+            )
+        }
+        else -> this.copy()
+    }
 }
