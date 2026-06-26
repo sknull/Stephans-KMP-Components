@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,47 +38,55 @@ actual fun PlatformVerticalScrollbarBox(
     val items = rows()
 
     if (items.isNotEmpty()) {
+        val initialIndex = remember(scrollbarId) { scrollPosition[scrollbarId]?.first ?: 0 }
+        val initialOffset = remember(scrollbarId) { scrollPosition[scrollbarId]?.second ?: 0 }
+
         val lazyListState = rememberLazyListState(
-            initialFirstVisibleItemIndex = scrollPosition[scrollbarId]?.first?:0,
-            initialFirstVisibleItemScrollOffset = scrollPosition[scrollbarId]?.second?:0
+            initialFirstVisibleItemIndex = initialIndex,
+            initialFirstVisibleItemScrollOffset = initialOffset
         )
 
-        LaunchedEffect(lazyListState) {
-            if (scrollbarId != null && onCommonAction != null) {
-                snapshotFlow {
-                    lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
-                }.collectLatest { (index, offset) ->
-                    if (scrollPosition[scrollbarId]?.third == ScrollIntent.scrollToStart) {
-                        lazyListState.scrollToItem(0, 0)
-                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
-                    } else {
-                        onCommonAction(CommonAction.OnScrollPositionChange(scrollbarId, index, offset, ScrollIntent.standard))
-                    }
+        // 1. Von AUßEN nach INNEN
+        LaunchedEffect(scrollbarId, scrollPosition[scrollbarId]) {
+            val currentPosition = scrollPosition[scrollbarId] ?: return@LaunchedEffect
+
+            if (currentPosition.third == ScrollIntent.scrollToStart) {
+                lazyListState.scrollToItem(0, 0)
+            } else if (!lazyListState.isScrollInProgress) {
+                if (currentPosition.first != lazyListState.firstVisibleItemIndex ||
+                    currentPosition.second != lazyListState.firstVisibleItemScrollOffset) {
+                    lazyListState.scrollToItem(currentPosition.first, currentPosition.second ?: 0)
                 }
             }
         }
-        LaunchedEffect(scrollPosition[scrollbarId]) {
-            val current = scrollPosition[scrollbarId]
-            if (current?.third == ScrollIntent.scrollToStart) {
-                lazyListState.scrollToItem(0, 0)
-                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, 0, 0, ScrollIntent.standard))
-            } else {
-                onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, current?.first?:0, current?.second, ScrollIntent.standard))
+
+        // 2. Von INNEN nach AUßEN (Entkoppelt durch isScrollInProgress)
+        LaunchedEffect(lazyListState, scrollbarId) {
+            snapshotFlow {
+                Triple(lazyListState.firstVisibleItemIndex, lazyListState.firstVisibleItemScrollOffset, lazyListState.isScrollInProgress)
+            }.collectLatest { (index, offset, isMoving) ->
+                // Nur zurückmelden, wenn der Nutzer aktiv wischt!
+                if (isMoving && scrollPosition[scrollbarId]?.third != ScrollIntent.scrollToStart) {
+                    onCommonAction?.invoke(
+                        CommonAction.OnScrollPositionChange(scrollbarId, index, offset, ScrollIntent.standard)
+                    )
+                }
             }
         }
-
-        LazyColumn(
-            modifier = modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainer),
-            verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
-            state = lazyListState
-        ) {
-            items(
-                items = items,
-                key = { row -> row.first }
-            ) {(_, rowContent) ->
-                rowContent()
+        if (items.isNotEmpty()) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
+                state = lazyListState
+            ) {
+                items(
+                    items = items,
+                    key = { row -> row.first }
+                ) {(_, rowContent) ->
+                    rowContent()
+                }
             }
         }
     } else {

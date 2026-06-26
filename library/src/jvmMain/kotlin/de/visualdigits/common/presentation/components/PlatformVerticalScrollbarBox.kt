@@ -43,37 +43,39 @@ actual fun PlatformVerticalScrollbarBox(
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val scrollState = rememberScrollState(scrollPosition[scrollbarId]?.first?:0)
+
+    // Start-Position sicher initialisieren
+    val initialScroll = remember(scrollbarId) { scrollPosition[scrollbarId]?.first ?: 0 }
+    val scrollState = rememberScrollState(initialScroll)
+
+    // Korrektes Caching der Zeilen-Inhalte über den Inhalt, nicht über die Listen-Referenz
     val currentRows = rows()
     val cachedRows = remember(currentRows) {
-        currentRows.ifEmpty { null }
-    } ?: currentRows
-
-    // 3. Nur EIN zentraler Effekt für die Synchronisation von AUßEN nach INNEN
-    LaunchedEffect(scrollbarId, scrollPosition[scrollbarId]) {
-        snapshotFlow { scrollPosition[scrollbarId] }
-            .collectLatest { scrollPosition ->
-                if (scrollPosition != null) {
-                    if (scrollPosition.third == ScrollIntent.scrollToStart) {
-                        log(Severity.Info, "LaunchedEffect 1 TOP")
-                        scrollState.scrollTo(0)
-                    } else if (scrollPosition.first > 0) {
-                        log(Severity.Info, "LaunchedEffect 1 - ${scrollPosition.first}")
-                        // Stellt die Position beim ersten Laden oder nach Wiederherstellung her
-                        scrollState.scrollTo(scrollPosition.first)
-                    }
-                }
-            }
+        currentRows
     }
 
-    // 4. Nur EIN Effekt, um Änderungen von INNEN nach AUßEN zu melden (Debounced über snapshotFlow)
-    LaunchedEffect(scrollbarId, scrollState) {
-        snapshotFlow { scrollState.value }
-            .collectLatest { position ->
-                // Verhindere das Zurückmelden, wenn gerade ein 'scrollToStart' erzwungen wird
-                if (scrollPosition[scrollbarId]?.third != ScrollIntent.scrollToStart && position > 0) {
-                    log(Severity.Info, "LaunchedEffect 2 - $scrollbarId $position")
-                    onCommonAction?.invoke(CommonAction.OnScrollPositionChange(scrollbarId, position, 0, ScrollIntent.standard))
+    // 1. Von AUßEN nach INNEN (Programmatisches Scrollen)
+    LaunchedEffect(scrollbarId, scrollPosition[scrollbarId]) {
+        val currentPosition = scrollPosition[scrollbarId] ?: return@LaunchedEffect
+
+        if (currentPosition.third == ScrollIntent.scrollToStart) {
+            log(Severity.Info, "ScrollToStart erzwungen für $scrollbarId")
+            scrollState.scrollTo(0)
+        } else if (currentPosition.first != scrollState.value && !scrollState.isScrollInProgress) {
+            // Nur scrollen, wenn der Wert sich unterscheidet und der Nutzer NICHT selbst scrollt
+            scrollState.scrollTo(currentPosition.first)
+        }
+    }
+
+    // 2. Von INNEN nach AUßEN (Nur bei aktiver Nutzer-Interaktion!)
+    LaunchedEffect(scrollState, scrollbarId) {
+        snapshotFlow { Pair(scrollState.value, scrollState.isScrollInProgress) }
+            .collectLatest { (position, isMoving) ->
+                // WICHTIG: Nur melden, wenn der Nutzer die Hand am Rad/Maus hat!
+                if (isMoving && scrollPosition[scrollbarId]?.third != ScrollIntent.scrollToStart) {
+                    onCommonAction?.invoke(
+                        CommonAction.OnScrollPositionChange(scrollbarId, position, 0, ScrollIntent.standard)
+                    )
                 }
             }
     }
