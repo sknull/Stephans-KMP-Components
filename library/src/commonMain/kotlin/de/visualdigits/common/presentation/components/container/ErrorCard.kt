@@ -23,6 +23,7 @@ import de.visualdigits.common.domain.util.color
 
 @Composable
 fun ErrorCard(
+    modifier: Modifier = Modifier,
     errorMessage: UiText?,
     severity: Severity? = Severity.Error,
     shapeContainer: Shape,
@@ -31,7 +32,7 @@ fun ErrorCard(
     if (errorMessage != null) {
         val color = severity?.color()?:Severity.Error.color()
         Card(
-            modifier = Modifier
+            modifier = modifier
                 .padding(top = space)
                 .border(width = 1.dp, color = color, shape = shapeContainer)
                 .fillMaxWidth(),

@@ -93,22 +93,26 @@ data class Location(
         center: Offset
     ): Offset {
         val distance = distanceTo(other)
-        val bearing = bearingTo(other)
+        return if (distance <= maxRadarDistanceMeters) {
+            val bearing = bearingTo(other)
 
-        // 1. Skaliere die Entfernung relativ zum maximalen Radar-Radius
-        // Schiffe außerhalb des maximalen Radius werden am Rand des Radars gezeichnet
-        val clampedDistance = distance.coerceAtMost(maxRadarDistanceMeters)
-        val distanceFraction = clampedDistance / maxRadarDistanceMeters
-        val distanceFromCenterPx = radarRadiusPx * distanceFraction
+            // 1. Skaliere die Entfernung relativ zum maximalen Radar-Radius
+            // Schiffe außerhalb des maximalen Radius werden am Rand des Radars gezeichnet
+            val clampedDistance = distance.coerceAtMost(maxRadarDistanceMeters)
+            val distanceFraction = clampedDistance / maxRadarDistanceMeters
+            val distanceFromCenterPx = radarRadiusPx * distanceFraction
 
-        // 2. Winkel anpassen (0° soll oben sein, im Uhrzeigersinn)
-        val angleRad = Math.toRadians(bearing - 90.0)
+            // 2. Winkel anpassen (0° soll oben sein, im Uhrzeigersinn)
+            val angleRad = Math.toRadians(bearing - 90.0)
 
-        // 3. X- und Y-Abweichung berechnen
-        val x = center.x + (distanceFromCenterPx * cos(angleRad)).toFloat()
-        val y = center.y + (distanceFromCenterPx * sin(angleRad)).toFloat()
+            // 3. X- und Y-Abweichung berechnen
+            val x = center.x + (distanceFromCenterPx * cos(angleRad)).toFloat()
+            val y = center.y + (distanceFromCenterPx * sin(angleRad)).toFloat()
 
-        return Offset(x, y)
+            Offset(x, y)
+        } else {
+            Offset.Unspecified
+        }
     }
 
     fun isInBoundingBox(boundingBox: BoundingBox): Boolean {

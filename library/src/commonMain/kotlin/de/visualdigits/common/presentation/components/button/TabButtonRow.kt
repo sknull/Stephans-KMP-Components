@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import de.visualdigits.common.domain.model.ui.UiText
 
 @Composable
@@ -37,9 +36,9 @@ fun TabButtonRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal,
     initializeViewModel: (() -> Unit)? = null,
-    items: LinkedHashMap<Triple<String, Painter?, UiText>, @Composable () -> Unit>,
+    items: LinkedHashMap<Triple<String, (@Composable () -> Unit)?, UiText>, @Composable () -> Unit>,
     selectedTab: () -> Int,
-    button: @Composable (Painter?, UiText, Int) -> Unit
+    button: @Composable ((@Composable () -> Unit)?, UiText, Int) -> Unit
 ) {
     if (initializeViewModel != null) {
         initializeViewModel()
