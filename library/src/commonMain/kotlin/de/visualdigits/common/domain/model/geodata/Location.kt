@@ -184,19 +184,6 @@ data class Location(
     }
 }
 
-/**
- * Formats this distanz in meters in human-readable form (i.e. "350 m" or "4.2 km").
- */
-fun Double.formatDistance(): String {
-    return if (this < 1000.0) {
-        "${this.roundToInt()} m"
-    } else {
-        val km = this / 1000.0
-        val roundedKm = (km * 10).roundToInt() / 10.0
-        "$roundedKm km"
-    }
-}
-
 const val COORDINATES_DEFAULT = "53.545977 9.9680454"
 val COORDINATES_DEFAULT_DOUBLE = listOf(53.545977, 9.9680454)
 

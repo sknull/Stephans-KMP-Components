@@ -8,7 +8,6 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import co.touchlab.kermit.Logger
-import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.service.getPlatformLogWriters
 import kotlinx.coroutines.cancel
 
@@ -34,7 +33,7 @@ fun main() {
             title = "Stephans Components",
             state = state
         ) {
-            App(PlatformType.jvm)
+            App()
         }
     }
 }

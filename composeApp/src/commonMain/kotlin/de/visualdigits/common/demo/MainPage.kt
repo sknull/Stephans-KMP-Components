@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import de.visualdigits.common.demo.buttons.ButtonDemo
 import de.visualdigits.common.demo.form.FormDemo
 import de.visualdigits.common.demo.misc.StudioClockDemo
-import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.button.TabButtonRow
@@ -41,7 +40,6 @@ import stephans_kmp_components.composeapp.generated.resources.Roboto_Regular
 
 @Composable
 fun MainPage(
-    platformType: PlatformType
 ) {
 
     var state by remember { mutableStateOf(DemoState()) }
