@@ -49,7 +49,6 @@ actual fun PlatformVerticalScrollbarBox(
         // 1. Von AUßEN nach INNEN
         LaunchedEffect(scrollbarId, scrollPosition[scrollbarId]) {
             val currentPosition = scrollPosition[scrollbarId] ?: return@LaunchedEffect
-
             if (currentPosition.third == ScrollIntent.scrollToStart) {
                 lazyListState.scrollToItem(0, 0)
             } else if (!lazyListState.isScrollInProgress) {
