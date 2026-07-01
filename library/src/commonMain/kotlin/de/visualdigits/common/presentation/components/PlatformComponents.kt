@@ -113,6 +113,7 @@ expect fun PlatformFileSaver(
     buttonTextAlign: TextAlign = TextAlign.Center,
     title: String,
     fileMode: FileMode,
+    options: List<String> = listOf(),
     suggestedFileName: String,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     buttonColor: Color = MaterialTheme.colorScheme.surface,

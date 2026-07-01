@@ -28,6 +28,7 @@ actual fun PlatformFileSaver(
     buttonTextAlign: TextAlign,
     title: String,
     fileMode: FileMode,
+    options: List<String>,
     suggestedFileName: String,
     buttonShape: Shape,
     buttonColor: Color,

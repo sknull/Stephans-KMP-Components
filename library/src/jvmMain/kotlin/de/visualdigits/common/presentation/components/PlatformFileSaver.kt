@@ -17,6 +17,7 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import java.io.File
 import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 actual fun PlatformFileSaver(
@@ -26,6 +27,7 @@ actual fun PlatformFileSaver(
     buttonTextAlign: TextAlign,
     title: String,
     fileMode: FileMode,
+    options: List<String>,
     suggestedFileName: String,
     buttonShape: Shape,
     buttonColor: Color,
@@ -48,7 +50,18 @@ actual fun PlatformFileSaver(
     }
     val mode = fileMode.jFileChooserMode
     val chooser = JFileChooser().apply {
-        isAcceptAllFileFilterUsed = true
+        if (fileMode == FileMode.FILES_ONLY && options.isNotEmpty()) {
+            val filter =
+                FileNameExtensionFilter(
+                    options
+                        .joinToString(", ") { o -> "*.$o" },
+                    *options.toTypedArray()
+                )
+            this.fileFilter = filter
+            this.isAcceptAllFileFilterUsed = false
+        } else {
+            this.isAcceptAllFileFilterUsed = true
+        }
         selectedFile = File(saveDirectory, suggestedFileName)
         fileSelectionMode = mode
         dialogTitle = title
