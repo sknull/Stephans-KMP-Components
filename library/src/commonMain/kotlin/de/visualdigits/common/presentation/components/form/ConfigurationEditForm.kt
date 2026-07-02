@@ -31,9 +31,12 @@ import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.KeyValue
+import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarBox
+import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.container.OutlinedGroupBox
 import de.visualdigits.common.presentation.components.util.switchBoxColors
@@ -47,6 +50,7 @@ import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     modifier: Modifier = Modifier,
+    platformType: PlatformType,
     configuration: AbstractConfiguration<*, K>,
     configurationRef: AbstractConfiguration<*, FK>? = null,
     scrollbarModifier: Modifier = Modifier,
@@ -81,6 +85,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _,_ -> true },
     headerContent: (@Composable () -> Unit)? = null
 ) {
+    val androidPlatform = androidPlatform()
+    val platform = Pair(platformType, androidPlatform)
+
     PlatformVerticalScrollbarBox(
         modifier = modifier
             .fillMaxWidth()
@@ -105,10 +112,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                 ) {
                     configuration
                         .fieldDescriptors
-                        .filter { fieldDescriptor -> fieldDescriptor.visible }
+                        .filter { fieldDescriptor ->
+                            fieldDescriptor.visible &&
+                                    fieldDescriptor.notValidForPlatforms.none { pair  -> pair == platform }
+                        }
                         .groupBy { fieldDescriptor -> fieldDescriptor.group?.asString() }
                         .forEach { (group, fieldDescriptors) ->
-                            if (group != null) {
+                            if (group != null && androidPlatform != UiPlatform.UI_MODE_TYPE_TELEVISION) {
                                 OutlinedGroupBox(
                                     label = { Text(group) },
                                     space = space
@@ -122,7 +132,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                             alignment = Alignment.Bottom
                                         )
                                     ) {
-                                        renderFields(
+                                        RenderFields(
                                             fieldDescriptors = fieldDescriptors,
                                             configuration = configuration,
                                             configurationRef = configurationRef,
@@ -148,7 +158,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                     }
                                 }
                             } else {
-                                renderFields(
+                                RenderFields(
                                     fieldDescriptors = fieldDescriptors,
                                     configuration = configuration,
                                     configurationRef = configurationRef,
@@ -214,7 +224,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
 }
 
 @Composable
-private fun <FK : FieldKey<FK>, K : FieldKey<K>> renderFields(
+private fun <FK : FieldKey<FK>, K : FieldKey<K>> RenderFields(
     fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>>,
     configuration: AbstractConfiguration<*, K>,
     configurationRef: AbstractConfiguration<*, FK>?,

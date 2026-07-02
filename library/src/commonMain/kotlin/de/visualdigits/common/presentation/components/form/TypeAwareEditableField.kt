@@ -21,8 +21,10 @@ import de.visualdigits.common.domain.model.configuration.ReferenceListFieldDescr
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
 import de.visualdigits.common.domain.model.ui.Enumerable
 import de.visualdigits.common.domain.model.ui.KeyValue
+import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.domain.util.color
+import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.util.switchBoxColors
 import kotlinx.io.files.Path
 
@@ -51,6 +53,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
+    val androidPlatform = androidPlatform()
+
     val finalUnfocusedBorderColor = if (!fieldState.fieldDescriptor.enabled) {
         Color.Gray
     } else if (fieldState.valid == Severity.Error || fieldState.valid == Severity.Warn) {
@@ -144,7 +148,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
             )
         }
 
-        fieldState.fieldDescriptor is PasswordFieldDescriptor<*,*> -> {
+        fieldState.fieldDescriptor is PasswordFieldDescriptor<*,*> && androidPlatform != UiPlatform.UI_MODE_TYPE_TELEVISION -> {
             PasswordBox(
                 modifier = modifier,
                 fieldState = fieldState,

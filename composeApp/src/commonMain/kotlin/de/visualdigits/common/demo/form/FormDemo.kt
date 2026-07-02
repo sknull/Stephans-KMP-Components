@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.demo.DemoState
 import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.form.ConfigurationEditForm
 import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
@@ -30,6 +31,7 @@ import stephans_kmp_components.composeapp.generated.resources.icon_folder_open_2
 @Composable
 fun FormDemo(
     state: DemoState,
+    platformType: PlatformType,
     setState: (DemoState) -> Unit
 ) {
     val scrollPosition= mutableMapOf<String, Triple<Int, Int?, ScrollIntent>>()
@@ -40,6 +42,7 @@ fun FormDemo(
         contentAlignment = Alignment.Center
     ) {
         ConfigurationEditForm(
+            platformType = platformType,
             configuration = state.editedConfiguration!!,
             scrollbarModifier = Modifier
                 .clip(MaterialTheme.shapes.small)

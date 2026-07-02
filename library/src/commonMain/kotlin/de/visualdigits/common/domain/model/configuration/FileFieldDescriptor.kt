@@ -2,7 +2,9 @@ package de.visualdigits.common.domain.model.configuration
 
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.FileKeyFactory
+import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.FileMode
+import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.model.ui.UiText
 import kotlinx.io.files.Path
 import org.jetbrains.compose.resources.DrawableResource
@@ -30,6 +32,8 @@ class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
     options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, K>?) -> List<Triple<String, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
+    notValidForPlatforms: List<Pair<PlatformType, UiPlatform?>> = listOf(),
+
     val fileMode: FileMode,
     var startDirectory: (AbstractConfiguration<*, *>) -> Path = {
         Path(System.getProperty("user.home"))
@@ -47,5 +51,6 @@ class FileFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     enabledCondition = enabledCondition,
     valid = valid,
     options = options,
+    notValidForPlatforms = notValidForPlatforms,
     keyFactory = FileKeyFactory
 )

@@ -202,6 +202,35 @@ fun String.toLocation(): Location? {
             latitude = calculateDecimal(matches[0]),
             longitude = calculateDecimal(matches[1])
         )
+    } else if ((this.contains("N") || this.contains("S")) && (this.contains("E") || this.contains("W"))) {
+        val parts = this.trim().split("\\s+".toRegex())
+        if (parts.size == 2) {
+            try {
+                val latStr = parts[0]
+                val lonStr = parts[1]
+
+                // Breitengrad parsen (z.B. "4230N")
+                val latDeg = latStr.substring(0, 2).toDouble()
+                val latMin = latStr.substring(2, 4).toDouble()
+                val latDir = latStr.last()
+                var latitude = latDeg + (latMin / 60.0)
+                if (latDir == 'S') latitude = -latitude
+
+                // Längengrad parsen (z.B. "00131E")
+                val lonDeg = lonStr.substring(0, 3).toDouble()
+                val lonMin = lonStr.substring(3, 5).toDouble()
+                val lonDir = lonStr.last()
+                var longitude = lonDeg + (lonMin / 60.0)
+                if (lonDir == 'W') longitude = -longitude
+
+                Location(latitude, longitude)
+            } catch (e: Exception) {
+                // Falls das Format in der CSV korrupt ist, geben wir null zurück
+                null
+            }
+        } else {
+            null
+        }
     } else if (!this.isBlank()) {
         val parts = try {
             if (this.contains(",")) {

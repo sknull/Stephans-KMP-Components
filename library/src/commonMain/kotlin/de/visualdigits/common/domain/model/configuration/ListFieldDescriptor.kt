@@ -2,6 +2,8 @@ package de.visualdigits.common.domain.model.configuration
 
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
+import de.visualdigits.common.domain.model.platform.PlatformType
+import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.reflect.KClass
@@ -32,6 +34,8 @@ open class ListFieldDescriptor<F : Any, K : FieldKey<K>>(
     valid: (AbstractConfiguration<*, K>, Any?) -> Severity = { _, _ -> Severity.Info },
     options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, K>?) -> List<Triple<F, UiText?, DrawableResource?>> = { _, _ -> listOf() },
 
+    notValidForPlatforms: List<Pair<PlatformType, UiPlatform?>> = listOf(),
+
     keyFactory: KeyFactory<MutableList<F>>
 ): AbstractFieldDescriptor<MutableList<F>, F, K, K, F>(
     fieldClass = MutableList::class as KClass<MutableList<F>>,
@@ -47,5 +51,6 @@ open class ListFieldDescriptor<F : Any, K : FieldKey<K>>(
     enabledCondition = enabledCondition,
     valid = valid,
     options = options,
+    notValidForPlatforms = notValidForPlatforms,
     keyFactory = keyFactory
 )

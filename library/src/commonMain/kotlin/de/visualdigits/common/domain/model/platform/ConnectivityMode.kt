@@ -1,11 +1,14 @@
 package de.visualdigits.common.domain.model.platform
 
+import androidx.compose.ui.graphics.Color
+
 enum class ConnectivityMode(
-    val isFreeOfCharge: Boolean
+    val isFreeOfCharge: Boolean,
+    val color: Color
 ) {
 
-    wifi(true),
-    cellular(false),
-    ethernet(true),
-    disconnected(true)
+    wifi(true, Color(0xFFFFFF00)),
+    cellular(false, Color(0xFFF77F00)),
+    ethernet(true, Color(0xFF00FF00)),
+    disconnected(true, Color(0xFFFF0000))
 }

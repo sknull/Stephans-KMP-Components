@@ -2,6 +2,8 @@ package de.visualdigits.common.domain.model.configuration
 
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
+import de.visualdigits.common.domain.model.platform.PlatformType
+import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.reflect.KClass
@@ -51,6 +53,8 @@ abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>, FK : F
      *  available values rendered in the UI.
      */
     var options: (AbstractConfiguration<*, K>, AbstractConfiguration<*, FK>?) -> List<Triple<O, UiText?, DrawableResource?>> = { _,_ -> listOf() },
+
+    val notValidForPlatforms: List<Pair<PlatformType, UiPlatform?>> = listOf(),
 
     /** A factory class which handles conversion to and from string values. */
     val keyFactory: KeyFactory<V>
