@@ -46,7 +46,6 @@ actual fun PlatformVerticalScrollbarBox(
             initialFirstVisibleItemScrollOffset = initialOffset
         )
 
-        // 1. Von AUßEN nach INNEN
         LaunchedEffect(scrollbarId, scrollPosition[scrollbarId]) {
             val currentPosition = scrollPosition[scrollbarId] ?: return@LaunchedEffect
             if (currentPosition.third == ScrollIntent.scrollToStart) {
@@ -59,17 +58,13 @@ actual fun PlatformVerticalScrollbarBox(
             }
         }
 
-        // 2. Von INNEN nach AUßEN (Entkoppelt durch isScrollInProgress)
         LaunchedEffect(lazyListState, scrollbarId) {
             snapshotFlow {
-                Triple(lazyListState.firstVisibleItemIndex, lazyListState.firstVisibleItemScrollOffset, lazyListState.isScrollInProgress)
-            }.collectLatest { (index, offset, isMoving) ->
-                // Nur zurückmelden, wenn der Nutzer aktiv wischt!
-                if (isMoving && scrollPosition[scrollbarId]?.third != ScrollIntent.scrollToStart) {
-                    onCommonAction?.invoke(
-                        CommonAction.OnScrollPositionChange(scrollbarId, index, offset, ScrollIntent.standard)
-                    )
-                }
+                Pair(lazyListState.firstVisibleItemIndex, lazyListState.firstVisibleItemScrollOffset)
+            }.collectLatest { (index, offset) ->
+                onCommonAction?.invoke(
+                    CommonAction.OnScrollPositionChange(scrollbarId, index, offset, ScrollIntent.standard)
+                )
             }
         }
         if (items.isNotEmpty()) {

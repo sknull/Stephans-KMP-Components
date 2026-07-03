@@ -40,9 +40,6 @@ import kotlin.math.sin
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Instant
 
-
-/*
- */
 @Composable
 fun StudioClock(
     modifier: Modifier = Modifier,
@@ -52,6 +49,7 @@ fun StudioClock(
     showDate: Boolean = true,
     showYear: Boolean = false,
     showFrames: Boolean = false,
+    dimOtherLeds: Boolean = false, // dims all leds except the current one
     framesPerSecond: Int = 24
 ) {
     val patternWithSeconds = if (fontFamily != null) "HH:mm:ss" else "HHmmss"
@@ -123,7 +121,8 @@ fun StudioClock(
                             unit = unit,
                             colors = colors,
                             showSeconds = showSeconds,
-                            currentDateTime = currentDateTime.toLocalDateTime()
+                            currentDateTime = currentDateTime.toLocalDateTime(),
+                            dimOtherLeds = dimOtherLeds
                         )
 
                         if (fontFamily != null) {
@@ -175,7 +174,8 @@ private fun ContentDrawScope.drawClockFace(
     unit: Double,
     colors: StudioClockColors,
     showSeconds: Boolean,
-    currentDateTime: LocalDateTime
+    currentDateTime: LocalDateTime,
+    dimOtherLeds: Boolean,
 ) {
     drawCircle(
         color = colors.colorBackground
@@ -189,7 +189,8 @@ private fun ContentDrawScope.drawClockFace(
         numberOfDots = 12,
         highlightedDots = currentDateTime.hour % 12,
         colorHighlighted = colors.colorHours,
-        colorDimmed = colors.colorHours.copy(value = 0.1, saturation = 0.5)
+        colorDimmed = colors.colorHours.copy(value = 0.1, saturation = 0.5),
+        dimOtherLeds = dimOtherLeds
     )
 
     // minutes
@@ -201,7 +202,8 @@ private fun ContentDrawScope.drawClockFace(
         numberOfDots = 60,
         highlightedDots = currentDateTime.minute,
         colorHighlighted = colors.colorMinutes,
-        colorDimmed = colors.colorMinutes.copy(value = 0.1, saturation = 0.5)
+        colorDimmed = colors.colorMinutes.copy(value = 0.1, saturation = 0.5),
+        dimOtherLeds = dimOtherLeds
     )
 
     // seconds
@@ -214,7 +216,8 @@ private fun ContentDrawScope.drawClockFace(
             numberOfDots = 60,
             highlightedDots = currentDateTime.second,
             colorHighlighted = colors.colorSeconds,
-            colorDimmed = colors.colorSeconds.copy(value = 0.1, saturation = 0.5)
+            colorDimmed = colors.colorSeconds.copy(value = 0.1, saturation = 0.5),
+            dimOtherLeds = dimOtherLeds
         )
     }
 }
@@ -407,21 +410,36 @@ private fun ContentDrawScope.drawDots(
     numberOfDots: Int,
     highlightedDots: Int,
     colorHighlighted: HsvColor,
-    colorDimmed: HsvColor
+    colorDimmed: HsvColor,
+    dimOtherLeds: Boolean
 ) {
     var a = 0.0f
-    val highlightOffset = 360.0f / numberOfDots * (highlightedDots + 1)
+    val step = 360.0f / numberOfDots
     while (a < 360.0f) {
         val ar = ((a - 90.0) * PI / 180.0).toFloat()
         val x = offsetX + angle * cos(ar)
         val y = offsetY + angle * sin(ar)
-        val isOn = a < highlightOffset
-        val baseColor = if (isOn) colorHighlighted else colorDimmed
-        val glossColor = Color.White.copy(alpha = if (isOn) 0.8f else 0.2f)
-        val glowColor = if (isOn) baseColor.toComposeColor().copy(alpha = 0.5f) else Color.Transparent
+
+        val (baseColor, glowColor, glossColor) = if(dimOtherLeds) {
+            val highlightDimOffset = step * (highlightedDots)
+            if (a < highlightDimOffset) {
+                Triple(colorHighlighted.copy(value = 0.5), colorHighlighted.copy(value = 0.5).toComposeColor().copy(alpha = 0.5f), Color.White.copy(alpha = 0.2f))
+            } else if (a == highlightDimOffset) {
+                Triple(colorHighlighted, colorHighlighted.toComposeColor().copy(alpha = 0.5f), Color.White.copy(alpha = 0.8f))
+            } else {
+                Triple(colorDimmed, colorDimmed.toComposeColor().copy(alpha = 0.5f), Color.White.copy(alpha = 0.2f))
+            }
+        } else {
+            val highlightOffset = step * (highlightedDots + 1)
+            if (a < highlightOffset) {
+                Triple(colorHighlighted, colorHighlighted.toComposeColor().copy(alpha = 0.5f), Color.White.copy(alpha = 0.8f))
+            } else {
+                Triple(colorDimmed, colorDimmed.toComposeColor().copy(alpha = 0.5f), Color.White.copy(alpha = 0.2f))
+            }
+        }
 
         drawLed(x, y, radius, glowColor, baseColor, glossColor)
 
-        a += 360.0f / numberOfDots
+        a += step
     }
 }
