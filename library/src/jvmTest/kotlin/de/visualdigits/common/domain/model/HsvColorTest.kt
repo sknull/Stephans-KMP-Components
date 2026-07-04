@@ -2,7 +2,7 @@ package de.visualdigits.common.domain.model
 
 import de.visualdigits.common.domain.model.color.HsvColor
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
 
 class HsvColorTest {
 

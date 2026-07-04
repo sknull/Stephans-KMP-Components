@@ -184,8 +184,8 @@ private fun ContentDrawScope.drawClockFace(
     drawDots(
         offsetX = offsetX,
         offsetY = offsetY,
-        angle = (radius - (if (showSeconds) 18 else 12) * unit),
-        radius = (3.0 * unit),
+        radius = (radius - (if (showSeconds) 18 else 12) * unit),
+        ledRadius = (3.0 * unit),
         numberOfDots = 12,
         highlightedDots = currentDateTime.hour % 12,
         colorHighlighted = colors.colorHours,
@@ -197,8 +197,8 @@ private fun ContentDrawScope.drawClockFace(
     drawDots(
         offsetX = offsetX,
         offsetY = offsetY,
-        angle = (radius - (if (showSeconds) 10 else 4) * unit),
-        radius = (2.0 * unit),
+        radius = (radius - (if (showSeconds) 10 else 4) * unit),
+        ledRadius = (2.0 * unit),
         numberOfDots = 60,
         highlightedDots = currentDateTime.minute,
         colorHighlighted = colors.colorMinutes,
@@ -211,8 +211,8 @@ private fun ContentDrawScope.drawClockFace(
         drawDots(
             offsetX = offsetX,
             offsetY = offsetY,
-            angle = (radius - 4 * unit),
-            radius = (1.5f * unit),
+            radius = (radius - 4 * unit),
+            ledRadius = (1.5f * unit),
             numberOfDots = 60,
             highlightedDots = currentDateTime.second,
             colorHighlighted = colors.colorSeconds,
@@ -405,8 +405,8 @@ private fun ContentDrawScope.drawTimeLedMatrix(
 private fun ContentDrawScope.drawDots(
     offsetX: Double,
     offsetY: Double,
-    angle: Double,
     radius: Double,
+    ledRadius: Double,
     numberOfDots: Int,
     highlightedDots: Int,
     colorHighlighted: HsvColor,
@@ -417,8 +417,8 @@ private fun ContentDrawScope.drawDots(
     val step = 360.0f / numberOfDots
     while (a < 360.0f) {
         val ar = ((a - 90.0) * PI / 180.0).toFloat()
-        val x = offsetX + angle * cos(ar)
-        val y = offsetY + angle * sin(ar)
+        val x = offsetX + radius * cos(ar)
+        val y = offsetY + radius * sin(ar)
 
         val (baseColor, glowColor, glossColor) = if(dimOtherLeds) {
             val highlightDimOffset = step * (highlightedDots)
@@ -438,7 +438,7 @@ private fun ContentDrawScope.drawDots(
             }
         }
 
-        drawLed(x, y, radius, glowColor, baseColor, glossColor)
+        drawLed(x, y, ledRadius, glowColor, baseColor, glossColor)
 
         a += step
     }
