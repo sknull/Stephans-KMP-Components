@@ -149,12 +149,12 @@ data class Location(
 
         return BoundingBox(
             topLeft = Location(
-                latitude = roundCoordinate(latitude + latOffset), // Norden +
-                longitude = roundCoordinate(longitude - lonOffset) // Westen -
+                latitude = roundCoordinate(latitude + latOffset).coerceIn(-90.0, 90.0), // Norden +
+                longitude = roundCoordinate(longitude - lonOffset).coerceIn(-180.0, 180.0) // Westen -
             ),
             bottomRight = Location(
-                latitude = roundCoordinate(latitude - latOffset), // Süden -
-                longitude = roundCoordinate(longitude + lonOffset) // Osten +
+                latitude = roundCoordinate(latitude - latOffset).coerceIn(-90.0, 90.0), // Süden -
+                longitude = roundCoordinate(longitude + lonOffset).coerceIn(-180.0, 180.0) // Osten +
             )
         )
     }
