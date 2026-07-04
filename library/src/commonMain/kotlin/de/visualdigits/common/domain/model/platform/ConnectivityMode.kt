@@ -7,8 +7,8 @@ enum class ConnectivityMode(
     val color: Color
 ) {
 
-    wifi(true, Color(0xFFFFFF00)),
-    cellular(false, Color(0xFFF77F00)),
+    wifi(true, Color(0xFF00FF00)),
+    cellular(false, Color(0xFFFFBF00)),
     ethernet(true, Color(0xFF00FF00)),
     disconnected(true, Color(0xFFFF0000))
 }
