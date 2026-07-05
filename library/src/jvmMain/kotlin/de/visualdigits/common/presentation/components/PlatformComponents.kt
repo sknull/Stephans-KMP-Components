@@ -15,3 +15,7 @@ actual fun applyAppLanguage(languageTag: String) {
     val javaLocale = Locale.forLanguageTag(languageTag)
     Locale.setDefault(javaLocale)
 }
+
+actual fun currentLanguageTag(): String {
+    return Locale.getDefault().language
+}

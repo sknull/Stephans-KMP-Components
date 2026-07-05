@@ -30,6 +30,8 @@ expect class ConnectivityManager {
 
 expect fun applyAppLanguage(languageTag: String)
 
+expect fun currentLanguageTag(): String
+
 @Composable
 expect fun BindBackHandler(isEnabled: Boolean, onBack: () -> Unit)
 

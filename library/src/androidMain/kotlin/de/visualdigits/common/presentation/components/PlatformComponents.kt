@@ -76,3 +76,8 @@ actual fun applyAppLanguage(languageTag: String) {
          androidx.core.os.LocaleListCompat.forLanguageTags(languageTag)
      )
 }
+
+actual fun currentLanguageTag(): String {
+    return androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().toLanguageTags()
+}
+
