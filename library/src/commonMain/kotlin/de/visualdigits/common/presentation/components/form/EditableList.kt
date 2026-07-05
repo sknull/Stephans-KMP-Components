@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +51,7 @@ import de.visualdigits.common.domain.model.ui.KeyValue
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbar
 import de.visualdigits.common.presentation.components.button.IndicatorButton
+import de.visualdigits.common.presentation.components.container.DesktopScrollbarAdapter
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.switchBoxColors
@@ -217,6 +219,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
             }
 
             if (scrollable) {
+                val adapter = DesktopScrollbarAdapter(rememberScrollbarAdapter(scrollState))
                 PlatformVerticalScrollbar(
                     interactionSource = interactionSource,
                     modifier = Modifier
@@ -225,7 +228,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         .fillMaxHeight()
                         .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f))
                         .width(space),
-                    scrollState = scrollState
+                    adapter = adapter
                 )
             }
         }

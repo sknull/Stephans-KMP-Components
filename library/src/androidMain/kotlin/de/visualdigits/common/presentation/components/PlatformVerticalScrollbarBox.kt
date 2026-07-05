@@ -33,11 +33,12 @@ actual fun PlatformVerticalScrollbarBox(
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>>,
     onCommonAction: ((CommonAction) -> Unit)?,
     verticalArrangementGap: Dp,
+    forceLazy: Boolean,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 ) {
-    val items = rows()
+    val currentRows = rows()
 
-    if (items.isNotEmpty()) {
+    if (currentRows.isNotEmpty()) {
         val initialIndex = remember(scrollbarId) { scrollPosition[scrollbarId]?.first ?: 0 }
         val initialOffset = remember(scrollbarId) { scrollPosition[scrollbarId]?.second ?: 0 }
 
@@ -67,20 +68,19 @@ actual fun PlatformVerticalScrollbarBox(
                 )
             }
         }
-        if (items.isNotEmpty()) {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceContainer),
-                verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
-                state = lazyListState
-            ) {
-                items(
-                    items = items,
-                    key = { row -> row.first }
-                ) {(_, rowContent) ->
-                    rowContent()
-                }
+
+        LazyColumn(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
+            state = lazyListState
+        ) {
+            items(
+                items = currentRows,
+                key = { row -> row.first }
+            ) {(_, rowContent) ->
+                rowContent()
             }
         }
     } else {

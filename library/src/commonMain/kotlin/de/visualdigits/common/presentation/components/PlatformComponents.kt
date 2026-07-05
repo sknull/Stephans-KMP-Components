@@ -47,14 +47,17 @@ expect fun PlatformVerticalScrollbarBox(
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
     onCommonAction: ((CommonAction) -> Unit)? = null,
     verticalArrangementGap: Dp = 8.dp,
+    forceLazy: Boolean = false,
     rows: () -> List<Pair<String, @Composable () -> Unit>>
 )
+
+interface PlatformScrollbarAdapter
 
 @Composable
 expect fun PlatformVerticalScrollbar(
     modifier: Modifier = Modifier,
     style: PlatformScrollbarStyle = defaultScrollbarStyle(),
-    scrollState: ScrollState,
+    adapter: PlatformScrollbarAdapter,
     interactionSource: MutableInteractionSource
 )
 
