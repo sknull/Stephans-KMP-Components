@@ -92,6 +92,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
         modifier = modifier
             .fillMaxWidth()
             .padding(end = 10.dp + space),
+        platformType = platformType,
         backgroundColor = backgroundColor,
         scrollbarModifier = scrollbarModifier,
         scrollbarStyle = scrollbarStyle,
@@ -114,7 +115,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                         .fieldDescriptors
                         .filter { fieldDescriptor ->
                             fieldDescriptor.visible &&
-                                    fieldDescriptor.notValidForPlatforms.none { pair  -> pair == platform }
+                                    fieldDescriptor.notValidForPlatforms.none { pair -> pair == platform }
                         }
                         .groupBy { fieldDescriptor -> fieldDescriptor.group?.asString() }
                         .forEach { (group, fieldDescriptors) ->

@@ -1,6 +1,5 @@
 package de.visualdigits.common.presentation.components
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
@@ -36,28 +35,10 @@ expect fun currentLanguageTag(): String
 expect fun BindBackHandler(isEnabled: Boolean, onBack: () -> Unit)
 
 @Composable
-expect fun PlatformVerticalScrollbarBox(
-    modifier: Modifier = Modifier,
-    space: Dp = 0.dp,
-    backgroundColor: Color = Color.Unspecified,
-    backgroundImage: (@Composable () -> Unit)? = null,
-    scrollbarModifier: Modifier = Modifier,
-    scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
-    scrollbarId: String? = null,
-    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
-    onCommonAction: ((CommonAction) -> Unit)? = null,
-    verticalArrangementGap: Dp = 8.dp,
-    forceLazy: Boolean = false,
-    rows: () -> List<Pair<String, @Composable () -> Unit>>
-)
-
-interface PlatformScrollbarAdapter
-
-@Composable
 expect fun PlatformVerticalScrollbar(
     modifier: Modifier = Modifier,
     style: PlatformScrollbarStyle = defaultScrollbarStyle(),
-    adapter: PlatformScrollbarAdapter,
+    lazyListState: LazyListState,
     interactionSource: MutableInteractionSource
 )
 
