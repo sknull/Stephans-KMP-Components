@@ -48,6 +48,7 @@ import de.visualdigits.common.presentation.components.util.conditional
 @Composable
 fun IndicatorButton(
     modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier.fillMaxWidth(),
     isHoverable: Boolean = true,
     space: Dp = 8.dp,
     text: String? = null,
@@ -151,8 +152,7 @@ fun IndicatorButton(
             shape = MaterialTheme.shapes.small,
             content = {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = textModifier
                         .padding(top = paddings[0], end = paddings[1], bottom = paddings[2], start = paddings[3]),
                     horizontalArrangement = horizontalArrangement,
                     verticalAlignment = verticalAlignment,

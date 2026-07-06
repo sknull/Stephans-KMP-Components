@@ -89,7 +89,7 @@ fun PlatformVerticalScrollbarBox(
                 modifier = modifier
                     .fillMaxWidth()
                     .background(backgroundColor)
-                    .padding(end = if (platformType == PlatformType.jvm) 10.dp + space else 10.dp),
+                    .padding(end = if (platformType == PlatformType.jvm) 10.dp + space else 0.dp),
                 verticalArrangement = Arrangement.spacedBy(verticalArrangementGap),
                 state = lazyListState
             ) {
