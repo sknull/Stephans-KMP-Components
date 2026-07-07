@@ -45,6 +45,7 @@ import de.visualdigits.common.presentation.components.util.outlinedTextFieldColo
 @Composable
 fun VerticalCollapsibleBox(
     modifier: Modifier = Modifier,
+    modifierHeader: Modifier = Modifier,
     modifierContent: Modifier = Modifier,
     enabled: Boolean = true,
     iconArrowRight: Painter? = null,
@@ -81,6 +82,7 @@ fun VerticalCollapsibleBox(
     } else {
         VerticalCollapsibleBoxFull(
             modifier = modifier,
+            modifierHeader = modifierHeader,
             modifierContent = modifierContent,
             enabled = enabled,
             isTitleHoverable = isTitleHoverable,
@@ -108,6 +110,7 @@ fun VerticalCollapsibleBox(
 @Composable
 fun VerticalCollapsibleBoxFull(
     modifier: Modifier = Modifier,
+    modifierHeader: Modifier = Modifier,
     modifierContent: Modifier = Modifier,
     enabled: Boolean = true,
     paddingContainer: PaddingValues,
@@ -161,7 +164,7 @@ fun VerticalCollapsibleBoxFull(
                     ) {
                         // header row
                         Row(
-                            modifier = Modifier
+                            modifier = modifierHeader
                                 .fillMaxWidth()
                                 .height(40.dp)
                                 .conditional(isHovered) { background(titleHoverColor) }
