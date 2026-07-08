@@ -99,25 +99,43 @@ data class Location(
     ): Offset {
         val distance = distanceTo(other)
         return if (distance <= maxRadarDistanceMeters) {
-            val bearing = bearingTo(other)
-
-            // 1. Scale the distance relative to the maximum radar radius
-            // Ships outside the maximum radius are drawn at the edge of the radar
-            val clampedDistance = distance.coerceAtMost(maxRadarDistanceMeters)
-            val distanceFraction = clampedDistance / maxRadarDistanceMeters
-            val distanceFromCenterPx = radarRadiusPx * distanceFraction
-
-            // 2. Adjust the angle (0° should be at the top, clockwise)
-            val angleRad = Math.toRadians(bearing - 90.0)
-
-            // 3. Calculate the X and Y deviations
-            val x = center.x + (distanceFromCenterPx * cos(angleRad)).toFloat()
-            val y = center.y + (distanceFromCenterPx * sin(angleRad)).toFloat()
-
-            Offset(x, y)
+            calculateRadarOffset(distance, bearingTo(other), maxRadarDistanceMeters, radarRadiusPx, center)
         } else {
             Offset.Unspecified
         }
+    }
+
+    /**
+     * Converts distance and bearing from this location (treated as the center) to another one
+     * into an X/Y offset for the Compose canvas.
+     *
+     * @param distance The distance in meters from the center coordinates.
+     * @param bearing The bearing in degrees (0° north) from the center coordinates.
+     * @param radarRadiusPx The radius of your radar circle on the screen in pixels.
+     * @param maxRadarDistanceMeters The maximum distance displayed by your inner geofence (e.g., 5000 meters).
+     * @param center The center of your canvas (offset(width/2, height/2)).
+     */
+    fun calculateRadarOffset(
+        distance: Double,
+        bearing: Double,
+        maxRadarDistanceMeters: Double,
+        radarRadiusPx: Float,
+        center: Offset
+    ): Offset {
+        // 1. Scale the distance relative to the maximum radar radius
+        // Ships outside the maximum radius are drawn at the edge of the radar
+        val clampedDistance = distance.coerceAtMost(maxRadarDistanceMeters)
+        val distanceFraction = clampedDistance / maxRadarDistanceMeters
+        val distanceFromCenterPx = radarRadiusPx * distanceFraction
+
+        // 2. Adjust the angle (0° should be at the top, clockwise)
+        val angleRad = Math.toRadians(bearing - 90.0)
+
+        // 3. Calculate the X and Y deviations
+        val x = center.x + (distanceFromCenterPx * cos(angleRad)).toFloat()
+        val y = center.y + (distanceFromCenterPx * sin(angleRad)).toFloat()
+
+        return Offset(x, y)
     }
 
     fun isInBoundingBox(boundingBox: BoundingBox): Boolean {
