@@ -1,8 +1,7 @@
 package de.visualdigits.common.domain.model.geodata
 
 import androidx.compose.ui.geometry.Offset
-import co.touchlab.kermit.Severity
-import de.visualdigits.common.domain.model.errorhandling.LogMessage.Companion.log
+import co.touchlab.kermit.Logger
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -14,9 +13,6 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-
-// Regex searches for: Grad°, Minuten', Sekunden" and directions (N, S, E, W)
-private val regex = """(\d+)°(\d+)'([\d.]+)"([NSEW])""".toRegex()
 
 data class Location(
     val latitude: Double,
@@ -60,8 +56,10 @@ data class Location(
     }
 
     /**
-    * Berechnet die Peilung (Anfangskurs) von dieser Location zu einer anderen Location in Grad (0..360).
-    * 0° = Nord, 90° = Ost, 180° = Süd, 270° = West.
+     * Calculates the bearing (initial heading) from this location to another location in degrees (0–360).
+     * 0° = North, 90° = East, 180° = South, 270° = West.
+     *
+     * @param other The location to calculate the bearing to.
     */
     fun bearingTo(other: Location): Double {
         val lat1 = Math.toRadians(this.latitude)
@@ -79,12 +77,13 @@ data class Location(
     }
 
     /**
-     * Rechnet Entfernung und Peilung in ein X/Y-Offset für die Compose-Canvas um.
-     * @param distance Die berechnete Entfernung zum Schiff in Metern.
-     * @param bearing Die berechnete Peilung zum Schiff in Grad (0..360).
-     * @param radarRadiusPx Der Radius deines Radarkreises auf dem Bildschirm in Pixeln.
-     * @param maxRadarDistanceMeters Die maximale Entfernung, die dein innerer Geofence anzeigt (z.B. 5000 Meter).
-     * @param center Das Zentrum deiner Canvas (Offset(width/2, height/2)).
+     * Converts distance and bearing from this location (treated as the center) to another one
+     * into an X/Y offset for the Compose canvas.
+     *
+     * @param other The location to calculate the offset for.
+     * @param radarRadiusPx The radius of your radar circle on the screen in pixels.
+     * @param maxRadarDistanceMeters The maximum distance displayed by your inner geofence (e.g., 5000 meters).
+     * @param center The center of your canvas (offset(width/2, height/2)).
      */
     fun calculateRadarOffset(
         other: Location,
@@ -184,8 +183,10 @@ data class Location(
     }
 }
 
-const val COORDINATES_DEFAULT = "53.545977 9.9680454"
-val COORDINATES_DEFAULT_DOUBLE = listOf(53.545977, 9.9680454)
+// Regex searches for: Grad°, Minuten', Sekunden" and directions (N, S, E, W)
+private val regex = """(\d+)°(\d+)'([\d.]+)"([NSEW])""".toRegex()
+
+val COORDINATES_DEFAULT = listOf(53.545977, 9.9680454)
 
 /**
  * Converts the given DMS formatted string into a pair (lat,lon)
@@ -224,7 +225,7 @@ fun String.toLocation(): Location? {
                 if (lonDir == 'W') longitude = -longitude
 
                 Location(latitude, longitude)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Falls das Format in der CSV korrupt ist, geben wir null zurück
                 null
             }
@@ -239,8 +240,8 @@ fun String.toLocation(): Location? {
                 this.trim().split(" +".toRegex()).map { it.trim().toDouble() }
             }
         } catch (_: Exception) {
-            log(Severity.Error, "Invalid format for double: $this - falling back to Hamburg Harbor", withTag = "AIS" )
-            COORDINATES_DEFAULT_DOUBLE
+            Logger.e("Invalid format for double: $this - falling back to Hamburg Harbor" )
+            COORDINATES_DEFAULT
         }
         if (parts.size == 2) {
             Location(parts[0], parts[1])

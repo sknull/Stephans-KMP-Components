@@ -1,11 +1,14 @@
 package de.visualdigits.common.domain.service
 
+import co.touchlab.kermit.DefaultFormatter
 import co.touchlab.kermit.LogWriter
+import co.touchlab.kermit.MessageStringFormatter
 import co.touchlab.kermit.Severity
-import co.touchlab.kermit.platformLogWriter
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 
 actual fun getPlatformLogWriters(homeDirectoryPath: String, logFileName: String): List<LogWriter> {
     val logDirectory = File(homeDirectoryPath)
@@ -13,11 +16,36 @@ actual fun getPlatformLogWriters(homeDirectoryPath: String, logFileName: String)
         logDirectory.mkdirs()
     }
 
-    return listOf(CustomJvmFileLogWriter(File(logDirectory, logFileName)), platformLogWriter())
+    return listOf(
+        CustomJvmFileLogWriter(File(logDirectory, logFileName)),
+        CustomJvmConsoleWriter()
+    )
+}
+
+class CustomJvmConsoleWriter(private val messageStringFormatter: MessageStringFormatter = DefaultFormatter) : LogWriter() {
+
+    override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
+        val timestamp = LocalDateTime.now().format(formatter)
+        val logLine = "$timestamp [${severity.name}] $tag: $message"
+
+        if (severity == Severity.Error) {
+            System.err.println(logLine)
+        } else {
+            println(logLine)
+        }
+
+        throwable?.let {
+            val thString = it.stackTraceToString()
+            if (severity == Severity.Error) {
+                System.err.println(thString)
+            } else {
+                println(thString)
+            }
+        }
+    }
 }
 
 class CustomJvmFileLogWriter(private val logFile: File) : LogWriter() {
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 
     override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
         val timestamp = LocalDateTime.now().format(formatter)
