@@ -19,6 +19,11 @@ data class Location(
     val longitude: Double,
 ) {
 
+    companion object {
+
+        private const val RADIUS_EARTH_METERS = 6371000.0 // Erdradius in Metern
+    }
+
     override fun toString(): String {
         return toDmsString()
     }
@@ -38,11 +43,12 @@ data class Location(
 
     /**
      * Calculates the exact distance from this location to the given other location in meters.
+     *
+     * @param other The location to locate the distance to.
      */
     fun distanceTo(
         other: Location
     ): Double {
-        val earthRadiusMeters = 6371000.0 // Erdradius in Metern
 
         val dLat = Math.toRadians(other.latitude - this.latitude)
         val dLon = Math.toRadians(other.longitude - this.longitude)
@@ -52,7 +58,8 @@ data class Location(
                 sin(dLon / 2).pow(2)
 
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return earthRadiusMeters * c
+
+        return RADIUS_EARTH_METERS * c
     }
 
     /**
@@ -71,7 +78,6 @@ data class Location(
 
         val radiansBearing = atan2(y, x)
 
-        // Umrechnung in Grad und Normalisierung auf 0..360 Grad
         val degreesBearing = Math.toDegrees(radiansBearing)
         return (degreesBearing + 360.0) % 360.0
     }
@@ -95,16 +101,16 @@ data class Location(
         return if (distance <= maxRadarDistanceMeters) {
             val bearing = bearingTo(other)
 
-            // 1. Skaliere die Entfernung relativ zum maximalen Radar-Radius
-            // Schiffe außerhalb des maximalen Radius werden am Rand des Radars gezeichnet
+            // 1. Scale the distance relative to the maximum radar radius
+            // Ships outside the maximum radius are drawn at the edge of the radar
             val clampedDistance = distance.coerceAtMost(maxRadarDistanceMeters)
             val distanceFraction = clampedDistance / maxRadarDistanceMeters
             val distanceFromCenterPx = radarRadiusPx * distanceFraction
 
-            // 2. Winkel anpassen (0° soll oben sein, im Uhrzeigersinn)
+            // 2. Adjust the angle (0° should be at the top, clockwise)
             val angleRad = Math.toRadians(bearing - 90.0)
 
-            // 3. X- und Y-Abweichung berechnen
+            // 3. Calculate the X and Y deviations
             val x = center.x + (distanceFromCenterPx * cos(angleRad)).toFloat()
             val y = center.y + (distanceFromCenterPx * sin(angleRad)).toFloat()
 
@@ -115,11 +121,11 @@ data class Location(
     }
 
     fun isInBoundingBox(boundingBox: BoundingBox): Boolean {
-        // Norden (topLeft) ist der MAXIMALE Breitengrad, Süden (bottomRight) der MINIMALE
+        // North (topLeft) is the MAXIMUM latitude, south (bottomRight) is the MINIMUM
         val isWithinLatitude = latitude <= boundingBox.topLeft.latitude &&
                 latitude >= boundingBox.bottomRight.latitude
 
-        // Westen (topLeft) ist der MINIMALE Längengrad, Osten (bottomRight) der MAXIMALE
+        // West (topLeft) is the MINIMUM longitude, East (bottomRight) is the MAXIMUM
         val isWithinLongitude = longitude >= boundingBox.topLeft.longitude &&
                 longitude <= boundingBox.bottomRight.longitude
 
@@ -174,11 +180,9 @@ data class Location(
         val minutesNotTruncated = (absolute - degrees) * 60.0
         val minutes = floor(minutesNotTruncated).toInt()
 
-        // Sekunden berechnen und auf zwei Nachkommastellen runden
         val secondsNotTruncated = (minutesNotTruncated - minutes) * 60.0
         val seconds = round(secondsNotTruncated * 100.0) / 100.0
 
-        // KMP-sichere Formatierung ohne String.format()
         return "$degrees°$minutes'$seconds\"$direction"
     }
 }
@@ -210,14 +214,14 @@ fun String.toLocation(): Location? {
                 val latStr = parts[0]
                 val lonStr = parts[1]
 
-                // Breitengrad parsen (z.B. "4230N")
+                // parse latitude (i.e. "4230N")
                 val latDeg = latStr.substring(0, 2).toDouble()
                 val latMin = latStr.substring(2, 4).toDouble()
                 val latDir = latStr.last()
                 var latitude = latDeg + (latMin / 60.0)
                 if (latDir == 'S') latitude = -latitude
 
-                // Längengrad parsen (z.B. "00131E")
+                // parse longitude (i.e. "00131E")
                 val lonDeg = lonStr.substring(0, 3).toDouble()
                 val lonMin = lonStr.substring(3, 5).toDouble()
                 val lonDir = lonStr.last()
@@ -226,7 +230,6 @@ fun String.toLocation(): Location? {
 
                 Location(latitude, longitude)
             } catch (_: Exception) {
-                // Falls das Format in der CSV korrupt ist, geben wir null zurück
                 null
             }
         } else {
