@@ -159,14 +159,12 @@ fun VerticalCollapsibleBoxFull(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(space),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // header row
                         Row(
                             modifier = modifierHeader
                                 .fillMaxWidth()
-                                .height(40.dp)
                                 .conditional(isHovered) { background(titleHoverColor) }
                                 .pointerHoverIcon(PointerIcon.Hand)
                                 .clickable {
