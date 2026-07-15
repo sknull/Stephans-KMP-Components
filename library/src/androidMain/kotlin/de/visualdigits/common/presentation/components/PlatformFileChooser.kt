@@ -39,7 +39,6 @@ actual fun PlatformFileChooser(
     onOkSource: ((String, Source) -> Unit)?,
     onOkPath: ((Path) -> Unit)?
 ) {
-    val log = Logger.withTag("PlatformFileChooser")
 
     val context = LocalContext.current
 
@@ -69,7 +68,7 @@ actual fun PlatformFileChooser(
                 }
             }
         } catch (e: Exception) {
-            log.e("Could not pick file", e)
+            Logger.e("Could not pick file", e)
         }
     }
 

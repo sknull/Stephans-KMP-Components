@@ -40,12 +40,10 @@ actual fun PlatformFileSaver(
     onCancel: (() -> Unit)?,
     onOk: (String, Sink) -> Unit
 ) {
-    val log = Logger.withTag("PlatformFileSaver")
-
     val saveDirectory = File(startDirectory.toString())
     if (!saveDirectory.exists()) {
         if (!saveDirectory.mkdirs()) {
-            log.e("Failed to create directory ${saveDirectory.absolutePath}")
+            Logger.e("Failed to create directory ${saveDirectory.absolutePath}")
         }
     }
     val mode = fileMode.jFileChooserMode

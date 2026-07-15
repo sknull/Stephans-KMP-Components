@@ -42,7 +42,6 @@ actual fun PlatformFileSaver(
     onOk: (String, Sink) -> Unit
 ) {
     val context = LocalContext.current
-    val log = Logger.withTag("PlatformFileSaver")
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("*/*")
@@ -62,7 +61,7 @@ actual fun PlatformFileSaver(
                 val outs = context.contentResolver.openOutputStream(uri)
                 outs?.asSink()?.buffered()?.also { buffer -> onOk(fileName, buffer) }
             } catch (e: Exception) {
-                log.e("Could not save file", e)
+                Logger.e("Could not save file", e)
             }
         } else {
             onCancel?.invoke()
