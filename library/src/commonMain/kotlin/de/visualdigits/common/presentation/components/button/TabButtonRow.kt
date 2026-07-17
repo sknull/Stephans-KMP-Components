@@ -1,6 +1,7 @@
 package de.visualdigits.common.presentation.components.button
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -35,6 +36,7 @@ fun TabButtonRow(
 fun TabButtonRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal,
+    verticalArrangement: Arrangement.Vertical,
     initializeViewModel: (() -> Unit)? = null,
     items: LinkedHashMap<Triple<String, (@Composable () -> Unit)?, UiText>, @Composable () -> Unit>,
     selectedTab: () -> Int,
@@ -44,9 +46,10 @@ fun TabButtonRow(
         initializeViewModel()
     }
 
-    Row(
+    FlowRow(
         modifier = modifier,
-        horizontalArrangement = horizontalArrangement
+        horizontalArrangement = horizontalArrangement,
+        verticalArrangement = verticalArrangement
     ) {
         items.keys.forEachIndexed { index, entry ->
             button(entry.second,entry.third, index)
