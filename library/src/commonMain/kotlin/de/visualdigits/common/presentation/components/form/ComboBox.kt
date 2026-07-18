@@ -47,8 +47,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
     onValueChange: (Any?) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val textFieldState = rememberTextFieldState(fieldState.currentOptionUIText.asString())
     val text = fieldState.currentOptionUIText.asString()
+    val textFieldState = rememberTextFieldState(text)
     LaunchedEffect(text) {
         textFieldState.edit {
             replace(0, length, text)

@@ -67,6 +67,7 @@ fun VerticalCollapsibleBoxSimple(
         Row(
             modifier = modifierHeader
                 .fillMaxWidth()
+                .height(30.dp)
                 .conditional(isTitleHoverable) { hoverable(interactionSource = interactionSource) }
                 .conditional(isTitleHoverable) { pointerHoverIcon(PointerIcon.Hand) }
                 .conditional(isHovered) { background(titleHoverColor) }
@@ -79,7 +80,6 @@ fun VerticalCollapsibleBoxSimple(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight()
             ) {
                 if (title != null) {
                     Text(
@@ -95,8 +95,7 @@ fun VerticalCollapsibleBoxSimple(
 
             Box(
                 modifier = Modifier
-                    .width(40.dp)
-                    .fillMaxHeight(),
+                    .width(40.dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (isExpanded && iconArrowDown != null) {

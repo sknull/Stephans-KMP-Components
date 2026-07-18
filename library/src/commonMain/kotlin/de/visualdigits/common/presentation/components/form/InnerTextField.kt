@@ -39,7 +39,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
     textFieldState: TextFieldState,
     expanded: Boolean,
     focusedBorderColor: Color,
-    unfocusedBorderColor: Color
+    unfocusedBorderColor: Color,
+    leadingIcon: @Composable (() -> Unit)? = null
 ) {
     val halfHeight = minimizedLabelHalfHeight(textStyle)
 
@@ -67,6 +68,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> InnerTextField(
                 shape = buttonShape,
                 readOnly = true,
                 state = textFieldState,
+                leadingIcon = leadingIcon,
                 trailingIcon = if (enabled) {
                     {
                         ExposedDropdownMenuDefaults.TrailingIcon(
