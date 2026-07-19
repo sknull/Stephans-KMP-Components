@@ -7,6 +7,8 @@ import kotlinx.datetime.asTimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.offsetIn
 import kotlinx.datetime.parse
 import kotlinx.datetime.toLocalDateTime
@@ -75,6 +77,8 @@ data class KmpOffsetDateTime(
 
     fun toLocalDateTime(): LocalDateTime = instant.toLocalDateTime(offset.asTimeZone())
 
+    fun toLocalDateTimeInSystemTimezone(): LocalDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+
     fun toInstant(): Instant = instant
 
     fun format(pattern: String): String {
@@ -130,4 +134,12 @@ data class KmpOffsetDateTime(
     override fun compareTo(other: KmpOffsetDateTime): Int {
         return compareBy<KmpOffsetDateTime>({ it.instant }).compare(this, other)
     }
+}
+
+fun LocalDateTime.format(pattern: String): String {
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    val dateTimeFormat = LocalDateTime.Format {
+        byUnicodePattern(pattern)
+    }
+    return dateTimeFormat.format(this)
 }
