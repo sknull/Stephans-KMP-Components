@@ -73,9 +73,11 @@ fun IndicatorButton(
     leadingImage: (@Composable () -> Unit)? = null,
     leadingIcon: Painter? = null,
     leadingIconTint: Color = MaterialTheme.colorScheme.onSurface,
+    leadingIconModifier: Modifier = Modifier,
     leadingIconTintDisabled: Color = leadingIconTint.copy(alpha = 0.5f),
     trailingIcon: Painter? = null,
     trailingIconTint: Color = MaterialTheme.colorScheme.onSurface,
+    trailingIconModifier: Modifier = Modifier,
     trailingIconTintDisabled: Color = trailingIconTint.copy(alpha = 0.5f),
     enabled: Boolean = true,
     content: (@Composable () -> Unit)? = null, // cannot be last attribute for back compatibility
@@ -159,7 +161,7 @@ fun IndicatorButton(
                 ) {
                     if (hasLeadingIcon) {
                         Icon(
-                            modifier = Modifier,
+                            modifier = leadingIconModifier,
                             painter = leadingIcon,
                             contentDescription = null,
                             tint = if (enabled) leadingIconTint else leadingIconTintDisabled
@@ -189,7 +191,7 @@ fun IndicatorButton(
                     if (hasTrailingIcon) {
                         if (hasContent || hasLeadingIcon) Spacer(Modifier.width(space))
                         Icon(
-                            modifier = Modifier,
+                            modifier = trailingIconModifier,
                             painter = trailingIcon,
                             contentDescription = null,
                             tint = if (enabled) trailingIconTint else trailingIconTintDisabled
