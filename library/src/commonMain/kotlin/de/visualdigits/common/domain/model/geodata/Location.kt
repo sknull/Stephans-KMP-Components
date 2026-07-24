@@ -19,6 +19,9 @@ data class Location(
     val longitude: Double,
 ) {
 
+    val googleMapsUrl: String
+        get() = "https://www.google.com/maps/search/?api=1&query=$latitude%2C$longitude"
+
     companion object {
 
         private const val RADIUS_EARTH_METERS = 6371000.0 // Erdradius in Metern
