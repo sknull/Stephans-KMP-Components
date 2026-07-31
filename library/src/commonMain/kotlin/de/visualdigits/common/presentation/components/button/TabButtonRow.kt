@@ -14,6 +14,7 @@ fun TabButtonRow(
     initializeViewModel: (() -> Unit)? = null,
     items: LinkedHashMap<String, @Composable () -> Unit>,
     selectedTab: () -> Int,
+    loadingContent: (@Composable () -> Unit)? = null,
     button: @Composable (Int) -> Unit
 ) {
     if (initializeViewModel != null) {
@@ -29,7 +30,9 @@ fun TabButtonRow(
         }
     }
 
-    items.toList()[selectedTab()].second()
+    loadingContent
+        ?.let { lc -> lc() }
+        ?: items.toList()[selectedTab()].second()
 }
 
 @Composable
