@@ -46,14 +46,14 @@ fun MainPage(
 
     var state by remember { mutableStateOf(DemoState()) }
 
-    val items = linkedMapOf<Pair<String, UiText>, @Composable (() -> Unit)>(
-        Pair("Studio Clock", UiText.DynamicString("Studio Clock")) to {
+    val items = linkedMapOf<String, @Composable (() -> Unit)>(
+        "Studio Clock" to {
             StudioClockDemo()
         },
-        Pair("Button Demo", UiText.DynamicString("Button Demo")) to {
+        "Button Demo" to {
             ButtonDemo()
         },
-        Pair("Form Demo", UiText.DynamicString("Form Demo")) to {
+        "Form Demo" to {
             FormDemo(
                 state = state,
                 platformType = platformType
@@ -61,6 +61,12 @@ fun MainPage(
                 state = newState
             }
         },
+    )
+
+    val tabLabels = listOf(
+        Pair("Studio Clock", UiText.DynamicString("Studio Clock")),
+        Pair("Button Demo", UiText.DynamicString("Button Demo")),
+        Pair("Form Demo", UiText.DynamicString("Form Demo"))
     )
 
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -246,12 +252,12 @@ fun MainPage(
                 horizontalArrangement = Arrangement.spacedBy(0.dp),
                 selectedTab = { selectedTabIndex },
                 items = items
-            ) { label, index ->
+            ) { index ->
                 IndicatorButton(
                     flatLook = false,
                     buttonColor = Color.Black,
                     textColor = Color.White,
-                    text = label.asString(),
+                    text = tabLabels[index].second.asString(),
                     indicatorPosition = Alignment.BottomCenter,
                     indicatorColor = Color(0xFFFF1B55),
                     shape = RoundedCornerShape(

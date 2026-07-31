@@ -12,9 +12,9 @@ fun TabButtonRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal,
     initializeViewModel: (() -> Unit)? = null,
-    items: LinkedHashMap<Pair<String, UiText>, @Composable () -> Unit>,
+    items: LinkedHashMap<String, @Composable () -> Unit>,
     selectedTab: () -> Int,
-    button: @Composable (UiText, Int) -> Unit
+    button: @Composable (Int) -> Unit
 ) {
     if (initializeViewModel != null) {
         initializeViewModel()
@@ -25,7 +25,7 @@ fun TabButtonRow(
         horizontalArrangement = horizontalArrangement
     ) {
         items.keys.forEachIndexed { index, label ->
-            button(label.second, index)
+            button(index)
         }
     }
 
@@ -38,9 +38,9 @@ fun TabButtonRow(
     horizontalArrangement: Arrangement.Horizontal,
     verticalArrangement: Arrangement.Vertical,
     initializeViewModel: (() -> Unit)? = null,
-    items: LinkedHashMap<Triple<String, (@Composable () -> Unit)?, UiText>, @Composable () -> Unit>,
+    items: LinkedHashMap<Pair<String, (@Composable () -> Unit)?>, @Composable () -> Unit>,
     selectedTab: () -> Int,
-    button: @Composable ((@Composable () -> Unit)?, UiText, Int) -> Unit
+    button: @Composable ((@Composable () -> Unit)?, String, Int) -> Unit
 ) {
     if (initializeViewModel != null) {
         initializeViewModel()
@@ -52,7 +52,7 @@ fun TabButtonRow(
         verticalArrangement = verticalArrangement
     ) {
         items.keys.forEachIndexed { index, entry ->
-            button(entry.second,entry.third, index)
+            button(entry.second,entry.first, index)
         }
     }
 
