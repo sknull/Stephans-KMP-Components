@@ -1,6 +1,5 @@
 package de.visualdigits.common.domain.model.common
 
-import kotlinx.datetime.UtcOffset
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
