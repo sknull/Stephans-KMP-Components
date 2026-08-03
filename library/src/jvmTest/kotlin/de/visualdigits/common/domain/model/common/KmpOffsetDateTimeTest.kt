@@ -1,7 +1,6 @@
 package de.visualdigits.common.domain.model.common
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNotNull
 import kotlin.test.assertEquals
 
 class KmpOffsetDateTimeTest {
