@@ -61,7 +61,7 @@ fun SwitchBox(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .conditional(!alignForForm) { offset(y = halfHeight * -1.0f) }
+            .offset(y = halfHeight * -1.0f)
     ) {
         OutlinedTextField(
             modifier = Modifier

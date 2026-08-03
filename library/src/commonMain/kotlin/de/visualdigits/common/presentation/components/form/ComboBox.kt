@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.DropdownMenuItem
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
+import de.visualdigits.common.presentation.components.util.conditional
+import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import org.jetbrains.compose.resources.painterResource
 
 
@@ -41,6 +44,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
     toolTipShape: Shape,
     textStyle: TextStyle,
     fieldHeight: Dp = Dp.Unspecified,
+    alignForForm: Boolean = true,
     focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape,
@@ -49,6 +53,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
     var expanded by remember { mutableStateOf(false) }
     val text = fieldState.currentOptionUIText.asString()
     val textFieldState = rememberTextFieldState(text)
+    val halfHeight = minimizedLabelHalfHeight(textStyle)
     LaunchedEffect(text) {
         textFieldState.edit {
             replace(0, length, text)
@@ -57,7 +62,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
     if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
         ExposedDropdownMenuBox(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .conditional(alignForForm) { offset(y = halfHeight * -1.0f) },
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
         ) {

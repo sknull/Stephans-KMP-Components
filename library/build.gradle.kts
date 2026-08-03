@@ -95,6 +95,10 @@ kotlin {
     }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 android {
     namespace = "de.visualdigits.kmp.components"
     compileSdk = libs.versions.android.compileSdk.get().toInt()

@@ -59,15 +59,22 @@ data class KmpOffsetDateTime(
             return currentInstant.offsetIn(systemTimeZone)
         }
 
+        val P_OFFSET = "[+-]\\d\\d:\\d\\d".toRegex()
+
         fun fromString(isoDateTime: String) : KmpOffsetDateTime {
-            var input = isoDateTime.replaceFirst(" ", "T").substringBefore(" +")
+            var (input, offset) = P_OFFSET
+                .find(isoDateTime)
+                ?.let { result ->
+                    val offsetTime = result.value
+                    Pair(isoDateTime.replace(offsetTime, "").replaceFirst(" ", "T"), UtcOffset.parse(offsetTime))
+                } ?: Pair(isoDateTime.replaceFirst(" ", "T"), UtcOffset.ZERO)
             if (!input.endsWith("Z")) {
                 input += "Z"
             }
             return try {
                 KmpOffsetDateTime(
                     instant = Instant.parse(input),
-                    offset = UtcOffset.ZERO
+                    offset = offset
                 )
             } catch (e: Exception) {
                 throw IllegalStateException("Could not parse utc time: '$input'", e)
