@@ -1,9 +1,17 @@
 package de.visualdigits.common.domain.model.common
 
+import kotlinx.datetime.UtcOffset
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class KmpOffsetDateTimeTest {
+
+    @Test
+    fun testAisDateTime() {
+        val dateTimeString = "2026-08-03 14:00:20.154920998 +0000 UTC"
+        val dateTime = KmpOffsetDateTime.fromString(dateTimeString)
+        assertEquals("2026-08-03T14:00:20.154920998Z", dateTime.toString())
+    }
 
     @Test
     fun testZuluTime() {

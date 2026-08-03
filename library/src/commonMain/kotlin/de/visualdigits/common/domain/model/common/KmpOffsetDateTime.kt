@@ -59,15 +59,30 @@ data class KmpOffsetDateTime(
             return currentInstant.offsetIn(systemTimeZone)
         }
 
-        val P_OFFSET = "[+-]\\d\\d:\\d\\d".toRegex()
+        val P_OFFSET_H_M = "[+-]\\d\\d:\\d\\d".toRegex()
+        val P_OFFSET_4_DIGITS = "[+-]\\d\\d\\d\\d".toRegex()
 
         fun fromString(isoDateTime: String) : KmpOffsetDateTime {
-            var (input, offset) = P_OFFSET
-                .find(isoDateTime)
-                ?.let { result ->
-                    val offsetTime = result.value
-                    Pair(isoDateTime.replace(offsetTime, "").replaceFirst(" ", "T"), UtcOffset.parse(offsetTime))
-                } ?: Pair(isoDateTime.replaceFirst(" ", "T"), UtcOffset.ZERO)
+            val resultHM = P_OFFSET_H_M.find(isoDateTime)
+            val result4Digits = P_OFFSET_4_DIGITS.find(isoDateTime)
+            var (input, offset) = if (resultHM != null) {
+                val offsetTime = resultHM.value
+                val dateTimeString = isoDateTime
+                    .replace(offsetTime, "")
+                    .replaceFirst(" ", "T")
+                Pair(dateTimeString, UtcOffset.parse(offsetTime))
+            } else if (result4Digits != null) {
+                val offsetTime = result4Digits.value
+                val dateTimeString = isoDateTime
+                    .substring(0, isoDateTime.indexOf(offsetTime))
+                    .trim()
+                    .replaceFirst(" ", "T")
+                Pair(dateTimeString, UtcOffset.parse(offsetTime, UtcOffset.Formats.FOUR_DIGITS))
+            } else {
+                val dateTimeString = isoDateTime
+                    .replaceFirst(" ", "T")
+                Pair(dateTimeString, UtcOffset.ZERO)
+            }
             if (!input.endsWith("Z")) {
                 input += "Z"
             }
