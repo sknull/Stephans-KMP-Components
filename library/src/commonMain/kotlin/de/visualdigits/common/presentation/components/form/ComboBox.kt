@@ -64,7 +64,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
         ExposedDropdownMenuBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .conditional(alignForForm) { offset(y = halfHeight * -1.0f) },
+                .conditional(!alignForForm) { offset(y = halfHeight * -1.0f) },
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
         ) {
