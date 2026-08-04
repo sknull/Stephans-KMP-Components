@@ -8,18 +8,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
+import de.visualdigits.common.domain.model.form.LocalFileChooserResources
+import de.visualdigits.common.domain.model.form.LocalFormFieldResources
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.PlatformFileChooser
-import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 import kotlinx.io.files.Path
@@ -28,73 +25,54 @@ import kotlinx.io.files.Path
 fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
     modifier: Modifier,
     fieldState: FieldState<K, FK>,
-    iconFolder: Painter,
-    space: Dp,
-    toolTipBackgroundColor: Color,
-    toolTipShape: Shape,
-    fieldHeight: Dp,
-    textStyle: TextStyle,
-    leadingIcon: @Composable (() -> Unit)?,
-    trailingIcon: @Composable (() -> Unit)?,
-    iconTint: Color,
-    buttonShape: Shape,
-    buttonColor: Color,
-    titleDirectories: String,
-    titleFiles: String,
+    unfocusedBorderColor: Color,
     startDirectory: Path,
-    finalUnfocusedBorderColor: Color,
-    focusedBorderColor: Color,
     onValueChange: (String) -> Unit,
     onOk: (Path) -> Unit
 ) {
-    val halfHeight = minimizedLabelHalfHeight(textStyle)
-    PlatformToolTip(
-        text = fieldState.fieldDescriptor.toolTip?.asString(),
-        space = space,
-        backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape,
-        content = {
-            OutlinedTextField(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(fieldHeight + halfHeight),
-                textStyle = textStyle,
-                enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
-                value = fieldState.currentValue?.toString() ?: "",
-                label = {
-                    Text(
-                        text = fieldState.fieldDescriptor.label.asString(),
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                leadingIcon = leadingIcon,
-                trailingIcon = {
-                    trailingIcon?.let { ti -> ti() }
+    val formFieldResources = LocalFormFieldResources.current
+    val fileChooserResources = LocalFileChooserResources.current
 
-                    if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
-                        PlatformFileChooser(
-                            buttonTextStyle = MaterialTheme.typography.bodySmall,
-                            buttonTextAlign = TextAlign.Start,
-                            title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
-                                FileMode.DIRECTORIES_ONLY -> titleDirectories
-                                FileMode.FILES_ONLY -> titleFiles
-                            },
-                            fileMode = FileMode.FILES_ONLY,
-                            buttonColor = buttonColor,
-                            leadingIcon = iconFolder,
-                            leadingIconTint = iconTint,
-                            startDirectory = startDirectory,
-                            onOkPath = onOk
-                        )
-                    }
-                },
-                shape = buttonShape,
-                onValueChange = onValueChange,
-                singleLine = true,
-                colors = outlinedTextFieldColors(focusedBorderColor, finalUnfocusedBorderColor)
+    val halfHeight = minimizedLabelHalfHeight(formFieldResources.textStyle)
+    OutlinedTextField(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(fileChooserResources.fieldHeight + halfHeight),
+        textStyle = formFieldResources.textStyle,
+        enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
+        value = fieldState.currentValue?.toString() ?: "",
+        label = {
+            Text(
+                text = fieldState.fieldDescriptor.label.asString(),
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
-        }
+        },
+        leadingIcon = fileChooserResources.leadingIcon,
+        trailingIcon = {
+            fileChooserResources.trailingIcon?.let { ti -> ti() }
+
+            if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
+                PlatformFileChooser(
+                    buttonTextStyle = MaterialTheme.typography.bodySmall,
+                    buttonTextAlign = TextAlign.Start,
+                    title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
+                        FileMode.DIRECTORIES_ONLY -> fileChooserResources.titleDirectories
+                        FileMode.FILES_ONLY -> fileChooserResources.titleFiles
+                    },
+                    fileMode = FileMode.FILES_ONLY,
+                    buttonColor = fileChooserResources.buttonColor,
+                    leadingIcon = fileChooserResources.iconFolder,
+                    leadingIconTint = fileChooserResources.iconTint,
+                    startDirectory = startDirectory,
+                    onOkPath = onOk
+                )
+            }
+        },
+        shape = formFieldResources.shape,
+        onValueChange = onValueChange,
+        singleLine = true,
+        colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, unfocusedBorderColor)
     )
 }

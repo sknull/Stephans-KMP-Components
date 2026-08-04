@@ -23,9 +23,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.presentation.model.CommonAction
-import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
+import de.visualdigits.common.presentation.model.LocalPlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
-import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -36,7 +35,6 @@ fun PlatformVerticalScrollbarBox(
     backgroundColor: Color = Color.Unspecified,
     backgroundImage: (@Composable () -> Unit)? = null,
     scrollbarModifier: Modifier = Modifier,
-    scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
     scrollbarId: String? = null,
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
     onCommonAction: ((CommonAction) -> Unit)? = null,
@@ -107,7 +105,7 @@ fun PlatformVerticalScrollbarBox(
                     .fillMaxHeight()
                     .width(10.dp)
                     .align(Alignment.CenterEnd),
-                style = scrollbarStyle,
+                style = LocalPlatformScrollbarStyle.current,
                 lazyListState = lazyListState
             )
         }

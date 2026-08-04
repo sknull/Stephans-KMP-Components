@@ -12,25 +12,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
-import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.domain.model.form.LocalFormResources
 import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.KeyValue
 import de.visualdigits.common.domain.model.ui.UiPlatform
@@ -39,11 +32,8 @@ import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarB
 import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.container.OutlinedGroupBox
-import de.visualdigits.common.presentation.components.util.switchBoxColors
 import de.visualdigits.common.presentation.model.CommonAction
-import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import de.visualdigits.common.presentation.model.ScrollIntent
-import de.visualdigits.common.presentation.model.defaultScrollbarStyle
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,29 +44,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     configuration: AbstractConfiguration<*, K>,
     configurationRef: AbstractConfiguration<*, FK>? = null,
     scrollbarModifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer,
-    titleChooseDirectory: UiText,
-    titleChooseFile: UiText,
-    iconFolder: Painter,
-    editableListResources: EditableListResources,
-    tooltipOk: UiText,
-    visibilityIcon: Painter? = null,
-    iconOk: Painter,
-    tooltipCancel: UiText,
-    iconCancel: Painter,
     scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
     scrollbarId: String? = null,
-    scrollbarStyle: PlatformScrollbarStyle = defaultScrollbarStyle(),
-    fieldHeight: Dp = Dp.Unspecified,
-    switchColors: SwitchColors = switchBoxColors(),
-    focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
-    unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
-    iconTint: Color = MaterialTheme.colorScheme.onSurface,
-    buttonShape: Shape = MaterialTheme.shapes.extraSmall,
-    buttonColor: Color = MaterialTheme.colorScheme.surface,
-    containerShape: Shape = MaterialTheme.shapes.small,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    space: Dp = 8.dp,
     colorPickerUseOnlySliders: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     onCancelClick: () -> Unit,
@@ -85,17 +54,17 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _,_ -> true },
     headerContent: (@Composable () -> Unit)? = null
 ) {
+    val formResources = LocalFormResources.current
     val androidPlatform = androidPlatform()
     val platform = Pair(platformType, androidPlatform)
 
     PlatformVerticalScrollbarBox(
         modifier = modifier
             .fillMaxWidth()
-            .padding(end = 10.dp + space),
+            .padding(end = 10.dp + formResources.space),
         platformType = platformType,
-        backgroundColor = backgroundColor,
+        backgroundColor = formResources.backgroundColor,
         scrollbarModifier = scrollbarModifier,
-        scrollbarStyle = scrollbarStyle,
         scrollbarId = scrollbarId,
         scrollPosition = scrollPosition,
         onCommonAction = onCommonAction
@@ -108,8 +77,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                 FlowRow(
                     modifier = Modifier
                         .fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(space),
-                    verticalArrangement = Arrangement.spacedBy(space)
+                    horizontalArrangement = Arrangement.spacedBy(formResources.space),
+                    verticalArrangement = Arrangement.spacedBy(formResources.space)
                 ) {
                     configuration
                         .fieldDescriptors
@@ -122,14 +91,14 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                             if (group != null && androidPlatform != UiPlatform.UI_MODE_TYPE_TELEVISION) {
                                 OutlinedGroupBox(
                                     label = { Text(group) },
-                                    space = space
+                                    space = formResources.space
                                 ) {
                                     FlowRow(
                                         modifier = Modifier
                                             .fillMaxSize(),
-                                        horizontalArrangement = Arrangement.spacedBy(space),
+                                        horizontalArrangement = Arrangement.spacedBy(formResources.space),
                                         verticalArrangement = Arrangement.spacedBy(
-                                            space = space,
+                                            space = formResources.space,
                                             alignment = Alignment.Bottom
                                         )
                                     ) {
@@ -137,21 +106,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                             fieldDescriptors = fieldDescriptors,
                                             configuration = configuration,
                                             configurationRef = configurationRef,
-                                            titleChooseDirectory = titleChooseDirectory,
-                                            titleChooseFile = titleChooseFile,
-                                            iconFolder = iconFolder,
-                                            switchColors = switchColors,
-                                            editableListResources = editableListResources,
-                                            fieldHeight = fieldHeight,
-                                            space = space,
-                                            unfocusedBorderColor = unfocusedBorderColor,
-                                            focusedBorderColor = focusedBorderColor,
-                                            visibilityIcon = visibilityIcon,
-                                            iconTint = iconTint,
-                                            buttonColor = buttonColor,
-                                            buttonShape = buttonShape,
-                                            containerShape = containerShape,
-                                            textStyle = textStyle,
                                             colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                                             onValueChange = onValueChange,
                                             deleteAllowed = deleteAllowed
@@ -163,21 +117,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                                     fieldDescriptors = fieldDescriptors,
                                     configuration = configuration,
                                     configurationRef = configurationRef,
-                                    titleChooseDirectory = titleChooseDirectory,
-                                    titleChooseFile = titleChooseFile,
-                                    iconFolder = iconFolder,
-                                    editableListResources = editableListResources,
-                                    fieldHeight = fieldHeight,
-                                    space = space,
-                                    switchColors = switchColors,
-                                    unfocusedBorderColor = unfocusedBorderColor,
-                                    focusedBorderColor = focusedBorderColor,
-                                    visibilityIcon = visibilityIcon,
-                                    iconTint = iconTint,
-                                    buttonColor = buttonColor,
-                                    buttonShape = buttonShape,
-                                    containerShape = containerShape,
-                                    textStyle = textStyle,
                                     colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                                     onValueChange = onValueChange,
                                     deleteAllowed = deleteAllowed
@@ -191,31 +130,31 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
             }),
             Pair("buttons", @Composable {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(space),
+                    horizontalArrangement = Arrangement.spacedBy(formResources.space),
                     modifier = Modifier
                         .wrapContentWidth(),
                 ) {
                     Spacer(Modifier.weight(1f))
 
                     IndicatorButton(
-                        toolTip = tooltipCancel.asString(),
+                        toolTip = formResources.tooltipCancel?.asString(),
                         width = 50.dp,
                         height = 50.dp,
-                        buttonColor = buttonColor,
-                        shape = buttonShape,
-                        leadingIcon = iconCancel,
-                        leadingIconTint = iconTint,
+                        buttonColor = formResources.buttonColor,
+                        shape = formResources.buttonShape,
+                        leadingIcon = formResources.iconCancel,
+                        leadingIconTint = formResources.iconTint,
                         onClick = onCancelClick
                     )
 
                     IndicatorButton(
-                        toolTip = tooltipOk.asString(),
+                        toolTip = formResources.tooltipOk?.asString(),
                         width = 50.dp,
                         height = 50.dp,
-                        buttonColor = buttonColor,
-                        shape = buttonShape,
-                        leadingIcon = iconOk,
-                        leadingIconTint = iconTint,
+                        buttonColor = formResources.buttonColor,
+                        shape = formResources.buttonShape,
+                        leadingIcon = formResources.iconOk,
+                        leadingIconTint = formResources.iconTint,
                         onClick = onOkClick
                     )
                 }
@@ -229,21 +168,6 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> RenderFields(
     fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>>,
     configuration: AbstractConfiguration<*, K>,
     configurationRef: AbstractConfiguration<*, FK>?,
-    titleChooseDirectory: UiText,
-    titleChooseFile: UiText,
-    iconFolder: Painter,
-    editableListResources: EditableListResources,
-    fieldHeight: Dp,
-    space: Dp,
-    switchColors: SwitchColors = switchBoxColors(),
-    unfocusedBorderColor: Color,
-    focusedBorderColor: Color,
-    visibilityIcon: Painter?,
-    iconTint: Color,
-    buttonColor: Color,
-    buttonShape: Shape,
-    containerShape: Shape,
-    textStyle: TextStyle,
     colorPickerUseOnlySliders: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     deleteAllowed: (AbstractFieldDescriptor<*, *, *, *, *>?, String) -> Boolean
@@ -274,21 +198,6 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> RenderFields(
             ) {
                 EditableField(
                     fieldState = fieldState,
-                    titleChooseDirectory = titleChooseDirectory,
-                    titleChooseFile = titleChooseFile,
-                    iconFolder = iconFolder,
-                    editableListResources = editableListResources,
-                    fieldHeight = fieldHeight,
-                    space = space,
-                    switchColors = switchColors,
-                    unfocusedBorderColor = unfocusedBorderColor,
-                    focusedBorderColor = focusedBorderColor,
-                    visibilityIcon = visibilityIcon,
-                    iconTint = iconTint,
-                    buttonColor = buttonColor,
-                    buttonShape = buttonShape,
-                    containerShape = containerShape,
-                    textStyle = textStyle,
                     colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                     onValueChange = onValueChange,
                     deleteAllowed = deleteAllowed

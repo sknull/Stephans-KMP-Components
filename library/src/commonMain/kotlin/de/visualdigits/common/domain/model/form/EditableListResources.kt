@@ -1,6 +1,7 @@
 package de.visualdigits.common.domain.model.form
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import de.visualdigits.common.domain.model.ui.UiText
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -35,5 +36,8 @@ data class EditableListResources(
             labelCancel = UiText.DynamicString("Cancel")
         )
     }
+}
 
+val LocalEditableListResources = staticCompositionLocalOf<EditableListResources> {
+    error("No EditableListResources provided")
 }

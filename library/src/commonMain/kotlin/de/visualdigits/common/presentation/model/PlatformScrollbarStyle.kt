@@ -3,10 +3,12 @@ package de.visualdigits.common.presentation.model
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.form.EditableListResources
 
 class PlatformScrollbarStyle(
     val minimalHeight: Dp,
@@ -26,3 +28,7 @@ fun defaultScrollbarStyle() = PlatformScrollbarStyle(
     unhoverColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
     hoverColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
 )
+
+val LocalPlatformScrollbarStyle = staticCompositionLocalOf<PlatformScrollbarStyle> {
+    error("No PlatformScrollbarStyle provided")
+}

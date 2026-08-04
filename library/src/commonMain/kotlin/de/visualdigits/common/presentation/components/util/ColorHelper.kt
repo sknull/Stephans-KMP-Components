@@ -7,7 +7,9 @@ import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 
 
 @Composable
@@ -40,3 +42,7 @@ fun switchBoxColors(): SwitchColors = SwitchDefaults.colors().copy(
     checkedThumbColor = MaterialTheme.colorScheme.onBackground,
     checkedBorderColor = MaterialTheme.colorScheme.onSurface
 )
+
+val LocalSwitchColors = staticCompositionLocalOf<SwitchColors> {
+    error("No SwitchColors provided")
+}

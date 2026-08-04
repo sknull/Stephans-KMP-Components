@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,51 +36,34 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
-import de.visualdigits.common.domain.model.form.EditableListResources
+import de.visualdigits.common.domain.model.form.LocalEditableListResources
+import de.visualdigits.common.domain.model.form.LocalFormFieldResources
+import de.visualdigits.common.domain.model.form.LocalFormResources
 import de.visualdigits.common.domain.model.ui.KeyValue
-import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.PlatformVerticalScrollbar
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
-import de.visualdigits.common.presentation.components.util.switchBoxColors
-import de.visualdigits.common.presentation.model.ScrollIntent
 import org.jetbrains.compose.resources.painterResource
-import kotlin.collections.get
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     modifier: Modifier = Modifier,
     fieldState: FieldState<K, FK>,
-    titleChooseDirectory: UiText = UiText.DynamicString(""),
-    titleChooseFile: UiText = UiText.DynamicString(""),
-    iconFolder: Painter,
-    resources: EditableListResources = EditableListResources.DEFAULT_RESOURCES,
-    fieldHeight: Dp = Dp.Unspecified,
-    space: Dp,
-    switchColors: SwitchColors = switchBoxColors(),
-    focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
-    unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
-    iconTint: Color = MaterialTheme.colorScheme.onSurface,
-    buttonShape: Shape = MaterialTheme.shapes.extraSmall,
-    containerShape: Shape = MaterialTheme.shapes.small,
-    buttonColor: Color = MaterialTheme.colorScheme.surface,
-    visibilityIcon: Painter? = null,
-    textStyle: TextStyle,
     scrollable: Boolean = false,
     onValueChange: (KeyValue) -> Unit,
     colorPickerUseOnlySliders: Boolean = false,
     deleteAllowed: (AbstractFieldDescriptor<*,*,*,*,*>?, String) -> Boolean = { _, _ -> true }
 ) {
+    val formResources = LocalFormResources.current
+    val formFieldResources = LocalFormFieldResources.current
+    val editableListResources = LocalEditableListResources.current
+
     val interactionSource = remember { MutableInteractionSource() }
     val initialIndex = remember { 0 }
     val initialOffset = remember { 0 }
@@ -103,7 +85,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
     var editingIndex by remember { mutableStateOf<Int?>(null) }
     var currentText by remember { mutableStateOf<String?>(null) }
 
-    val halfHeight = minimizedLabelHalfHeight(textStyle)
+    val halfHeight = minimizedLabelHalfHeight(formFieldResources.textStyle)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -114,7 +96,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                 .fillMaxWidth()
                 .drawBehind {
                     drawRoundRect(
-                        color = unfocusedBorderColor,
+                        color = formFieldResources.unfocusedBorderColor,
                         style = Stroke(
                             width = 1.5.dp.toPx(),
                         ),
@@ -130,7 +112,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                     .fillMaxWidth()
                     .padding(8.dp)
                     .conditional(scrollable) { verticalScroll(scrollState) },
-                verticalArrangement = Arrangement.spacedBy(space)
+                verticalArrangement = Arrangement.spacedBy(formResources.space)
             ) {
                 Text(
                     text = fieldState.fieldDescriptor.label.asString(),
@@ -144,21 +126,21 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(fieldHeight * 0.75f),
-                        shape = buttonShape,
+                            .height(formFieldResources.fieldHeight * 0.75f),
+                        shape = formFieldResources.shape,
                         color = Color.Transparent,
                         border = BorderStroke(
                             width = 1.dp,
-                            color = unfocusedBorderColor
+                            color = formFieldResources.unfocusedBorderColor
                         )
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(Color.Transparent)
-                                .padding(start = space, end = 0.dp),
+                                .padding(start = formResources.space, end = 0.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(space)
+                            horizontalArrangement = Arrangement.spacedBy(formResources.space)
                         ) {
                             Text(
                                 modifier = Modifier.weight(1f),
@@ -170,9 +152,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
 
                             if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
                                 IndicatorButton(
-                                    leadingIcon = resources.iconEdit?.let { r -> painterResource(r) },
-                                    leadingIconTint = iconTint,
-                                    toolTip = resources.toolTipEdit.asString(),
+                                    leadingIcon = editableListResources.iconEdit?.let { r -> painterResource(r) },
+                                    leadingIconTint = formResources.iconTint,
+                                    toolTip = editableListResources.toolTipEdit.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
                                     onClick = {
@@ -183,9 +165,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                                 )
 
                                 IndicatorButton(
-                                    leadingIcon = resources.iconDelete?.let { r -> painterResource(r) },
-                                    leadingIconTint = iconTint,
-                                    toolTip = resources.toolTipDelete.asString(),
+                                    leadingIcon = editableListResources.iconDelete?.let { r -> painterResource(r) },
+                                    leadingIconTint = formResources.iconTint,
+                                    toolTip = editableListResources.toolTipDelete.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
                                     enabled = allowDelete,
@@ -212,11 +194,11 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                                 .align(Alignment.CenterEnd),
                             width = 50.dp,
                             height = 50.dp,
-                            toolTip = resources.tooltipAdd.asString(),
-                            buttonColor = buttonColor,
-                            shape = buttonShape,
-                            leadingIcon = resources.iconAdd?.let { r -> painterResource(r) },
-                            leadingIconTint = iconTint
+                            toolTip = editableListResources.tooltipAdd.asString(),
+                            buttonColor = formResources.buttonColor,
+                            shape = formResources.buttonShape,
+                            leadingIcon = editableListResources.iconAdd?.let { r -> painterResource(r) },
+                            leadingIconTint = formResources.iconTint
                         ) {
                             editingIndex = null
                             currentText = ""
@@ -230,11 +212,11 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                 PlatformVerticalScrollbar(
                     interactionSource = interactionSource,
                     modifier = Modifier
-                        .clip(containerShape)
+                        .clip(formResources.containerShape)
                         .align(Alignment.CenterEnd)
                         .fillMaxHeight()
                         .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f))
-                        .width(space),
+                        .width(formResources.space),
                     lazyListState = lazyListState
                 )
             }
@@ -245,29 +227,17 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
             fieldState.fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, Any, Any>
             AlertDialog(
                 modifier = Modifier
-                    .border(1.dp, focusedBorderColor, containerShape),
+                    .border(1.dp, formFieldResources.focusedBorderColor, formResources.containerShape),
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                shape = containerShape,
+                shape = formResources.containerShape,
                 onDismissRequest = { showDialog = false },
-                title = { Text(if (editingIndex == null) resources.titleAdd.asString() else resources.titleEdit.asString()) },
+                title = { Text(if (editingIndex == null) editableListResources.titleAdd.asString() else editableListResources.titleEdit.asString()) },
                 text = {
                     TypeAwareEditableField(
                         modifier = Modifier
                             .fillMaxWidth(),
                         fieldState = fieldState,
                         currentValue = currentText,
-                        titleChooseDirectory = titleChooseDirectory,
-                        titleChooseFile = titleChooseFile,
-                        iconFolder = iconFolder,
-                        fieldHeight = fieldHeight,
-                        switchColors = switchColors,
-                        focusedBorderColor = focusedBorderColor,
-                        unfocusedBorderColor = unfocusedBorderColor,
-                        textStyle = textStyle,
-                        visibilityIcon = visibilityIcon,
-                        iconTint = iconTint,
-                        buttonShape = buttonShape,
-                        buttonColor = buttonColor,
                         colorPickerUseOnlySliders = colorPickerUseOnlySliders,
                         onValueChange = { keyValue ->
                             currentText = keyValue.value?.toString() ?: ""
@@ -276,13 +246,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                 },
                 confirmButton = {
                     IndicatorButton(
-                        toolTip = resources.labelOk.asString(),
+                        toolTip = editableListResources.labelOk.asString(),
                         width = 50.dp,
                         height = 50.dp,
-                        buttonColor = buttonColor,
-                        shape = buttonShape,
-                        leadingIcon = resources.iconOk?.let { r -> painterResource(r) },
-                        leadingIconTint = iconTint
+                        buttonColor = formResources.buttonColor,
+                        shape = formResources.buttonShape,
+                        leadingIcon = editableListResources.iconOk?.let { r -> painterResource(r) },
+                        leadingIconTint = formResources.iconTint
                     ) {
                         if (editingIndex != null) {
                             currentText?.also { ct -> items[editingIndex!!] = ct }
@@ -300,13 +270,13 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                 },
                 dismissButton = {
                     IndicatorButton(
-                        toolTip = resources.labelCancel.asString(),
+                        toolTip = editableListResources.labelCancel.asString(),
                         width = 50.dp,
                         height = 50.dp,
-                        buttonColor = buttonColor,
-                        shape = buttonShape,
-                        leadingIcon = resources.iconCancel?.let { r -> painterResource(r) },
-                        leadingIconTint = iconTint
+                        buttonColor = formResources.buttonColor,
+                        shape = formResources.buttonShape,
+                        leadingIcon = editableListResources.iconCancel?.let { r -> painterResource(r) },
+                        leadingIconTint = formResources.iconTint
                     ) {
                         items.update(previousItems)
                         onValueChange(KeyValue(
