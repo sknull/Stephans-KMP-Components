@@ -5,22 +5,16 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.visualdigits.common.domain.model.ui.UiText
 
 @Composable
 fun TabButtonRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal,
-    initializeViewModel: (() -> Unit)? = null,
     items: LinkedHashMap<String, @Composable () -> Unit>,
     selectedTab: () -> Int,
     loadingContent: (@Composable () -> Unit)? = null,
     button: @Composable (Int) -> Unit
 ) {
-    if (initializeViewModel != null) {
-        initializeViewModel()
-    }
-
     Row(
         modifier = modifier,
         horizontalArrangement = horizontalArrangement

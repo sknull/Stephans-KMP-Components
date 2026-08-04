@@ -16,7 +16,7 @@ enum class Language(
 ) : StringResourceEnumerable<Language> {
 
     DE(UiText.DynamicString("Deutsch"), Res.drawable.flag_de, Locale.GERMANY),
-    EN(UiText.DynamicString("Englisch"), Res.drawable.flag_en, Locale.US),
+    EN(UiText.DynamicString("English"), Res.drawable.flag_en, Locale.US),
     ;
 
     companion object : KeyFactory<Language> {
