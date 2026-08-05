@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.Dp
 data class FormFieldResources(
     val fieldHeight: Dp = Dp.Unspecified,
     val textStyle: TextStyle,
+    val iconTint: Color,
     val shape: Shape,
     val focusedBorderColor: Color,
     val unfocusedBorderColor: Color,

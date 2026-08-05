@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.DateTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
@@ -83,6 +84,17 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 fieldState = fieldState,
                 label = fieldState.fieldDescriptor.label.asString(),
                 slidersOnly = colorPickerUseOnlySliders,
+                onValueChange = { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                },
+            )
+        }
+
+        fieldState.fieldDescriptor is DateTimeFieldDescriptor<*,*> -> {
+            DateTimePickerBox(
+                modifier = modifier,
+                fieldState = fieldState,
+                unfocusedBorderColor = finalUnfocusedBorderColor,
                 onValueChange = { value ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 },

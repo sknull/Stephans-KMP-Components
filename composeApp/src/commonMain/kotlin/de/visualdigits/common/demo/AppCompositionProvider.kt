@@ -1,19 +1,24 @@
 package de.visualdigits.common.demo
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.form.DateTimeFieldResources
 import de.visualdigits.common.domain.model.form.EditableListResources
 import de.visualdigits.common.domain.model.form.FileChooserResources
 import de.visualdigits.common.domain.model.form.FormFieldResources
 import de.visualdigits.common.domain.model.form.FormResources
+import de.visualdigits.common.domain.model.form.LocalDateTimeFieldResources
 import de.visualdigits.common.domain.model.form.LocalEditableListResources
 import de.visualdigits.common.domain.model.form.LocalFileChooserResources
 import de.visualdigits.common.domain.model.form.LocalFormFieldResources
 import de.visualdigits.common.domain.model.form.LocalFormResources
+import de.visualdigits.common.domain.model.form.dateDefaultColors
+import de.visualdigits.common.domain.model.form.timeDefaultColors
 import de.visualdigits.common.domain.model.ui.UiText
 import de.visualdigits.common.presentation.components.util.LocalSwitchColors
 import de.visualdigits.common.presentation.components.util.switchBoxColors
@@ -22,6 +27,8 @@ import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 import org.jetbrains.compose.resources.painterResource
 import stephans_kmp_components.composeapp.generated.resources.Res
 import stephans_kmp_components.composeapp.generated.resources.icon_add_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_alarm_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_calendar_month_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_cancel_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_check_small_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_delete_24px
@@ -29,6 +36,7 @@ import stephans_kmp_components.composeapp.generated.resources.icon_edit_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_folder_open_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_visibility_24px
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppCompositionProvider(
     content: @Composable () -> Unit
@@ -46,20 +54,19 @@ fun AppCompositionProvider(
         buttonShape = MaterialTheme.shapes.extraSmall,
         iconOk = painterResource(Res.drawable.icon_check_small_24px),
         iconCancel = painterResource(Res.drawable.icon_cancel_24px),
-        iconTint = Color.White,
         buttonColor = Color.Black,
         containerShape = MaterialTheme.shapes.small,
     )
     val formFieldResources = FormFieldResources(
         fieldHeight = 50.dp,
         textStyle = MaterialTheme.typography.bodyMedium,
+        iconTint = Color.White,
         shape = MaterialTheme.shapes.extraSmall,
         focusedBorderColor = MaterialTheme.colorScheme.outline,
         unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
         visibilityIcon = painterResource(Res.drawable.icon_visibility_24px)
     )
     val fileChooserResources = FileChooserResources(
-        fieldHeight = 50.dp,
         iconFolder = painterResource(Res.drawable.icon_folder_open_24px),
         iconTint = MaterialTheme.colorScheme.onSurface,
         buttonColor =MaterialTheme.colorScheme.surface,
@@ -82,13 +89,23 @@ fun AppCompositionProvider(
     )
     val switchColors = switchBoxColors()
 
+    val dateTimeFieldResources = DateTimeFieldResources(
+        datePickerColors = dateDefaultColors(),
+        timePickerColors = timeDefaultColors(),
+        dateIcon = painterResource(Res.drawable.icon_calendar_month_24px),
+        timeIcon = painterResource(Res.drawable.icon_alarm_24px),
+        labelOk = UiText.DynamicString("Ok"),
+        labelCancel = UiText.DynamicString("Cancel")
+    )
+
     CompositionLocalProvider(
         LocalFormResources provides formResource,
         LocalFormFieldResources provides formFieldResources,
         LocalEditableListResources provides editableListResources,
         LocalPlatformScrollbarStyle provides platformScrollbarStyle,
         LocalFileChooserResources provides fileChooserResources,
-        LocalSwitchColors provides switchColors
+        LocalSwitchColors provides switchColors,
+        LocalDateTimeFieldResources provides dateTimeFieldResources
     ) {
         content()
     }

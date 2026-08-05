@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.DateTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ListFieldDescriptor
@@ -75,6 +76,11 @@ class DemoConfiguration(
                 label = UiText.DynamicString("File"),
                 fileMode = FileMode.FILES_ONLY,
                 options = { _, _ -> listOf(Triple("txt", null, null)) }
+            ),
+
+            DateTimeFieldDescriptor(
+                key = DC.dateTime,
+                label = UiText.DynamicString("DateTime"),
             ),
 
             ColorPickerFieldDescriptor(

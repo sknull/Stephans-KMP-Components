@@ -23,6 +23,7 @@ import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
 import de.visualdigits.common.domain.model.configuration.AbstractFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
+import de.visualdigits.common.domain.model.form.LocalFormFieldResources
 import de.visualdigits.common.domain.model.form.LocalFormResources
 import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.KeyValue
@@ -55,6 +56,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
     headerContent: (@Composable () -> Unit)? = null
 ) {
     val formResources = LocalFormResources.current
+    val formFieldResources = LocalFormFieldResources.current
     val androidPlatform = androidPlatform()
     val platform = Pair(platformType, androidPlatform)
 
@@ -143,7 +145,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                         buttonColor = formResources.buttonColor,
                         shape = formResources.buttonShape,
                         leadingIcon = formResources.iconCancel,
-                        leadingIconTint = formResources.iconTint,
+                        leadingIconTint = formFieldResources.iconTint,
                         onClick = onCancelClick
                     )
 
@@ -154,7 +156,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                         buttonColor = formResources.buttonColor,
                         shape = formResources.buttonShape,
                         leadingIcon = formResources.iconOk,
-                        leadingIconTint = formResources.iconTint,
+                        leadingIconTint = formFieldResources.iconTint,
                         onClick = onOkClick
                     )
                 }

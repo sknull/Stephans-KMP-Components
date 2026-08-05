@@ -153,7 +153,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                             if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
                                 IndicatorButton(
                                     leadingIcon = editableListResources.iconEdit?.let { r -> painterResource(r) },
-                                    leadingIconTint = formResources.iconTint,
+                                    leadingIconTint = formFieldResources.iconTint,
                                     toolTip = editableListResources.toolTipEdit.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
@@ -166,7 +166,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
 
                                 IndicatorButton(
                                     leadingIcon = editableListResources.iconDelete?.let { r -> painterResource(r) },
-                                    leadingIconTint = formResources.iconTint,
+                                    leadingIconTint = formFieldResources.iconTint,
                                     toolTip = editableListResources.toolTipDelete.asString(),
                                     width = 30.dp,
                                     height = 30.dp,
@@ -198,7 +198,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                             buttonColor = formResources.buttonColor,
                             shape = formResources.buttonShape,
                             leadingIcon = editableListResources.iconAdd?.let { r -> painterResource(r) },
-                            leadingIconTint = formResources.iconTint
+                            leadingIconTint = formFieldResources.iconTint
                         ) {
                             editingIndex = null
                             currentText = ""
@@ -252,7 +252,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         buttonColor = formResources.buttonColor,
                         shape = formResources.buttonShape,
                         leadingIcon = editableListResources.iconOk?.let { r -> painterResource(r) },
-                        leadingIconTint = formResources.iconTint
+                        leadingIconTint = formFieldResources.iconTint
                     ) {
                         if (editingIndex != null) {
                             currentText?.also { ct -> items[editingIndex!!] = ct }
@@ -276,7 +276,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         buttonColor = formResources.buttonColor,
                         shape = formResources.buttonShape,
                         leadingIcon = editableListResources.iconCancel?.let { r -> painterResource(r) },
-                        leadingIconTint = formResources.iconTint
+                        leadingIconTint = formFieldResources.iconTint
                     ) {
                         items.update(previousItems)
                         onValueChange(KeyValue(

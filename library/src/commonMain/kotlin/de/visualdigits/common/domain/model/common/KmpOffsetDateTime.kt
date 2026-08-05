@@ -1,6 +1,9 @@
 package de.visualdigits.common.domain.model.common
 
+import androidx.compose.runtime.Immutable
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.asTimeZone
@@ -11,6 +14,7 @@ import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.offsetIn
 import kotlinx.datetime.parse
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Duration
@@ -18,14 +22,37 @@ import kotlin.time.Instant
 
 expect fun KmpOffsetDateTime.formatLocalized(pattern: String): String
 
+@Immutable
 data class KmpOffsetDateTime(
-    val instant: Instant,
+    val instant: Instant = Clock.System.now(),
     val offset: UtcOffset = UtcOffset.ZERO
 ) : Comparable<KmpOffsetDateTime> {
 
     constructor(millis: Long, offsetString: String) : this(
-        instant = Instant.fromEpochMilliseconds(millis),
+        millis = millis,
         offset = UtcOffset.parse(offsetString)
+    )
+
+    constructor(millis: Long, offset: UtcOffset) : this(
+        instant = Instant.fromEpochMilliseconds(millis),
+        offset = offset
+    )
+
+    constructor(
+        input: String,
+        format: DateTimeFormat<DateTimeComponents>,
+        offset: UtcOffset = UtcOffset.ZERO
+    ): this(
+        instant = Instant.parse(input, format),
+        offset = offset
+    )
+
+    constructor(
+        localDateTime: LocalDateTime,
+        offset: UtcOffset = UtcOffset.ZERO
+    ): this(
+        instant = localDateTime.toInstant(offset),
+        offset = offset
     )
 
     companion object {
@@ -41,15 +68,6 @@ data class KmpOffsetDateTime(
         )
 
         fun now(): KmpOffsetDateTime = KmpOffsetDateTime(instant = Clock.System.now())
-
-        fun ofInstant(
-            instant: Instant,
-            offset: UtcOffset): KmpOffsetDateTime =
-                KmpOffsetDateTime(instant, offset)
-
-        fun parse(input: String, format: DateTimeFormat<DateTimeComponents>): KmpOffsetDateTime {
-            return KmpOffsetDateTime(Instant.parse(input, format))
-        }
 
         fun systemDefaultOffset(): UtcOffset {
             val currentInstant = Clock.System.now() // Current time in timeline
@@ -123,26 +141,62 @@ data class KmpOffsetDateTime(
         return KmpOffsetDateTime(this.instant.minus(duration))
     }
 
+    fun withLocalDate(newDate: LocalDate): KmpOffsetDateTime {
+        val currentLocalTime = this.toLocalDateTime().time
+        val newLocalDateTime = LocalDateTime(newDate, currentLocalTime)
+
+        return KmpOffsetDateTime(
+            instant = newLocalDateTime.toInstant(this.offset),
+            offset = this.offset
+        )
+    }
+
+    fun withLocalTime(newTime: LocalTime): KmpOffsetDateTime {
+        val currentLocalDate = this.toLocalDateTime().date
+        val newLocalDateTime = LocalDateTime(currentLocalDate, newTime)
+
+        return KmpOffsetDateTime(
+            instant = newLocalDateTime.toInstant(this.offset),
+            offset = this.offset
+        )
+    }
+
+    fun withTime(hour: Int, minute: Int): KmpOffsetDateTime {
+        val currentLocalDate = this.toLocalDateTime().date
+        val newLocalDateTime = LocalDateTime(currentLocalDate, LocalTime(hour,  minute, 0))
+
+        return KmpOffsetDateTime(
+            instant = newLocalDateTime.toInstant(this.offset),
+            offset = this.offset
+        )
+    }
+
+    val localDate: LocalDate
+        get() = toLocalDateTime().date
+
     val year: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).year
+        get() = localDate.year
 
     val month: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).month.ordinal
+        get() = localDate.month.ordinal
 
     val day: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).day
+        get() = localDate.day
+
+    val localTime: LocalTime
+        get() = toLocalDateTime().time
 
     val hour: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).hour
+        get() = localTime.hour
 
     val minute: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).minute
+        get() = localTime.minute
 
     val second: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).second
+        get() = localTime.second
 
     val millisecond: Int
-        get() = instant.toLocalDateTime(offset.asTimeZone()).nanosecond / 1000
+        get() = localTime.nanosecond / 1000
 
     override fun toString(): String {
         return if (offset == UtcOffset.ZERO) {

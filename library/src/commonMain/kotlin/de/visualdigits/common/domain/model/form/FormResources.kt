@@ -16,7 +16,6 @@ data class FormResources(
     val tooltipOk: UiText? = null,
     val iconCancel: Painter,
     val tooltipCancel: UiText? = null,
-    val iconTint: Color,
     val containerShape: Shape,
     val space: Dp = 8.dp,
 )

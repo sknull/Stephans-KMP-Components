@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
@@ -37,7 +38,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth()
-            .height(fileChooserResources.fieldHeight + halfHeight),
+            .height(formFieldResources.fieldHeight + halfHeight),
         textStyle = formFieldResources.textStyle,
         enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
         value = fieldState.currentValue?.toString() ?: "",
@@ -57,12 +58,14 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
                 PlatformFileChooser(
                     buttonTextStyle = MaterialTheme.typography.bodySmall,
                     buttonTextAlign = TextAlign.Start,
+                    buttonWidth = 30.dp,
+                    buttonHeight = 30.dp,
                     title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
                         FileMode.DIRECTORIES_ONLY -> fileChooserResources.titleDirectories
                         FileMode.FILES_ONLY -> fileChooserResources.titleFiles
                     },
                     fileMode = FileMode.FILES_ONLY,
-                    buttonColor = fileChooserResources.buttonColor,
+                    buttonColor = Color.Transparent,
                     leadingIcon = fileChooserResources.iconFolder,
                     leadingIconTint = fileChooserResources.iconTint,
                     startDirectory = startDirectory,

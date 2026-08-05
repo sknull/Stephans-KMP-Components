@@ -226,54 +226,56 @@ fun MainPage(
             primaryFixed = Color(0xAA000000),
         ),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            ErrorCard(
-                errorMessage = state.uiMessage,
-                severity = state.uiMessageSeverity,
-                shapeContainer = MaterialTheme.shapes.small
-            )
-
-            TabButtonRow(
+        AppCompositionProvider {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .drawBehind {
-                        val strokeWidth = 2.dp.toPx()
-                        drawLine(
-                            color = Color(0xaa111111),
-                            start = Offset(0f, size.height - strokeWidth / 2),
-                            end = Offset(size.width, size.height - strokeWidth / 2),
-                            strokeWidth = strokeWidth
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                ErrorCard(
+                    errorMessage = state.uiMessage,
+                    severity = state.uiMessageSeverity,
+                    shapeContainer = MaterialTheme.shapes.small
+                )
+
+                TabButtonRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .drawBehind {
+                            val strokeWidth = 2.dp.toPx()
+                            drawLine(
+                                color = Color(0xaa111111),
+                                start = Offset(0f, size.height - strokeWidth / 2),
+                                end = Offset(size.width, size.height - strokeWidth / 2),
+                                strokeWidth = strokeWidth
+                            )
+                        },
+                    horizontalArrangement = Arrangement.spacedBy(0.dp),
+                    selectedTab = { selectedTabIndex },
+                    items = items
+                ) { index ->
+                    IndicatorButton(
+                        flatLook = false,
+                        buttonColor = Color.Black,
+                        textColor = Color.White,
+                        text = tabLabels[index].second.asString(),
+                        indicatorPosition = Alignment.BottomCenter,
+                        indicatorColor = Color(0xFFFF1B55),
+                        shape = RoundedCornerShape(
+                            topStart = 6.dp,
+                            topEnd = 6.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        ),
+                        selected = selectedTabIndex == index,
+                    ) {
+                        selectedTabIndex = index
+                        state = state.copy(
+                            editedConfiguration = if (index == 2) state.configuration else null,
+                            uiMessage = null,
+                            uiMessageSeverity = null
                         )
-                    },
-                horizontalArrangement = Arrangement.spacedBy(0.dp),
-                selectedTab = { selectedTabIndex },
-                items = items
-            ) { index ->
-                IndicatorButton(
-                    flatLook = false,
-                    buttonColor = Color.Black,
-                    textColor = Color.White,
-                    text = tabLabels[index].second.asString(),
-                    indicatorPosition = Alignment.BottomCenter,
-                    indicatorColor = Color(0xFFFF1B55),
-                    shape = RoundedCornerShape(
-                        topStart = 6.dp,
-                        topEnd = 6.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    ),
-                    selected = selectedTabIndex == index,
-                ) {
-                    selectedTabIndex = index
-                    state = state.copy(
-                        editedConfiguration = if (index == 2) state.configuration else null,
-                        uiMessage = null,
-                        uiMessageSeverity = null
-                    )
+                    }
                 }
             }
         }
