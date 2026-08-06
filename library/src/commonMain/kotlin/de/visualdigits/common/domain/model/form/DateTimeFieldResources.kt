@@ -77,7 +77,7 @@ fun timeDefaultColors(): TimePickerColors = TimePickerDefaults.colors()
 
         clockDialColor = Color(0xFF000000),
         clockDialSelectedContentColor = Color(0xFFFF0000),
-        clockDialUnselectedContentColor = Color(0xFFFFFFFF),
+        clockDialUnselectedContentColor = Color(0xFF000000),
 
         selectorColor = Color(0xFFFF6B6B),
 
@@ -88,9 +88,9 @@ fun timeDefaultColors(): TimePickerColors = TimePickerDefaults.colors()
 //        periodSelectorUnselectedContentColor = TODO(),
 
         timeSelectorSelectedContainerColor = Color(0xFF000000),
-        timeSelectorUnselectedContainerColor = Color(0xFF6D6D6D),
+        timeSelectorUnselectedContainerColor = Color(0xFFAAAAAA),
         timeSelectorSelectedContentColor = Color(0xFFFFFFFF),
-        timeSelectorUnselectedContentColor = Color(0xFF000000)
+        timeSelectorUnselectedContentColor = Color(0xFF444444)
     )
 
 val LocalDateTimeFieldResources = staticCompositionLocalOf<DateTimeFieldResources> {
