@@ -98,38 +98,8 @@ data class KmpOffsetDateTime(
             offset = offset
         )
 
-        fun fromString(isoDateTime: String) : KmpOffsetDateTime {
-            val resultHM = P_OFFSET_H_M.find(isoDateTime)
-            val result4Digits = P_OFFSET_4_DIGITS.find(isoDateTime)
-            var (input, offset) = if (resultHM != null) {
-                val offsetTime = resultHM.value
-                val dateTimeString = isoDateTime
-                    .replace(offsetTime, "")
-                    .replaceFirst(" ", "T")
-                Pair(dateTimeString, UtcOffset.parse(offsetTime))
-            } else if (result4Digits != null) {
-                val offsetTime = result4Digits.value
-                val dateTimeString = isoDateTime
-                    .substring(0, isoDateTime.indexOf(offsetTime))
-                    .trim()
-                    .replaceFirst(" ", "T")
-                Pair(dateTimeString, UtcOffset.parse(offsetTime, UtcOffset.Formats.FOUR_DIGITS))
-            } else {
-                val dateTimeString = isoDateTime
-                    .replaceFirst(" ", "T")
-                Pair(dateTimeString, UtcOffset.ZERO)
-            }
-            if (!input.endsWith("Z")) {
-                input += "Z"
-            }
-            return try {
-                KmpOffsetDateTime(
-                    instant = Instant.parse(input),
-                    offset = offset
-                )
-            } catch (e: Exception) {
-                throw IllegalStateException("Could not parse utc time: '$input'", e)
-            }
+        fun fromString(text: String) : KmpOffsetDateTime {
+            return KmpOffsetDateTimeHeuristicDeserializer.parse(text)
         }
     }
 
