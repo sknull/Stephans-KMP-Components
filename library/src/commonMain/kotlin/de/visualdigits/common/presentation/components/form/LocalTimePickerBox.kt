@@ -1,19 +1,15 @@
 package de.visualdigits.common.presentation.components.form
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.getSelectedDate
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,43 +20,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.visualdigits.common.domain.model.common.KmpOffsetDateTime
 import de.visualdigits.common.domain.model.common.KmpOffsetDateTime.Companion.OFFSET_SYSTEM_DEFAULT
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.form.LocalDateTimeFieldResources
 import de.visualdigits.common.domain.model.form.LocalFormFieldResources
-import de.visualdigits.common.domain.util.MILLIS_TO_EPOCH_DAYS
+import de.visualdigits.common.domain.util.format
+import de.visualdigits.common.domain.util.now
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.util.minimizedLabelHalfHeight
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.toJavaLocalDate
-import kotlinx.datetime.toKotlinMonth
 
-private const val FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm"
+private const val FORMAT_TIME = "HH:mm"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <K : FieldKey<K>, FK : FieldKey<FK>> DateTimePickerBox(
+fun <K : FieldKey<K>, FK : FieldKey<FK>> LocalTimePickerBox(
     modifier: Modifier,
     fieldState: FieldState<K, FK>,
     unfocusedBorderColor: Color,
-    onValueChange: (KmpOffsetDateTime) -> Unit
+    onValueChange: (LocalTime?) -> Unit
 ) {
     val formFieldResources = LocalFormFieldResources.current
     val dateTimeFieldResources = LocalDateTimeFieldResources.current
 
-    val now = KmpOffsetDateTime.now(OFFSET_SYSTEM_DEFAULT)
+    val now = LocalTime.now(OFFSET_SYSTEM_DEFAULT)
 
-    var selectedDate by remember { mutableStateOf<KmpOffsetDateTime?>(fieldState.currentValue as? KmpOffsetDateTime ?: now) }
+    var selectedTime by remember { mutableStateOf<LocalTime?>(fieldState.currentValue as? LocalTime ?: now) }
 
-    var showDateDialog by remember { mutableStateOf(false) }
     var showTimeDialog by remember { mutableStateOf(false) }
 
-    val textFieldState = rememberTextFieldState(selectedDate?.format(FORMAT_DATE_TIME)?:" ")
-    val datePickerState = rememberDatePickerState(initialSelectedDate = now.localDate.toJavaLocalDate())
+    val textFieldState = rememberTextFieldState(selectedTime?.format(FORMAT_TIME)?:" ")
     val timePickerState = rememberTimePickerState(initialHour = now.hour, initialMinute = now.minute, is24Hour = true)
 
     val halfHeight = minimizedLabelHalfHeight(formFieldResources.textStyle)
@@ -83,84 +74,25 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> DateTimePickerBox(
         state = textFieldState,
         trailingIcon = {
             if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
-                Row {
-                    IndicatorButton(
-                        width = 30.dp,
-                        height = 30.dp,
-                        padding = 0.dp,
-                        buttonColor = Color.Transparent,
-                        content = {
-                            Icon(
-                                painter = dateTimeFieldResources.dateIcon,
-                                contentDescription = null,
-                                tint = formFieldResources.iconTint
-                            )
-                        }
-                    ) {
-                        showDateDialog = true
-                        showTimeDialog = false
+                IndicatorButton(
+                    width = 30.dp,
+                    height = 30.dp,
+                    padding = 0.dp,
+                    buttonColor = Color.Transparent,
+                    content = {
+                        Icon(
+                            painter = dateTimeFieldResources.timeIcon,
+                            contentDescription = null,
+                            tint = formFieldResources.iconTint
+                        )
                     }
-                    IndicatorButton(
-                        width = 30.dp,
-                        height = 30.dp,
-                        padding = 0.dp,
-                        buttonColor = Color.Transparent,
-                        content = {
-                            Icon(
-                                painter = dateTimeFieldResources.timeIcon,
-                                contentDescription = null,
-                                tint = formFieldResources.iconTint
-                            )
-                        }
-                    ) {
-                        showTimeDialog = true
-                        showDateDialog = false
-                    }
+                ) {
+                    showTimeDialog = true
                 }
             }
         },
         colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, unfocusedBorderColor)
     )
-
-    if (showDateDialog) {
-        AlertDialog(
-            containerColor = dateTimeFieldResources.datePickerColors.containerColor,
-            onDismissRequest = { showDateDialog = false },
-            confirmButton = {
-                IndicatorButton(
-                    buttonColor = Color.Black,
-                    textColor = Color.White,
-                    text = dateTimeFieldResources.labelOk.asString(),
-                    shape = MaterialTheme.shapes.extraSmall
-                ) {
-                    selectedDate = datePickerState.getSelectedDate()?.let { dm ->
-                        selectedDate?.withLocalDate(LocalDate(dm.year, dm.month.toKotlinMonth(), dm.dayOfMonth))
-                    }
-                    textFieldState.edit { replace(0, length, selectedDate?.format(FORMAT_DATE_TIME)?:" ") }
-                    onValueChange(selectedDate ?: now)
-                    showDateDialog = false
-                }
-            },
-            dismissButton = {
-                IndicatorButton(
-                    buttonColor = Color.Black,
-                    textColor = Color.White,
-                    text = dateTimeFieldResources.labelCancel.asString(),
-                    shape = MaterialTheme.shapes.extraSmall
-                ) {
-                    showDateDialog = false
-                }
-            },
-            text = {
-                DatePicker(
-                    state = datePickerState,
-                    showModeToggle = false,
-                    colors = dateTimeFieldResources.datePickerColors,
-                    modifier = Modifier
-                )
-            }
-        )
-    }
 
     if (showTimeDialog) {
         AlertDialog(
@@ -173,9 +105,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> DateTimePickerBox(
                     text = dateTimeFieldResources.labelOk.asString(),
                     shape = MaterialTheme.shapes.extraSmall
                 ) {
-                    selectedDate = selectedDate?.withLocalTime(LocalTime(timePickerState.hour, timePickerState.minute))
-                    textFieldState.edit { replace(0, length, selectedDate?.format(FORMAT_DATE_TIME)?:" ") }
-                    onValueChange(selectedDate ?: now)
+                    selectedTime = LocalTime(timePickerState.hour, timePickerState.minute)
+                    textFieldState.edit { replace(0, length, selectedTime?.format(FORMAT_TIME)?:" ") }
+                    onValueChange(selectedTime)
                     showTimeDialog = false
                 }
             },

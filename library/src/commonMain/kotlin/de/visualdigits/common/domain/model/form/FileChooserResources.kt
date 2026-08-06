@@ -9,8 +9,6 @@ data class FileChooserResources(
     val leadingIcon: @Composable (() -> Unit)? = null,
     val trailingIcon: @Composable (() -> Unit)? = null,
     val iconFolder: Painter,
-    val iconTint: Color,
-    val buttonColor: Color,
     val titleDirectories: String,
     val titleFiles: String,
 )

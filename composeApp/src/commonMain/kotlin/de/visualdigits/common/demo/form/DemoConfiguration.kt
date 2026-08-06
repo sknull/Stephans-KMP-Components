@@ -8,6 +8,8 @@ import de.visualdigits.common.domain.model.configuration.DateTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ListFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.LocalDateFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.LocalTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.StringFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
@@ -76,6 +78,16 @@ class DemoConfiguration(
                 label = UiText.DynamicString("File"),
                 fileMode = FileMode.FILES_ONLY,
                 options = { _, _ -> listOf(Triple("txt", null, null)) }
+            ),
+
+            LocalTimeFieldDescriptor(
+                key = DC.time,
+                label = UiText.DynamicString("LocalTime"),
+            ),
+
+            LocalDateFieldDescriptor(
+                key = DC.date,
+                label = UiText.DynamicString("LocalDate"),
             ),
 
             DateTimeFieldDescriptor(

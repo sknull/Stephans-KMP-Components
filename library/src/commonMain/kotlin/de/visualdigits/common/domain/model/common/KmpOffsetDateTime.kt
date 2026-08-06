@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.asTimeZone
@@ -55,6 +56,26 @@ data class KmpOffsetDateTime(
         offset = offset
     )
 
+    constructor(
+        year: Int,
+        month: Month,
+        dayOfMonth: Int,
+        hour: Int = 0,
+        minute: Int = 0,
+        second: Int = 0,
+        offset: UtcOffset = UtcOffset.ZERO
+    ): this(
+        localDateTime =  LocalDateTime(
+            year = year,
+            month = month,
+            day = dayOfMonth.coerceIn(1, 31),
+            hour = hour.coerceIn(0, 23),
+            minute = minute.coerceIn(0, 59),
+            second = second.coerceIn(0, 59)
+        ),
+        offset = offset
+    )
+
     companion object {
 
         val MIN: KmpOffsetDateTime = KmpOffsetDateTime(
@@ -67,18 +88,15 @@ data class KmpOffsetDateTime(
             offset = UtcOffset(hours = -18) // Maximales negatives Java-Offset für die absolut späteste lokale Zeit
         )
 
-        fun now(): KmpOffsetDateTime = KmpOffsetDateTime(instant = Clock.System.now())
-
-        fun systemDefaultOffset(): UtcOffset {
-            val currentInstant = Clock.System.now() // Current time in timeline
-            val systemTimeZone = TimeZone.currentSystemDefault()
-
-            // Determines the offset for this moment in time
-            return currentInstant.offsetIn(systemTimeZone)
-        }
+        val OFFSET_SYSTEM_DEFAULT: UtcOffset = Clock.System.now().offsetIn(TimeZone.currentSystemDefault())
 
         val P_OFFSET_H_M = "[+-]\\d\\d:\\d\\d".toRegex()
         val P_OFFSET_4_DIGITS = "[+-]\\d\\d\\d\\d".toRegex()
+
+        fun now(offset: UtcOffset = UtcOffset.ZERO): KmpOffsetDateTime = KmpOffsetDateTime(
+            instant = Clock.System.now(),
+            offset = offset
+        )
 
         fun fromString(isoDateTime: String) : KmpOffsetDateTime {
             val resultHM = P_OFFSET_H_M.find(isoDateTime)
@@ -120,6 +138,8 @@ data class KmpOffsetDateTime(
     fun toLocalDateTimeInSystemTimezone(): LocalDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
     fun toInstant(): Instant = instant
+
+    fun toEpochMilliseconds(): Long = instant.toEpochMilliseconds()
 
     fun format(pattern: String): String {
         return this.formatLocalized(pattern)
@@ -177,8 +197,8 @@ data class KmpOffsetDateTime(
     val year: Int
         get() = localDate.year
 
-    val month: Int
-        get() = localDate.month.ordinal
+    val month: Month
+        get() = localDate.month
 
     val day: Int
         get() = localDate.day

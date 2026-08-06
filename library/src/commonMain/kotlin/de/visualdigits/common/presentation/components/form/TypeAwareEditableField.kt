@@ -10,6 +10,8 @@ import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.FieldKey
 import de.visualdigits.common.domain.model.configuration.FieldState
 import de.visualdigits.common.domain.model.configuration.FileFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.LocalDateFieldDescriptor
+import de.visualdigits.common.domain.model.configuration.LocalTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.PasswordFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ReferenceListFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.keyfactory.BooleanEnum
@@ -84,6 +86,28 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 fieldState = fieldState,
                 label = fieldState.fieldDescriptor.label.asString(),
                 slidersOnly = colorPickerUseOnlySliders,
+                onValueChange = { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                },
+            )
+        }
+
+        fieldState.fieldDescriptor is LocalTimeFieldDescriptor<*,*> -> {
+            LocalTimePickerBox(
+                modifier = modifier,
+                fieldState = fieldState,
+                unfocusedBorderColor = finalUnfocusedBorderColor,
+                onValueChange = { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                },
+            )
+        }
+
+        fieldState.fieldDescriptor is LocalDateFieldDescriptor<*,*> -> {
+            LocalDatePickerBox(
+                modifier = modifier,
+                fieldState = fieldState,
+                unfocusedBorderColor = finalUnfocusedBorderColor,
                 onValueChange = { value ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 },

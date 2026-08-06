@@ -11,6 +11,8 @@ enum class DC : FieldKey<DC> {
     switch,
     list,
     file,
+    time,
+    date,
     dateTime,
     color
 }

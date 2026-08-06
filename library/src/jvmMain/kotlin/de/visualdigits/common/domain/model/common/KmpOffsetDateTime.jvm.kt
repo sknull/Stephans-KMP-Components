@@ -1,7 +1,5 @@
 package de.visualdigits.common.domain.model.common
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toInstant
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter

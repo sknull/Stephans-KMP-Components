@@ -152,6 +152,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
 
                             if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
                                 IndicatorButton(
+                                    buttonColor = Color.Transparent,
+                                    padding = 0.dp,
                                     leadingIcon = editableListResources.iconEdit?.let { r -> painterResource(r) },
                                     leadingIconTint = formFieldResources.iconTint,
                                     toolTip = editableListResources.toolTipEdit.asString(),
@@ -165,6 +167,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                                 )
 
                                 IndicatorButton(
+                                    buttonColor = Color.Transparent,
+                                    padding = 0.dp,
                                     leadingIcon = editableListResources.iconDelete?.let { r -> painterResource(r) },
                                     leadingIconTint = formFieldResources.iconTint,
                                     toolTip = editableListResources.toolTipDelete.asString(),
@@ -192,11 +196,10 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> EditableList(
                         IndicatorButton(
                             modifier = Modifier
                                 .align(Alignment.CenterEnd),
-                            width = 50.dp,
-                            height = 50.dp,
-                            toolTip = editableListResources.tooltipAdd.asString(),
-                            buttonColor = formResources.buttonColor,
-                            shape = formResources.buttonShape,
+                            buttonColor = Color.Transparent,
+                            padding = 0.dp,
+                            width = 30.dp,
+                            height = 30.dp,
                             leadingIcon = editableListResources.iconAdd?.let { r -> painterResource(r) },
                             leadingIconTint = formFieldResources.iconTint
                         ) {

@@ -87,7 +87,7 @@ fun StudioClock(
         }
 
         val currentDateTime = KmpOffsetDateTime(
-            Instant.fromEpochMilliseconds(currentTime), KmpOffsetDateTime.systemDefaultOffset()
+            Instant.fromEpochMilliseconds(currentTime), KmpOffsetDateTime.OFFSET_SYSTEM_DEFAULT
         )
 
         val currentTimeString = if (showSeconds) {

@@ -67,7 +67,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
                     fileMode = FileMode.FILES_ONLY,
                     buttonColor = Color.Transparent,
                     leadingIcon = fileChooserResources.iconFolder,
-                    leadingIconTint = fileChooserResources.iconTint,
+                    leadingIconTint = formFieldResources.iconTint,
                     startDirectory = startDirectory,
                     onOkPath = onOk
                 )
