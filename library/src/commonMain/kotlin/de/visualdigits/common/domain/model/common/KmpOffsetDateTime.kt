@@ -17,25 +17,37 @@ import kotlinx.datetime.offsetIn
 import kotlinx.datetime.parse
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Instant
 
 expect fun KmpOffsetDateTime.formatLocalized(pattern: String): String
 
+@Serializable(with = KmpOffsetDateTimeHeuristicDeserializer::class)
 @Immutable
 data class KmpOffsetDateTime(
     val instant: Instant = Clock.System.now(),
     val offset: UtcOffset = UtcOffset.ZERO
 ) : Comparable<KmpOffsetDateTime> {
 
-    constructor(millis: Long, offsetString: String) : this(
-        millis = millis,
+    constructor(epochMilliseconds: Long, offsetString: String) : this(
+        epochMilliseconds = epochMilliseconds,
         offset = UtcOffset.parse(offsetString)
     )
 
-    constructor(millis: Long, offset: UtcOffset) : this(
-        instant = Instant.fromEpochMilliseconds(millis),
+    constructor(epochMilliseconds: Long, offset: UtcOffset = UtcOffset.ZERO) : this(
+        instant = Instant.fromEpochMilliseconds(epochMilliseconds),
+        offset = offset
+    )
+
+    constructor(epochSeconds: Int, offsetString: String) : this(
+        epochMilliseconds = epochSeconds * 1000L,
+        offsetString = offsetString
+    )
+
+    constructor(epochSeconds: Int, offset: UtcOffset = UtcOffset.ZERO) : this(
+        epochMilliseconds = epochSeconds * 1000L,
         offset = offset
     )
 
@@ -111,6 +123,8 @@ data class KmpOffsetDateTime(
 
     fun toEpochMilliseconds(): Long = instant.toEpochMilliseconds()
 
+    fun toEpochSeconds(): Long = toEpochMilliseconds() / 1000
+
     fun format(pattern: String): String {
         return this.formatLocalized(pattern)
     }
@@ -119,16 +133,20 @@ data class KmpOffsetDateTime(
         return this.instant.format(format)
     }
 
-    fun minus(other: KmpOffsetDateTime): Duration {
+    operator fun minus(other: KmpOffsetDateTime): Duration {
         return this.instant.minus(other.instant)
     }
 
-    fun isBefore(other: KmpOffsetDateTime): Boolean {
-        return this.instant < other.instant
+    override operator fun compareTo(other: KmpOffsetDateTime): Int {
+        return compareBy<KmpOffsetDateTime> { it.instant }.compare(this, other)
     }
 
-    fun minus(duration: Duration): KmpOffsetDateTime {
+    operator fun minus(duration: Duration): KmpOffsetDateTime {
         return KmpOffsetDateTime(this.instant.minus(duration))
+    }
+
+    operator fun plus(duration: Duration): KmpOffsetDateTime {
+        return KmpOffsetDateTime(this.instant.plus(duration))
     }
 
     fun withLocalDate(newDate: LocalDate): KmpOffsetDateTime {
@@ -192,13 +210,9 @@ data class KmpOffsetDateTime(
         return if (offset == UtcOffset.ZERO) {
             instant.toString()
         } else {
-            val instantWithoutZ = instant.toString().substringBeforeLast("Z")
+            val instantWithoutZ = toLocalDateTime().format(LocalDateTime.Formats.ISO)
             "$instantWithoutZ$offset"
         }
-    }
-
-    override fun compareTo(other: KmpOffsetDateTime): Int {
-        return compareBy<KmpOffsetDateTime>({ it.instant }).compare(this, other)
     }
 }
 

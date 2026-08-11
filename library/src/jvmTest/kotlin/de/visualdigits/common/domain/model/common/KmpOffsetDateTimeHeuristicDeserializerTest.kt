@@ -6,6 +6,16 @@ import kotlin.test.assertEquals
 class KmpOffsetDateTimeHeuristicDeserializerTest {
 
     @Test
+    fun testEnglishWeekday() {
+        val dateTimeString = "Tue, 11 Aug 2026 12:31:13 +0200"
+        val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
+        assertEquals("2026-08-11T12:31:13+02:00", dateTime.toString())
+
+        val formatted = dateTime.format("yyyy-MM-dd HH:mm:ss")
+        assertEquals("2026-08-11 12:31:13", formatted)
+    }
+
+    @Test
     fun testAisDateTime() {
         val dateTimeString = "2026-08-03 14:00:20.154920998 +0000 UTC"
         val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
