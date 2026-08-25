@@ -47,11 +47,10 @@ fun VerticalCollapsibleBox(
     modifier: Modifier = Modifier,
     modifierHeader: Modifier = Modifier,
     modifierContent: Modifier = Modifier,
-    enabled: Boolean = true,
     iconArrowRight: Painter? = null,
     iconArrowDown: Painter? = null,
     space: Dp = 8.dp,
-    paddingContainer: PaddingValues = PaddingValues(bottom = 8.dp),
+    paddingContainer: PaddingValues = PaddingValues(0.dp),
     title: String? = null,
     titleContent: (@Composable () -> Unit)? = null,
     isTitleHoverable: Boolean = false,
@@ -84,7 +83,6 @@ fun VerticalCollapsibleBox(
             modifier = modifier,
             modifierHeader = modifierHeader,
             modifierContent = modifierContent,
-            enabled = enabled,
             isTitleHoverable = isTitleHoverable,
             titleHoverColor = titleHoverColor,
             paddingContainer = paddingContainer,
@@ -112,11 +110,10 @@ fun VerticalCollapsibleBoxFull(
     modifier: Modifier = Modifier,
     modifierHeader: Modifier = Modifier,
     modifierContent: Modifier = Modifier,
-    enabled: Boolean = true,
     paddingContainer: PaddingValues,
     iconArrowRight: Painter? = null,
     iconArrowDown: Painter? = null,
-    space: Dp = 9.dp,
+    space: Dp = 0.dp,
     title: String? = null,
     titleContent: (@Composable () -> Unit)? = null,
     isTitleHoverable: Boolean = false,
@@ -141,7 +138,7 @@ fun VerticalCollapsibleBoxFull(
             .background(backgroundColor, shape)
             .conditional(isTitleHoverable) { hoverable(interactionSource = interactionSource) }
             .conditional(isTitleHoverable) { pointerHoverIcon(PointerIcon.Hand) }
-            .conditional(animateContent && enabled) {
+            .conditional(animateContent) {
                 animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioNoBouncy,
@@ -159,7 +156,8 @@ fun VerticalCollapsibleBoxFull(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space),
                     ) {
                         // header row
                         Row(
@@ -170,7 +168,6 @@ fun VerticalCollapsibleBoxFull(
                                 .clickable {
                                     onStateChange(!isExpanded)
                                 },
-//                            horizontalArrangement = Arrangement.spacedBy(space),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
@@ -263,7 +260,7 @@ fun VerticalCollapsibleBoxFull(
 fun VerticalCollapsibleBoxTv(
     modifier: Modifier = Modifier,
     paddingContainer: PaddingValues,
-    space: Dp = 8.dp,
+    space: Dp = 0.dp,
     title: String? = null,
     titleContent: (@Composable () -> Unit)? = null,
     backgroundColor: Color,
