@@ -138,7 +138,7 @@ data class KmpOffsetDateTime(
     }
 
     override operator fun compareTo(other: KmpOffsetDateTime): Int {
-        return compareBy<KmpOffsetDateTime> { it.instant }.compare(this, other)
+        return compareBy<KmpOffsetDateTime> { it.instant.toEpochMilliseconds() }.compare(this, other)
     }
 
     operator fun minus(duration: Duration): KmpOffsetDateTime {

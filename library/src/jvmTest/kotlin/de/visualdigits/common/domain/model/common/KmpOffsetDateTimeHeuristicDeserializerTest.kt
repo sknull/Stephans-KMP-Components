@@ -16,6 +16,16 @@ class KmpOffsetDateTimeHeuristicDeserializerTest {
     }
 
     @Test
+    fun testEnglishWeekday2() {
+        val dateTimeString = "Fri, 28 Aug 2026 20:06:33 +0200"
+        val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
+        assertEquals("2026-08-28T20:06:33+02:00", dateTime.toString())
+
+        val formatted = dateTime.format("yyyy-MM-dd HH:mm:ss")
+        assertEquals("2026-08-28 20:06:33", formatted)
+    }
+
+    @Test
     fun testAisDateTime() {
         val dateTimeString = "2026-08-03 14:00:20.154920998 +0000 UTC"
         val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
