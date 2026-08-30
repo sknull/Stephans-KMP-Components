@@ -11,8 +11,6 @@ import kotlinx.datetime.asTimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DateTimeFormat
-import kotlinx.datetime.format.FormatStringsInDatetimeFormats
-import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.offsetIn
 import kotlinx.datetime.parse
 import kotlinx.datetime.toInstant
@@ -23,6 +21,8 @@ import kotlin.time.Duration
 import kotlin.time.Instant
 
 expect fun KmpOffsetDateTime.formatLocalized(pattern: String): String
+
+expect fun LocalDateTime.formatLocalized(pattern: String): String
 
 @Serializable(with = KmpOffsetDateTimeHeuristicDeserializer::class)
 @Immutable
@@ -217,9 +217,5 @@ data class KmpOffsetDateTime(
 }
 
 fun LocalDateTime.format(pattern: String): String {
-    @OptIn(FormatStringsInDatetimeFormats::class)
-    val dateTimeFormat = LocalDateTime.Format {
-        byUnicodePattern(pattern)
-    }
-    return dateTimeFormat.format(this)
+    return formatLocalized(pattern)
 }
