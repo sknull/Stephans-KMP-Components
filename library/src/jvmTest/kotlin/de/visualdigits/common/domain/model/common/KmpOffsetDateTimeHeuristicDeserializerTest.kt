@@ -1,11 +1,13 @@
 package de.visualdigits.common.domain.model.common
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import kotlin.test.assertEquals
 
 class KmpOffsetDateTimeHeuristicDeserializerTest {
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "true", disabledReason = "Assumes local offset to be +02:00")
     fun testLocalDate() {
         val dateTimeString = "2026-09-05"
         val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
@@ -16,6 +18,7 @@ class KmpOffsetDateTimeHeuristicDeserializerTest {
     }
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "true", disabledReason = "Assumes local offset to be +02:00")
     fun testLocalDateTime() {
         val dateTimeString = "2026-09-05T15:07"
         val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
