@@ -139,6 +139,8 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
     }
 
     fun parse(text: String): KmpOffsetDateTime {
+        if (text.isBlank()) return KmpOffsetDateTime.MIN
+
         val parseIsoDateTime = parseIsoDateTime(text)
         val parseIso = parseIso(text)
         val parseOffsetDateTimeWeekdayEnglish = parseOffsetDateTimeWeekdayEnglish(text)
