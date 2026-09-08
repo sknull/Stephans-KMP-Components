@@ -6,6 +6,26 @@ import kotlin.test.assertEquals
 class KmpOffsetDateTimeHeuristicDeserializerTest {
 
     @Test
+    fun testLocalDate() {
+        val dateTimeString = "2026-09-05"
+        val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
+        assertEquals("2026-09-05T00:00:00+02:00", dateTime.toString())
+
+        val formatted = dateTime.format("yyyy-MM-dd HH:mm:ss")
+        assertEquals("2026-09-05 00:00:00", formatted)
+    }
+
+    @Test
+    fun testLocalDateTime() {
+        val dateTimeString = "2026-09-05T15:07"
+        val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)
+        assertEquals("2026-09-05T15:07:00+02:00", dateTime.toString())
+
+        val formatted = dateTime.format("yyyy-MM-dd HH:mm:ss")
+        assertEquals("2026-09-05 15:07:00", formatted)
+    }
+
+    @Test
     fun testIsoWithoutSecondsPositiveOffset() {
         val dateTimeString = "2026-08-28T11:54+02:00"
         val dateTime = KmpOffsetDateTimeHeuristicDeserializer.parse(dateTimeString)

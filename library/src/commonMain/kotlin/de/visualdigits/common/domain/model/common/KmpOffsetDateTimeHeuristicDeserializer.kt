@@ -1,6 +1,7 @@
 package de.visualdigits.common.domain.model.common
 
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.atTime
@@ -9,6 +10,7 @@ import kotlinx.datetime.format.DayOfWeekNames
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
+import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toInstant
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -143,16 +145,18 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
         val parseOffsetDateTimeWeekdayGerman = parseOffsetDateTimeWeekdayGerman(text)
         val parseOffsetDateTimeWithoutSeconds = parseOffsetDateTimeWithoutSeconds(text)
         val parseRfc1123 = parseRfc1123(text)
-        val parseDateOnly = parseDateOnly(text)
-        val  parseIsoWithoutSeconds = parseIsoWithoutSeconds(text)
+        val parseIsoWithoutSeconds = parseIsoWithoutSeconds(text)
+        val parseLocalDate = parseLocalDate(text)
+        val parseLocalDateTime = parseLocalDateTime(text)
         return parseIsoDateTime
             ?: parseIso
             ?: parseOffsetDateTimeWeekdayEnglish
             ?: parseOffsetDateTimeWeekdayGerman
             ?: parseOffsetDateTimeWithoutSeconds
             ?: parseRfc1123
-            ?: parseDateOnly
             ?: parseIsoWithoutSeconds
+            ?: parseLocalDate
+            ?: parseLocalDateTime
             ?: error("Could not parse date time format '$text'")
     }
 
@@ -215,12 +219,26 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
         return parse(text, DateTimeComponents.Formats.RFC_1123::parse)
     }
 
-    private fun parseDateOnly(text: String): KmpOffsetDateTime? {
+    private fun parseLocalDate(text: String): KmpOffsetDateTime? {
         return try {
             val localDate = LocalDate.parse(text)
             val localDateTime = localDate.atTime(0, 0)
-            val instant = localDateTime.toInstant(TimeZone.UTC)
-            KmpOffsetDateTime(instant, UtcOffset.ZERO)
+            val systemTimeZone = TimeZone.currentSystemDefault()
+            val instant = localDateTime.toInstant(systemTimeZone)
+            val offset = systemTimeZone.offsetAt(instant)
+            KmpOffsetDateTime(instant, offset)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun parseLocalDateTime(text: String): KmpOffsetDateTime? {
+        return try {
+            val localDateTime = LocalDateTime.parse(text)
+            val systemTimeZone = TimeZone.currentSystemDefault()
+            val instant = localDateTime.toInstant(systemTimeZone)
+            val offset = systemTimeZone.offsetAt(instant)
+            KmpOffsetDateTime(instant, offset)
         } catch (_: Exception) {
             null
         }
