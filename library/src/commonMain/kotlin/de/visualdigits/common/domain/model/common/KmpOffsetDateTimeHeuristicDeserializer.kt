@@ -29,7 +29,7 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
 
     private val P_OFFSET_4_DIGITS = "[+-]\\d\\d\\d\\d".toRegex()
 
-    private val WEEKDAYNAMES_GERMAN_ABBREVIATED = DayOfWeekNames(
+    private val WEEKDAY_NAMES_GERMAN_ABBREVIATED = DayOfWeekNames(
         monday = "Mon",
         tuesday = "Die",
         wednesday = "Mit",
@@ -39,7 +39,7 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
         sunday = "Son"
     )
 
-    private val MONTHNAMES_GERMAN_ABBREVIATED = MonthNames(
+    private val MONTH_NAMES_GERMAN_ABBREVIATED = MonthNames(
         january = "Jan",
         february = "Feb",
         march = "Mär",
@@ -70,6 +70,25 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
         char('Z')
     }
 
+    private val formatIsoWithoutSeconds = DateTimeComponents.Format {
+        // 2026-08-28T11:54+02:00
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        day()
+
+        char('T')
+
+        hour()
+        char(':')
+        minute()
+
+        offsetHours(Padding.NONE)
+        char(':')
+        offsetMinutesOfHour()
+    }
+
     private val formatWeekDayEnglish = DateTimeComponents.Format {
         dayOfWeek(DayOfWeekNames.ENGLISH_ABBREVIATED)
         char(',')
@@ -90,12 +109,12 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
         offsetMinutesOfHour()
     }
     private val formatWeekDayGerman = DateTimeComponents.Format {
-        dayOfWeek(WEEKDAYNAMES_GERMAN_ABBREVIATED)
+        dayOfWeek(WEEKDAY_NAMES_GERMAN_ABBREVIATED)
         char(',')
         char(' ')
         day()
         char(' ')
-        monthName(MONTHNAMES_GERMAN_ABBREVIATED)
+        monthName(MONTH_NAMES_GERMAN_ABBREVIATED)
         char(' ')
         year()
         char(' ')
@@ -125,6 +144,7 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
         val parseOffsetDateTimeWithoutSeconds = parseOffsetDateTimeWithoutSeconds(text)
         val parseRfc1123 = parseRfc1123(text)
         val parseDateOnly = parseDateOnly(text)
+        val  parseIsoWithoutSeconds = parseIsoWithoutSeconds(text)
         return parseIsoDateTime
             ?: parseIso
             ?: parseOffsetDateTimeWeekdayEnglish
@@ -132,7 +152,8 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
             ?: parseOffsetDateTimeWithoutSeconds
             ?: parseRfc1123
             ?: parseDateOnly
-            ?: KmpOffsetDateTime.MIN
+            ?: parseIsoWithoutSeconds
+            ?: error("Could not parse date time format '$text'")
     }
 
     private fun parseIsoDateTime(text: String): KmpOffsetDateTime? {
@@ -184,6 +205,10 @@ object KmpOffsetDateTimeHeuristicDeserializer : KSerializer<KmpOffsetDateTime> {
 
     private fun parseOffsetDateTimeWeekdayGerman(text: String): KmpOffsetDateTime? {
         return parse(text, formatWeekDayGerman::parse)
+    }
+
+    private fun parseIsoWithoutSeconds(text: String): KmpOffsetDateTime? {
+        return parse(text, formatIsoWithoutSeconds::parse)
     }
 
     private fun parseRfc1123(text: String): KmpOffsetDateTime? {
