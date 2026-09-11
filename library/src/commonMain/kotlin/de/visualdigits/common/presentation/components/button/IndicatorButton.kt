@@ -73,10 +73,12 @@ fun IndicatorButton(
     leadingImage: (@Composable () -> Unit)? = null,
     leadingIcon: Painter? = null,
     leadingIconTint: Color = MaterialTheme.colorScheme.onSurface,
+    leadingIconTintHovered: Color = MaterialTheme.colorScheme.onSurface,
     leadingIconModifier: Modifier = Modifier,
     leadingIconTintDisabled: Color = leadingIconTint.copy(alpha = 0.5f),
     trailingIcon: Painter? = null,
     trailingIconTint: Color = MaterialTheme.colorScheme.onSurface,
+    trailingIconTintHovered: Color = MaterialTheme.colorScheme.onSurface,
     trailingIconModifier: Modifier = Modifier,
     trailingIconTintDisabled: Color = trailingIconTint.copy(alpha = 0.5f),
     enabled: Boolean = true,
@@ -164,7 +166,7 @@ fun IndicatorButton(
                             modifier = leadingIconModifier,
                             painter = leadingIcon,
                             contentDescription = null,
-                            tint = if (enabled) leadingIconTint else leadingIconTintDisabled
+                            tint = if (enabled) if (isHovered) leadingIconTintHovered else leadingIconTint else leadingIconTintDisabled
                         )
                         if (hasContent) Spacer(Modifier.width(space))
                     } else if (leadingImage != null) {
@@ -194,7 +196,7 @@ fun IndicatorButton(
                             modifier = trailingIconModifier,
                             painter = trailingIcon,
                             contentDescription = null,
-                            tint = if (enabled) trailingIconTint else trailingIconTintDisabled
+                            tint = if (enabled) if(isHovered) trailingIconTintHovered else trailingIconTint else trailingIconTintDisabled
                         )
                     }
                 }

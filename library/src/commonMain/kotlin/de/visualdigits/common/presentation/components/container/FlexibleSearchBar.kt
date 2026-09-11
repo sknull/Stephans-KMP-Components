@@ -1,5 +1,6 @@
 package de.visualdigits.common.presentation.components.container
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -54,8 +56,7 @@ fun FlexibleSearchBar(
     }
 
     CompositionLocalProvider(
-        LocalTextStyle provides
-                MaterialTheme.typography.bodyMedium
+        LocalTextStyle provides MaterialTheme.typography.bodyMedium
     ) {
         if (isLargeScreen) {
             DockedSearchBar(
@@ -102,7 +103,11 @@ fun FlexibleSearchBar(
                                 }
                             }
                         },
-                        colors = SearchBarDefaults.colors().inputFieldColors.copy(cursorColor = MaterialTheme.colorScheme.onSurface),
+                        colors = SearchBarDefaults.colors().inputFieldColors.copy(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            cursorColor = MaterialTheme.colorScheme.onSurface
+                        ),
                         interactionSource = null,
                     )
                 },
@@ -112,7 +117,9 @@ fun FlexibleSearchBar(
                     onExpandedChange?.let { oec -> oec(v) }
                 },
                 shape = MaterialTheme.shapes.extraSmall,
-                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = SearchBarDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.background
+                ),
                 tonalElevation = SearchBarDefaults.TonalElevation,
                 shadowElevation = SearchBarDefaults.ShadowElevation,
                 content = content,
@@ -161,7 +168,11 @@ fun FlexibleSearchBar(
                                 }
                             }
                         },
-                        colors = SearchBarDefaults.colors().inputFieldColors.copy(cursorColor = MaterialTheme.colorScheme.onSurface),
+                        colors = SearchBarDefaults.colors().inputFieldColors.copy(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            cursorColor = MaterialTheme.colorScheme.onSurface
+                        ),
                         interactionSource = null,
                     )
                 },
@@ -171,7 +182,9 @@ fun FlexibleSearchBar(
                     onExpandedChange?.let { oec -> oec(v) }
                 },
                 shape = MaterialTheme.shapes.extraSmall,
-                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = SearchBarDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.background
+                ),
                 tonalElevation = SearchBarDefaults.TonalElevation,
                 shadowElevation = SearchBarDefaults.ShadowElevation,
                 windowInsets = SearchBarDefaults.windowInsets,
