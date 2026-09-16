@@ -9,13 +9,14 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import de.visualdigits.common.presentation.model.PlatformScrollbarStyle
 
 
 @Composable
 fun outlinedTextFieldColors(
     focusedBorderColor: Color,
-    unfocusedBorderColor: Color
+    unfocusedBorderColor: Color,
+    focusedContainerColor: Color,// = Color.Transparent,
+    unfocusedContainerColor: Color// = Color.Transparent
 ): TextFieldColors = OutlinedTextFieldDefaults.colors(
     unfocusedBorderColor = unfocusedBorderColor,
     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -29,7 +30,9 @@ fun outlinedTextFieldColors(
     selectionColors = TextSelectionColors(
         handleColor = MaterialTheme.colorScheme.onSurface,
         backgroundColor = MaterialTheme.colorScheme.background,
-    )
+    ),
+    focusedContainerColor = focusedContainerColor,
+    unfocusedContainerColor = unfocusedContainerColor,
 )
 
 @Composable

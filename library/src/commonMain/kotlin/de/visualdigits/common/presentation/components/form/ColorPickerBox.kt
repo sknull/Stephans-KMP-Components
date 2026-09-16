@@ -68,7 +68,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ColorPickerBox(
                     onValueChange(hsvColor)
                 }
             },
-            colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, formFieldResources.unfocusedBorderColor)
+            colors = outlinedTextFieldColors(
+                formFieldResources.focusedBorderColor,
+                formFieldResources.unfocusedBorderColor,
+                formFieldResources.focusedContainerColor,
+                formFieldResources.unfocusedContainerColor
+            )
         )
     }
 }

@@ -108,7 +108,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> PasswordBox(
             },
             enabled = fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null),
             shape = formFieldResources.shape,
-            colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, unfocusedBorderColor)
+            colors = outlinedTextFieldColors(
+                focusedBorderColor = formFieldResources.focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor,
+                focusedContainerColor = formFieldResources.focusedContainerColor,
+                unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+            )
         )
     }
 }

@@ -76,6 +76,11 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
         shape = formFieldResources.shape,
         onValueChange = onValueChange,
         singleLine = true,
-        colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, unfocusedBorderColor)
+        colors = outlinedTextFieldColors(
+            focusedBorderColor = formFieldResources.focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+            focusedContainerColor = formFieldResources.focusedContainerColor,
+            unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+        )
     )
 }

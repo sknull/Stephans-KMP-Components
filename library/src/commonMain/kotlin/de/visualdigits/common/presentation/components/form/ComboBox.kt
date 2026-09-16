@@ -93,7 +93,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
                 } else null,
                 colors = outlinedTextFieldColors(
                     focusedBorderColor = formFieldResources.focusedBorderColor,
-                    unfocusedBorderColor = formFieldResources.unfocusedBorderColor
+                    unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
+                    focusedContainerColor = formFieldResources.focusedContainerColor,
+                    unfocusedContainerColor = formFieldResources.unfocusedContainerColor
                 )
             )
 
@@ -175,7 +177,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
             } else null,
             colors = outlinedTextFieldColors(
                 focusedBorderColor = formFieldResources.focusedBorderColor,
-                unfocusedBorderColor = formFieldResources.unfocusedBorderColor
+                unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
+                focusedContainerColor = formFieldResources.focusedContainerColor,
+                unfocusedContainerColor = formFieldResources.unfocusedContainerColor
             )
         )
     }

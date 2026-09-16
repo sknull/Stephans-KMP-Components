@@ -76,6 +76,11 @@ fun SwitchBox(
                 )
             }
         },
-        colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, formFieldResources.unfocusedBorderColor)
+        colors = outlinedTextFieldColors(
+            focusedBorderColor = formFieldResources.focusedBorderColor,
+            unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
+            focusedContainerColor = formFieldResources.focusedContainerColor,
+            unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+        )
     )
 }

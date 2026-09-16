@@ -93,7 +93,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> LocalDatePickerBox(
                 }
             }
         },
-        colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, unfocusedBorderColor)
+        colors = outlinedTextFieldColors(
+            focusedBorderColor = formFieldResources.focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+            focusedContainerColor = formFieldResources.focusedContainerColor,
+            unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+        )
     )
 
     if (showDateDialog) {

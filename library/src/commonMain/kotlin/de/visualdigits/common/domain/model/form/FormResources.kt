@@ -1,5 +1,6 @@
 package de.visualdigits.common.domain.model.form
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -18,6 +19,8 @@ data class FormResources(
     val tooltipCancel: UiText? = null,
     val containerShape: Shape,
     val space: Dp = 8.dp,
+    val horizontalArrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(space),
+    val verticalArrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(space),
 )
 
 val LocalFormResources = staticCompositionLocalOf<FormResources> {

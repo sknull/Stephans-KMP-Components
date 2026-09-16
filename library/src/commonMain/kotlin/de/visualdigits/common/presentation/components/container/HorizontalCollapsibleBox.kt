@@ -32,6 +32,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.visualdigits.common.domain.model.form.LocalFormFieldResources
 import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.platformFocus
@@ -75,16 +76,14 @@ fun HorizontalCollapsibleBox(
             iconArrowRight = iconArrowRight,
             iconArrowDown = iconArrowDown,
             space = space,
-            unfocusedBorderColor = unfocusedBorderColor,
-            focusedBorderColor = focusedBorderColor,
             backgroundColor = backgroundColor,
             shape = shape,
             expandedWidth = expandedWidth,
             height = height,
+            isExpanded = isExpanded,
             iconTint = iconTint,
             animateContent = animateContent,
             onStateChange = onStateChange,
-            isExpanded = isExpanded,
             content = content
         )
     }
@@ -97,8 +96,6 @@ fun HorizontalCollapsibleBoxFull(
     iconArrowRight: Painter,
     iconArrowDown: Painter,
     space: Dp = 8.dp,
-    unfocusedBorderColor: Color,
-    focusedBorderColor: Color,
     backgroundColor: Color,
     shape: Shape,
     expandedWidth: Dp,
@@ -109,6 +106,7 @@ fun HorizontalCollapsibleBoxFull(
     onStateChange: (Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
+    val formFieldResources = LocalFormFieldResources.current
     val interactionSource = remember { MutableInteractionSource() }
 
     var textfieldModifier = modifier
@@ -187,14 +185,14 @@ fun HorizontalCollapsibleBoxFull(
                 enabled = true,
                 isError = false,
                 interactionSource = interactionSource,
-                colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
+                colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, formFieldResources.unfocusedBorderColor, formFieldResources.focusedContainerColor, formFieldResources.unfocusedContainerColor),
                 contentPadding = PaddingValues(top = 0.dp, end = 0.dp, bottom = 0.dp, start = 0.dp)
             ) {
                 OutlinedTextFieldDefaults.Container(
                     enabled = true,
                     isError = false,
                     interactionSource = interactionSource,
-                    colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
+                    colors = outlinedTextFieldColors(formFieldResources.focusedBorderColor, formFieldResources.unfocusedBorderColor, formFieldResources.focusedContainerColor, formFieldResources.unfocusedContainerColor),
                     shape = shape,
                 )
             }

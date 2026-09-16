@@ -33,6 +33,7 @@ import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarB
 import de.visualdigits.common.presentation.components.androidPlatform
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import de.visualdigits.common.presentation.components.container.OutlinedGroupBox
+import de.visualdigits.common.presentation.components.util.conditional
 import de.visualdigits.common.presentation.model.CommonAction
 import de.visualdigits.common.presentation.model.ScrollIntent
 
@@ -79,8 +80,8 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                 FlowRow(
                     modifier = Modifier
                         .fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(formResources.space),
-                    verticalArrangement = Arrangement.spacedBy(formResources.space)
+                    horizontalArrangement = formResources.horizontalArrangement,
+                    verticalArrangement = formResources.verticalArrangement
                 ) {
                     configuration
                         .fieldDescriptors
@@ -93,27 +94,28 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
                             if (group != null && androidPlatform != UiPlatform.UI_MODE_TYPE_TELEVISION) {
                                 OutlinedGroupBox(
                                     label = { Text(group) },
-                                    space = formResources.space
-                                ) {
-                                    FlowRow(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        horizontalArrangement = Arrangement.spacedBy(formResources.space),
-                                        verticalArrangement = Arrangement.spacedBy(
-                                            space = formResources.space,
-                                            alignment = Alignment.Bottom
-                                        )
-                                    ) {
-                                        RenderFields(
-                                            fieldDescriptors = fieldDescriptors,
-                                            configuration = configuration,
-                                            configurationRef = configurationRef,
-                                            colorPickerUseOnlySliders = colorPickerUseOnlySliders,
-                                            onValueChange = onValueChange,
-                                            deleteAllowed = deleteAllowed
-                                        )
+                                    space = formResources.space,
+                                    content = {
+                                        FlowRow(
+                                            modifier = Modifier
+                                                .fillMaxSize(),
+                                            horizontalArrangement = Arrangement.spacedBy(formResources.space),
+                                            verticalArrangement = Arrangement.spacedBy(
+                                                space = formResources.space,
+                                                alignment = Alignment.Bottom
+                                            )
+                                        ) {
+                                            RenderFields(
+                                                fieldDescriptors = fieldDescriptors,
+                                                configuration = configuration,
+                                                configurationRef = configurationRef,
+                                                colorPickerUseOnlySliders = colorPickerUseOnlySliders,
+                                                onValueChange = onValueChange,
+                                                deleteAllowed = deleteAllowed
+                                            )
+                                        }
                                     }
-                                }
+                                )
                             } else {
                                 RenderFields(
                                     fieldDescriptors = fieldDescriptors,
@@ -132,11 +134,14 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ConfigurationEditForm(
             }),
             Pair("buttons", @Composable {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(formResources.space),
                     modifier = Modifier
-                        .wrapContentWidth(),
+                        .conditional(formResources.horizontalArrangement == Arrangement.Center) { fillMaxWidth() }
+                        .conditional(formResources.horizontalArrangement != Arrangement.Center) { wrapContentWidth() },
+                    horizontalArrangement = formResources.horizontalArrangement,
                 ) {
-                    Spacer(Modifier.weight(1f))
+                    if (formResources.horizontalArrangement != Arrangement.Center) {
+                        Spacer(Modifier.weight(1f))
+                    }
 
                     IndicatorButton(
                         toolTip = formResources.tooltipCancel?.asString(),

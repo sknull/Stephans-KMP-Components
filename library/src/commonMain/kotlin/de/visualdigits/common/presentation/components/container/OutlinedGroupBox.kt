@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
+import de.visualdigits.common.domain.model.form.LocalFormFieldResources
 import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
@@ -26,12 +27,11 @@ fun OutlinedGroupBox(
     space: Dp,
     toolTipBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
     toolTipShape: Shape = MaterialTheme.shapes.extraSmall,
-    focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
-    unfocusedBorderColor: Color = MaterialTheme.colorScheme.onSurface,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
     valid: () -> Boolean? = { true },
     content: @Composable () -> Unit
 ) {
+    val formFieldResources = LocalFormFieldResources.current
     val interactionSource = remember { MutableInteractionSource() }
 
     PlatformToolTip(
@@ -66,13 +66,23 @@ fun OutlinedGroupBox(
                         enabled = true,
                         isError = false,
                         interactionSource = interactionSource,
-                        colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
+                        colors = outlinedTextFieldColors(
+                            focusedBorderColor = formFieldResources.focusedBorderColor,
+                            unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
+                            focusedContainerColor = formFieldResources.focusedContainerColor,
+                            unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+                        ),
                         container = {
                             OutlinedTextFieldDefaults.Container(
                                 enabled = true,
                                 isError = false,
                                 interactionSource = interactionSource,
-                                colors = outlinedTextFieldColors(focusedBorderColor, unfocusedBorderColor),
+                                colors = outlinedTextFieldColors(
+                                    focusedBorderColor = formFieldResources.focusedBorderColor,
+                                    unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
+                                    focusedContainerColor = formFieldResources.focusedContainerColor,
+                                    unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+                                ),
                                 shape = buttonShape,
                             )
                         },

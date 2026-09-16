@@ -14,6 +14,8 @@ data class FormFieldResources(
     val shape: Shape,
     val focusedBorderColor: Color,
     val unfocusedBorderColor: Color,
+    val focusedContainerColor: Color,
+    val unfocusedContainerColor: Color,
     val visibilityIcon: Painter? = null,
 )
 
