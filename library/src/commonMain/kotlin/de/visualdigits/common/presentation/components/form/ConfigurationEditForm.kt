@@ -182,19 +182,21 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> RenderFields(
     fieldDescriptors.forEach { fieldDescriptor ->
         @Suppress("UNCHECKED_CAST")
         fieldDescriptor as AbstractFieldDescriptor<Any, Any, K, FK, Any>
-        val currentValue = configuration.getUnsafe(fieldDescriptor.key)
+        val currentValue = configuration.getUnsafe(fieldDescriptor.key) ?: fieldDescriptor.default?.toString()
         key(fieldDescriptor.key) {
             val fieldState = remember(currentValue, fieldDescriptor) {
                 val currentOption = fieldDescriptor.currentOption(configuration, configurationRef)
+                val currentOptionUIText = (currentOption?.second
+                    ?: currentOption?.first?.let { v -> UiText.DynamicString(v.toString()) }
+                    ?: fieldDescriptor.default?.let { d -> UiText.DynamicString(d.toString()) }
+                    ?: UiText.DynamicString(""))
                 FieldState(
                     configuration = configuration,
                     fieldDescriptor = fieldDescriptor,
                     options = fieldDescriptor.options(configuration, configurationRef),
                     currentValue = currentValue,
                     currentOption = currentOption,
-                    currentOptionUIText = currentOption?.second ?: UiText.DynamicString(
-                        currentOption?.first?.toString() ?: ""
-                    ),
+                    currentOptionUIText = currentOptionUIText,
                     valid = fieldDescriptor.valid(configuration, currentValue)
                 )
             }

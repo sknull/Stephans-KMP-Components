@@ -10,12 +10,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import de.visualdigits.common.domain.model.form.LocalFormFieldResources
-import de.visualdigits.common.presentation.components.PlatformToolTip
 import de.visualdigits.common.presentation.components.util.outlinedTextFieldColors
 
 
@@ -23,72 +21,60 @@ import de.visualdigits.common.presentation.components.util.outlinedTextFieldColo
 fun OutlinedGroupBox(
     modifier: Modifier = Modifier,
     label: (@Composable () -> Unit)? = null,
-    toolTip: String? = null,
     space: Dp,
-    toolTipBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
-    toolTipShape: Shape = MaterialTheme.shapes.extraSmall,
     buttonShape: Shape = MaterialTheme.shapes.extraSmall,
-    valid: () -> Boolean? = { true },
     content: @Composable () -> Unit
 ) {
     val formFieldResources = LocalFormFieldResources.current
     val interactionSource = remember { MutableInteractionSource() }
 
-    PlatformToolTip(
-        text = toolTip,
-        space = space,
-        backgroundColor = toolTipBackgroundColor,
-        shape = toolTipShape,
-        content = {
-            BasicTextField(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = space),
+    BasicTextField(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = space),
+        value = " ",
+        onValueChange = { },
+        readOnly = true,
+        singleLine = false,
+        interactionSource = interactionSource,
+        decorationBox = { _ ->
+            OutlinedTextFieldDefaults.DecorationBox(
                 value = " ",
-                onValueChange = { },
-                readOnly = true,
+                innerTextField = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    ) {
+                        content()
+                    }
+                },
+                visualTransformation = VisualTransformation.None,
+                label = label,
                 singleLine = false,
+                enabled = true,
+                isError = false,
                 interactionSource = interactionSource,
-                decorationBox = { _ ->
-                    OutlinedTextFieldDefaults.DecorationBox(
-                        value = " ",
-                        innerTextField = {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                            ) {
-                                content()
-                            }
-                        },
-                        visualTransformation = VisualTransformation.None,
-                        label = label,
-                        singleLine = false,
+                colors = outlinedTextFieldColors(
+                    focusedBorderColor = formFieldResources.focusedBorderColor,
+                    unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
+                    focusedContainerColor = formFieldResources.focusedGroupBoxColor,
+                    unfocusedContainerColor = formFieldResources.unfocusedGroupBoxColor
+                ),
+                container = {
+                    OutlinedTextFieldDefaults.Container(
                         enabled = true,
                         isError = false,
                         interactionSource = interactionSource,
                         colors = outlinedTextFieldColors(
                             focusedBorderColor = formFieldResources.focusedBorderColor,
                             unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
-                            focusedContainerColor = formFieldResources.focusedContainerColor,
-                            unfocusedContainerColor = formFieldResources.unfocusedContainerColor
+                            focusedContainerColor = formFieldResources.focusedGroupBoxColor,
+                            unfocusedContainerColor = formFieldResources.unfocusedGroupBoxColor
                         ),
-                        container = {
-                            OutlinedTextFieldDefaults.Container(
-                                enabled = true,
-                                isError = false,
-                                interactionSource = interactionSource,
-                                colors = outlinedTextFieldColors(
-                                    focusedBorderColor = formFieldResources.focusedBorderColor,
-                                    unfocusedBorderColor = formFieldResources.unfocusedBorderColor,
-                                    focusedContainerColor = formFieldResources.focusedContainerColor,
-                                    unfocusedContainerColor = formFieldResources.unfocusedContainerColor
-                                ),
-                                shape = buttonShape,
-                            )
-                        },
+                        shape = buttonShape,
                     )
                 },
             )
-        }
+        },
     )
 }

@@ -66,6 +66,9 @@ fun AppCompositionProvider(
         unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
+        dropDownBackgroundColor = MaterialTheme.colorScheme.background,
+        focusedGroupBoxColor = Color.Transparent,
+        unfocusedGroupBoxColor = Color.Transparent,
         visibilityIcon = painterResource(Res.drawable.icon_visibility_24px),
     )
     val fileChooserResources = FileChooserResources(

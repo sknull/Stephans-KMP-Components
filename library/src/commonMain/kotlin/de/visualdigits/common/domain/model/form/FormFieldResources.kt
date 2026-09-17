@@ -16,6 +16,9 @@ data class FormFieldResources(
     val unfocusedBorderColor: Color,
     val focusedContainerColor: Color,
     val unfocusedContainerColor: Color,
+    val focusedGroupBoxColor: Color,
+    val unfocusedGroupBoxColor: Color,
+    val dropDownBackgroundColor: Color,
     val visibilityIcon: Painter? = null,
 )
 

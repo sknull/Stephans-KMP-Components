@@ -101,7 +101,7 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBox(
 
             ExposedDropdownMenu(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background),
+                    .background(formFieldResources.dropDownBackgroundColor),
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {

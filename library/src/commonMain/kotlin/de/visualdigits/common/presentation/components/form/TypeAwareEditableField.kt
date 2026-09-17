@@ -143,7 +143,18 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
                 currentValue = currentValue,
                 unfocusedBorderColor = finalUnfocusedBorderColor,
             ) { value ->
-                onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                val finalValue = try {
+                    when (fieldState.fieldDescriptor.fieldClass) {
+                        Double::class -> value.toDouble()
+                        Float::class -> value.toFloat()
+                        Long::class -> value.toLong()
+                        Int::class -> value.toInt()
+                        else -> value
+                    }
+                } catch (_: Exception) {
+                    value
+                }
+                onValueChange(KeyValue(fieldState.fieldDescriptor, finalValue))
             }
         }
     }
