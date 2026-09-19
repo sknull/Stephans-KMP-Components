@@ -10,6 +10,8 @@ abstract class AbstractConfiguration<T : AbstractConfiguration<T, K>, K : FieldK
     @PublishedApi
     internal var values: Map<K, Any?> = mapOf()
 
+    fun values(): Map<K, Any?> = values
+
     var fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>> = listOf()
         private set
 
