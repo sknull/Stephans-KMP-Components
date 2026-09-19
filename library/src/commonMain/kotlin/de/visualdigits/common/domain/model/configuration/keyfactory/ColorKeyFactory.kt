@@ -1,26 +1,26 @@
 package de.visualdigits.common.domain.model.configuration.keyfactory
 
 import androidx.compose.ui.graphics.Color
-import de.visualdigits.common.domain.model.color.HsvColor
 import de.visualdigits.common.domain.model.ui.UiText
+import de.visualdigits.common.domain.util.toComposeColor
+import de.visualdigits.common.domain.util.toWebColorShort
 import org.jetbrains.compose.resources.DrawableResource
 
 class ColorKeyFactory {
 
-    companion object : KeyFactory<HsvColor> {
+    companion object : KeyFactory<Color> {
 
-        override val options: List<Triple<HsvColor, UiText?, DrawableResource?>> = listOf()
+        override val options: List<Triple<Color, UiText?, DrawableResource?>> = listOf()
 
-        override fun fromString(value: String?): HsvColor? {
-            return value?.let { v -> HsvColor.fromHex(v) }
+        override fun fromString(value: String?): Color? {
+            return value?.toComposeColor()
         }
 
-        override fun fromValue(value: Any?): HsvColor? {
+        override fun fromValue(value: Any?): Color? {
             return when (value) {
                 is String -> fromString(value)
-                is Color -> HsvColor.fromComposeColor(value)
-                is Number -> HsvColor.fromLong(value.toLong())
-                is HsvColor -> value
+                is Number -> Color(value.toLong())
+                is Color -> value
                 else -> null
             }
         }
@@ -28,9 +28,8 @@ class ColorKeyFactory {
         override fun stringValue(value: Any?): String {
             return when (value) {
                 is String -> value
-                is Color -> HsvColor.fromComposeColor(value).hex()
-                is Number -> HsvColor.fromLong(value.toLong()).hex()
-                is HsvColor -> value.hex()
+                is Color -> value.toWebColorShort()
+                is Number -> Color(value.toLong()).toWebColorShort()
                 else -> value.toString()
             }
         }

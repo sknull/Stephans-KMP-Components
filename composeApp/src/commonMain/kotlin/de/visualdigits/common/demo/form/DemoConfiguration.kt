@@ -2,7 +2,9 @@ package de.visualdigits.common.demo.form
 
 import androidx.compose.runtime.Immutable
 import co.touchlab.kermit.Severity
+import de.visualdigits.common.demo.misc.COLOR_PALETTE_BASIC
 import de.visualdigits.common.domain.model.configuration.AbstractConfiguration
+import de.visualdigits.common.domain.model.configuration.ColorPaletteFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.DateTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
@@ -18,9 +20,11 @@ import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.domain.model.ui.UiText
 
 @Immutable
-class DemoConfiguration(
-    values: Map<DC, Any?> = mapOf(),
-): AbstractConfiguration<DemoConfiguration, DC>(values, DESCRIPTORS) {
+class DemoConfiguration: AbstractConfiguration<DemoConfiguration, DC>() {
+
+    init {
+        initialize(DESCRIPTORS)
+    }
 
     companion object {
         val DESCRIPTORS = listOf(
@@ -99,12 +103,16 @@ class DemoConfiguration(
                 key = DC.color,
                 label = UiText.DynamicString("Color"),
             ),
-        )
 
-        fun instance(): DemoConfiguration = DemoConfiguration(values = mapOf())
+            ColorPaletteFieldDescriptor(
+                key = DC.color,
+                label = UiText.DynamicString("Color Palette"),
+                colorPalette = COLOR_PALETTE_BASIC
+            ),
+        )
     }
 
     override fun createInstance(newValues: Map<DC, Any?>): DemoConfiguration {
-        return DemoConfiguration(newValues)
+        return DemoConfiguration().initialize(DESCRIPTORS, newValues)
     }
 }

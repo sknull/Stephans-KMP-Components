@@ -27,7 +27,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
     modifier: Modifier,
     fieldState: FieldState<K, FK>,
     unfocusedBorderColor: Color,
-    startDirectory: Path,
     onValueChange: (String) -> Unit,
     onOk: (Path) -> Unit
 ) {
@@ -68,7 +67,9 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
                     buttonColor = Color.Transparent,
                     leadingIcon = fileChooserResources.iconFolder,
                     leadingIconTint = formFieldResources.iconTint,
-                    startDirectory = startDirectory,
+                    startDirectory = (fieldState.currentValue as? Path) ?: fieldState.fieldDescriptor.startDirectory(
+                        fieldState.configuration
+                    ),
                     onOkPath = onOk
                 )
             }

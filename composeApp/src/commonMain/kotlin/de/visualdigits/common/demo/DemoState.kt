@@ -11,7 +11,8 @@ data class DemoState(
     val uiMessage: UiText? = null,
     val uiMessageSeverity: Severity? = null,
     val editedConfiguration: DemoConfiguration? = null,
-    val configuration: DemoConfiguration = DemoConfiguration(mapOf(
+    val configuration: DemoConfiguration = DemoConfiguration().initialize(
+        DemoConfiguration.DESCRIPTORS, mapOf(
         DC.text to "",
         DC.language to Language.EN,
         DC.switch to false,

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import co.touchlab.kermit.Severity
+import de.visualdigits.common.domain.model.configuration.ColorPaletteFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.ColorPickerFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.DateTimeFieldDescriptor
 import de.visualdigits.common.domain.model.configuration.EnumFieldDescriptor
@@ -21,7 +22,6 @@ import de.visualdigits.common.domain.model.ui.KeyValue
 import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.util.color
 import de.visualdigits.common.presentation.components.androidPlatform
-import kotlinx.io.files.Path
 
 @Composable
 fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
@@ -67,9 +67,6 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
             FileChooserBox(
                 modifier = modifier,
                 fieldState = fieldState,
-                startDirectory = (fieldState.currentValue as? Path) ?: fieldState.fieldDescriptor.startDirectory(
-                    fieldState.configuration
-                ),
                 unfocusedBorderColor = finalUnfocusedBorderColor,
                 onValueChange = { value: String ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
@@ -84,8 +81,17 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> TypeAwareEditableField(
             ColorPickerBox(
                 modifier = modifier,
                 fieldState = fieldState,
-                label = fieldState.fieldDescriptor.label.asString(),
                 slidersOnly = colorPickerUseOnlySliders,
+                onValueChange = { value ->
+                    onValueChange(KeyValue(fieldState.fieldDescriptor, value))
+                },
+            )
+        }
+
+        fieldState.fieldDescriptor is ColorPaletteFieldDescriptor<*,*> -> {
+            ColorPaletteBox(
+                modifier = modifier,
+                fieldState = fieldState,
                 onValueChange = { value ->
                     onValueChange(KeyValue(fieldState.fieldDescriptor, value))
                 },

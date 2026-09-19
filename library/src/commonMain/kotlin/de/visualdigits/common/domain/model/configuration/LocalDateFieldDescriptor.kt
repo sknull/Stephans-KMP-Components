@@ -1,5 +1,7 @@
 package de.visualdigits.common.domain.model.configuration
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.LocalDateKeyFactory
 import de.visualdigits.common.domain.model.platform.PlatformType
@@ -20,6 +22,7 @@ class LocalDateFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     toolTip: UiText? = null,
 
     visible: Boolean = true,
+    width: Dp = 300.dp,
     readOnly: Boolean = false,
 
     default: LocalDate? = null,
@@ -39,10 +42,11 @@ class LocalDateFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     label = label,
     toolTip = toolTip,
     visible = visible,
+    width = width,
     readOnly = readOnly,
-    default = default,
     enabled = enabled,
     enabledCondition = enabledCondition,
+    default = default,
     valid = valid,
     options = options,
     notValidForPlatforms = notValidForPlatforms,

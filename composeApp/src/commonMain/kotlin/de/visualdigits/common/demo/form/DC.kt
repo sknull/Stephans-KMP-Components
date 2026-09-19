@@ -14,5 +14,6 @@ enum class DC : FieldKey<DC> {
     time,
     date,
     dateTime,
-    color
+    color,
+    colorPalette
 }

@@ -1,5 +1,7 @@
 package de.visualdigits.common.domain.model.configuration
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.KeyFactory
 import de.visualdigits.common.domain.model.platform.PlatformType
@@ -36,6 +38,8 @@ abstract class AbstractFieldDescriptor<V : Any, S : Any, K : FieldKey<K>, FK : F
      * Sometimes we want to have a configuration which we need to treat separately from the other fields.
      */
     val visible: Boolean = true,
+
+    val width: Dp = 300.dp,
 
     /** Determines whether this field can be edited or not. */
     val readOnly: Boolean = false,

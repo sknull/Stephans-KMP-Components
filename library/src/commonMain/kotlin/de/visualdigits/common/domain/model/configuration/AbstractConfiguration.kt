@@ -5,12 +5,28 @@ import co.touchlab.kermit.Severity
 /**
  * Base class for all configuration classes.
  */
-abstract class AbstractConfiguration<T : AbstractConfiguration<T, K>, K : FieldKey<K>>(
-    val values: Map<K, Any?> = mapOf(),
-    val fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>> = listOf(),
-) {
+abstract class AbstractConfiguration<T : AbstractConfiguration<T, K>, K : FieldKey<K>>() {
 
-    val lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *, *>> = fieldDescriptors.associateBy { descriptor -> descriptor.key }
+    @PublishedApi
+    internal var values: Map<K, Any?> = mapOf()
+
+    var fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>> = listOf()
+        private set
+
+    private var lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *, *>> = mapOf()
+
+    @Suppress("UNCHECKED_CAST")
+    fun initialize(
+        fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>>,
+        newValues: Map<K, Any?> = mapOf()
+    ): T {
+        this.fieldDescriptors = fieldDescriptors
+        this.values = fieldDescriptors
+            .associate { descriptor -> Pair(descriptor.key, descriptor.default) } + newValues // override defaults by actual values (if any)
+        lookupFieldDescriptors = fieldDescriptors.associateBy { descriptor -> descriptor.key }
+
+        return this as T
+    }
 
     companion object {
 

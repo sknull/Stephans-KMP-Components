@@ -203,7 +203,7 @@ private fun <FK : FieldKey<FK>, K : FieldKey<K>> RenderFields(
 
             Box(
                 modifier = Modifier
-                    .width(300.dp)
+                    .width(fieldDescriptor.width)
             ) {
                 EditableField(
                     fieldState = fieldState,

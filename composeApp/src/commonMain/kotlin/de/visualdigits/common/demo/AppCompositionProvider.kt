@@ -31,6 +31,7 @@ import stephans_kmp_components.composeapp.generated.resources.icon_alarm_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_calendar_month_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_cancel_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_check_small_24px
+import stephans_kmp_components.composeapp.generated.resources.icon_close_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_delete_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_edit_24px
 import stephans_kmp_components.composeapp.generated.resources.icon_folder_open_24px
@@ -69,6 +70,7 @@ fun AppCompositionProvider(
         dropDownBackgroundColor = MaterialTheme.colorScheme.background,
         focusedGroupBoxColor = Color.Transparent,
         unfocusedGroupBoxColor = Color.Transparent,
+        colorPaletteNoColorIcon = Res.drawable.icon_close_24px,
         visibilityIcon = painterResource(Res.drawable.icon_visibility_24px),
     )
     val fileChooserResources = FileChooserResources(

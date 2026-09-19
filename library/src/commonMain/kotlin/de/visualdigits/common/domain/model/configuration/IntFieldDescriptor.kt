@@ -1,5 +1,7 @@
 package de.visualdigits.common.domain.model.configuration
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.configuration.keyfactory.IntKeyFactory
 import de.visualdigits.common.domain.model.platform.PlatformType
@@ -18,6 +20,7 @@ class IntFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     toolTip: UiText? = null,
 
     visible: Boolean = true,
+    width: Dp = 300.dp,
     readOnly: Boolean = false,
 
     default: Int? = null,
@@ -36,11 +39,12 @@ class IntFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     label = label,
     toolTip = toolTip,
     visible = visible,
+    width = width,
     readOnly = readOnly,
-    default = default,
     enabled = enabled,
     enabledCondition = enabledCondition,
-    notValidForPlatforms = notValidForPlatforms,
+    default = default,
     valid = valid,
+    notValidForPlatforms = notValidForPlatforms,
     keyFactory = IntKeyFactory,
 )

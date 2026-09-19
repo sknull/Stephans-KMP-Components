@@ -1,5 +1,6 @@
 package de.visualdigits.common.presentation.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -294,15 +295,7 @@ fun ColorPicker(
             if (hasSwatch) {
                 IndicatorButton(
                     modifier = Modifier
-                        .dropShadow(
-                            shape = RoundedCornerShape(4.dp),
-                            shadow = Shadow(
-                                radius = 1.dp,
-                                spread = 1.dp,
-                                color = Color.Black.copy(alpha = 0.2f),
-                                offset = DpOffset((-1).dp, 1.dp)
-                            )
-                        ),
+                        .border(1.dp, MaterialTheme.colorScheme.onBackground),
                     textColor = Color.White,
                     buttonColor = controller.selectedColor.value,
                     flatLook = true,

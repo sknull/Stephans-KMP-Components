@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import org.jetbrains.compose.resources.DrawableResource
 
 data class FormFieldResources(
     val fieldHeight: Dp = Dp.Unspecified,
@@ -19,6 +20,7 @@ data class FormFieldResources(
     val focusedGroupBoxColor: Color,
     val unfocusedGroupBoxColor: Color,
     val dropDownBackgroundColor: Color,
+    val colorPaletteNoColorIcon: DrawableResource? = null,
     val visibilityIcon: Painter? = null,
 )
 

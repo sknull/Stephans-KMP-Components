@@ -1,8 +1,10 @@
 package de.visualdigits.common.domain.model.configuration
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Severity
 import de.visualdigits.common.domain.model.color.HsvColor
-import de.visualdigits.common.domain.model.configuration.keyfactory.ColorKeyFactory
+import de.visualdigits.common.domain.model.configuration.keyfactory.HsvColorKeyFactory
 import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.model.ui.UiPlatform
 import de.visualdigits.common.domain.model.ui.UiText
@@ -19,6 +21,7 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     toolTip: UiText? = null,
 
     visible: Boolean = true,
+    width: Dp = 300.dp,
     readOnly: Boolean = false,
 
     default: HsvColor? = null,
@@ -37,11 +40,12 @@ class ColorPickerFieldDescriptor<K : FieldKey<K>, FK : FieldKey<FK>>(
     label = label,
     toolTip = toolTip,
     visible = visible,
+    width = width,
     readOnly = readOnly,
-    default = default,
     enabled = enabled,
     enabledCondition = enabledCondition,
+    default = default,
     valid = valid,
     notValidForPlatforms = notValidForPlatforms,
-    keyFactory = ColorKeyFactory
+    keyFactory = HsvColorKeyFactory
 )
