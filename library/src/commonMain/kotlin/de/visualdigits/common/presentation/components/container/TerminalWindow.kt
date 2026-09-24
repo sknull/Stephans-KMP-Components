@@ -40,11 +40,10 @@ import de.visualdigits.common.presentation.components.PlatformLazyVerticalScroll
 fun TerminalWindow(
     modifier: Modifier = Modifier,
     space: Dp = 8.dp,
-    shapeContainer: Shape,
+    shapeContainer: Shape = MaterialTheme.shapes.small,
     title: String,
     listData: () -> List<LogMessage>,
     backGroundColor: Color = MaterialTheme.colorScheme.primaryFixed,
-    containerShape: Shape = RoundedCornerShape(space),
 ) {
     val listState = rememberLazyListState()
     val interactionSource = remember { MutableInteractionSource() }
@@ -58,7 +57,7 @@ fun TerminalWindow(
     Surface(
         modifier = modifier,
         color = backGroundColor,
-        shape = containerShape
+        shape = shapeContainer
     ) {
         Column(
             modifier = Modifier
@@ -92,7 +91,7 @@ fun TerminalWindow(
                 ) {
                     items(
                         items = listData(),
-                        key =  { log -> log.timestamp }
+                        key =  { log ->"${log.id}_${log.timestamp}" }
                     ) { log ->
                         Text(
                             text = log.toString(),

@@ -7,11 +7,12 @@ import de.visualdigits.common.domain.model.common.KmpOffsetDateTime
 
 @Immutable
 data class LogMessage(
-    val tag: String,
-    val timestamp: KmpOffsetDateTime,
+    val tag: String = "",
+    val timestamp: KmpOffsetDateTime = KmpOffsetDateTime.now(),
     val severity: Severity,
     val message: String,
-    val throwable: Throwable?
+    val throwable: Throwable? = null,
+    val id: String? = null
 ) {
 
     override fun toString(): String {
@@ -43,9 +44,11 @@ data class LogMessage(
             severity: Severity,
             message: String,
             throwable: Throwable? = null,
-            withTag: String = ""
+            withTag: String = "",
+            id: String? = null
         ): LogMessage {
             val logMessage = LogMessage(
+                id = id,
                 tag = withTag,
                 timestamp = KmpOffsetDateTime.now(),
                 severity = severity,
