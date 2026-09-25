@@ -80,7 +80,7 @@ fun TerminalWindow(
             modifier = Modifier
                 .fillMaxSize()
                 .background(backGroundColor)
-                .padding(end = if (platformType == PlatformType.jvm) 20.dp else 0.dp),
+                .padding(space),
             scrollbarModifier = Modifier
                 .clip(MaterialTheme.shapes.small)
                 .width(10.dp)

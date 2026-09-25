@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import co.touchlab.kermit.Logger
 import de.visualdigits.common.domain.model.ui.FileMode
 import de.visualdigits.common.presentation.components.button.IndicatorButton
 import kotlinx.io.Source
@@ -73,10 +74,16 @@ actual fun PlatformFileChooser(
     ) {
         val result = chooser.showOpenDialog(null)
         if (result == JFileChooser.APPROVE_OPTION) {
-            val name = chooser.selectedFile.name
-            val kmpSource = chooser.selectedFile.inputStream().asSource().buffered()
-            onOkSource?.also { onOk -> onOk(name, kmpSource) }
-            onOkPath?.also { onOk -> onOk(Path(chooser.selectedFile.canonicalPath)) }
+            try {
+                val selected = chooser.selectedFile
+                onOkPath?.also { onOk -> onOk(Path(selected.canonicalPath)) }
+                if (selected.isFile) {
+                    val kmpSource = selected.inputStream().asSource().buffered()
+                    onOkSource?.also { onOk -> onOk(selected.name, kmpSource) }
+                }
+            } catch (e: Exception) {
+                Logger.e("Could not select desired directory or file", e)
+            }
         } else if (result == JFileChooser.CANCEL_OPTION) {
             onCancel?.also { oc -> oc() }
         }

@@ -54,16 +54,17 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> FileChooserBox(
             fileChooserResources.trailingIcon?.let { ti -> ti() }
 
             if (fieldState.fieldDescriptor.enabled && fieldState.fieldDescriptor.enabledCondition(fieldState.configuration, null)) {
+                val fileMode = (fieldState.fieldDescriptor as FileFieldDescriptor<*, *>).fileMode
                 PlatformFileChooser(
                     buttonTextStyle = MaterialTheme.typography.bodySmall,
                     buttonTextAlign = TextAlign.Start,
                     buttonWidth = 30.dp,
                     buttonHeight = 30.dp,
-                    title = when ((fieldState.fieldDescriptor as FileFieldDescriptor<*,*>).fileMode) {
+                    title = when (fileMode) {
                         FileMode.DIRECTORIES_ONLY -> fileChooserResources.titleDirectories
                         FileMode.FILES_ONLY -> fileChooserResources.titleFiles
                     },
-                    fileMode = FileMode.FILES_ONLY,
+                    fileMode = fileMode,
                     buttonColor = Color.Transparent,
                     leadingIcon = fileChooserResources.iconFolder,
                     leadingIconTint = formFieldResources.iconTint,
