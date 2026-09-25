@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.2"
+agp = "8.12.0" # DO NOT UPGRADE FOR NOW
 android-compileSdk = "36"
 android-minSdk = "26"
 android-targetSdk = "35" # DO NOT UPGRADE FOR NOW
