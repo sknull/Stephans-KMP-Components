@@ -22,7 +22,7 @@ data class LogMessage(
             }"
         }?:""
 
-        return "${severity}: ${message}$stackTrace"
+        return "${timestamp.format("yyyy-MM-dd HH:mm:ss")} [${severity}] ${message}$stackTrace"
     }
 
     inline fun log(withTag: String = "") {

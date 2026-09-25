@@ -1,27 +1,20 @@
 package de.visualdigits.common.presentation.components.container
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,88 +25,89 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import de.visualdigits.common.domain.model.errorhandling.LogMessage
+import de.visualdigits.common.domain.model.platform.PlatformType
 import de.visualdigits.common.domain.util.color
-import de.visualdigits.common.presentation.components.PlatformLazyVerticalScrollbar
+import de.visualdigits.common.presentation.components.PlatformVerticalScrollbarBox
+import de.visualdigits.common.presentation.model.CommonAction
+import de.visualdigits.common.presentation.model.ScrollIntent
 
 
 @Composable
 fun TerminalWindow(
     modifier: Modifier = Modifier,
+    platformType: PlatformType,
+    terminalId: String,
+    scrollPosition: MutableMap<String, Triple<Int, Int?, ScrollIntent>> = mutableMapOf(),
     space: Dp = 8.dp,
     shapeContainer: Shape = MaterialTheme.shapes.small,
     title: String,
-    listData: () -> List<LogMessage>,
+    titleBarColor: Color = Color.White,
     backGroundColor: Color = MaterialTheme.colorScheme.primaryFixed,
+    messages: () -> List<LogMessage>,
+    onCommonAction: ((CommonAction) -> Unit)? = null
 ) {
     val listState = rememberLazyListState()
-    val interactionSource = remember { MutableInteractionSource() }
 
-    LaunchedEffect(listData().size) {
-        if (listData().isNotEmpty()) {
-            listState.scrollToItem(listData().size - 1)
+    LaunchedEffect(messages().size) {
+        if (messages().isNotEmpty()) {
+            listState.scrollToItem(messages().size - 1)
         }
     }
 
-    Surface(
-        modifier = modifier,
-        color = backGroundColor,
-        shape = shapeContainer
+    Column(
+        modifier = modifier
+            .clip(shapeContainer)
+            .fillMaxSize(),
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(20.dp),
+                .height(30.dp)
+                .background(titleBarColor),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(30.dp),
-                border = BorderStroke(1.dp, Color.White),
-                color = Color(0xffffffff),
-                shape = RoundedCornerShape(topStart = space, topEnd = space)
-            ) {
-                Text(
-                    text = title,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier
-                        .padding(horizontal = space)
-                )
-            }
+                    .padding(horizontal = space),
+                text = title,
+                color = Color.Black,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
 
-            Box(modifier = Modifier.fillMaxSize()) {
-                LazyColumn(
-                    state = listState,
-                    contentPadding = PaddingValues(space),
-                    modifier = Modifier
-                        .padding(space)
-                        .fillMaxSize()
-                ) {
-                    items(
-                        items = listData(),
-                        key =  { log ->"${log.id}_${log.timestamp}" }
-                    ) { log ->
+        PlatformVerticalScrollbarBox(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backGroundColor)
+                .padding(end = if (platformType == PlatformType.jvm) 20.dp else 0.dp),
+            scrollbarModifier = Modifier
+                .clip(MaterialTheme.shapes.small)
+                .width(10.dp)
+                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)),
+            platformType = platformType,
+            scrollbarId = "terminal_$terminalId",
+            scrollPosition = scrollPosition,
+            onCommonAction = onCommonAction
+        ) {
+            val logMessages = messages()
+            if (logMessages.isNotEmpty()) {
+                logMessages.map { message ->
+                    Pair("message_${message.id}", @Composable {
                         Text(
-                            text = log.toString(),
-                            color = log.severity.color(),
+                            text = message.toString(),
+                            color = message.severity.color(),
                             fontFamily = FontFamily.Monospace,
                             style = MaterialTheme.typography.bodySmall,
                             lineHeight = 1.5.em,
                             softWrap = false
                         )
-                    }
+                    })
                 }
-
-                PlatformLazyVerticalScrollbar(
-                    modifier = Modifier
-                        .clip(shapeContainer)
-                        .align(Alignment.CenterEnd)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f))
-                        .fillMaxHeight()
-                        .width(8.dp),
-                    scrollState = listState,
-                    interactionSource = interactionSource
-                )
+            } else {
+                listOf(Pair("message_dummy", @Composable {
+                    Box(modifier = Modifier.fillMaxSize())
+                }))
             }
         }
     }
