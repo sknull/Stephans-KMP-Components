@@ -15,7 +15,8 @@ abstract class AbstractConfiguration<T : AbstractConfiguration<T, K>, K : FieldK
     var fieldDescriptors: List<AbstractFieldDescriptor<*, *, K, *, *>> = listOf()
         private set
 
-    private var lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *, *>> = mapOf()
+    var lookupFieldDescriptors: Map<K, AbstractFieldDescriptor<*, *, K, *, *>> = mapOf()
+        private set
 
     @Suppress("UNCHECKED_CAST")
     fun initialize(
