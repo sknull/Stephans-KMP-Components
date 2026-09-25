@@ -41,12 +41,12 @@ fun <K : FieldKey<K>, FK : FieldKey<FK>> ComboBoxStandalone(
     modifier: Modifier = Modifier,
     label: UiText,
     options: List<Triple<*, UiText?, DrawableResource?>>,
-    currentOption: Triple<*, UiText?, DrawableResource?>,
+    currentOption: Triple<*, UiText?, DrawableResource?>?,
     onValueChange: (Any?) -> Unit,
 ) {
     val formFieldResources = LocalFormFieldResources.current
     var expanded by remember { mutableStateOf(false) }
-    val text = currentOption.second?.asString() ?: ""
+    val text = currentOption?.second?.asString() ?: ""
     val textFieldState = rememberTextFieldState(text)
     LaunchedEffect(text) {
         textFieldState.edit {
