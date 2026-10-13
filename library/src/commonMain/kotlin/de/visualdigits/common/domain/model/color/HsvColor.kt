@@ -130,7 +130,7 @@ data class HsvColor(
     fun ansiColor(): String {
         val color = toComposeColor()
 
-        return "\u001B[39m\u001B[48;2;${(color.red * 255).roundToInt()};${(color.blue * 255).roundToInt()};${(color.green * 255).roundToInt()}m  \u001B[0m"
+        return "\u001B[39m\u001B[48;2;${(color.red * 255).roundToInt()};${(color.green * 255).roundToInt()};${(color.blue * 255).roundToInt()}m  \u001B[0m"
     }
 }
 
